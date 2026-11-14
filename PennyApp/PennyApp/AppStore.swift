@@ -159,35 +159,6 @@ final class AppStore {
             .reduce(.zero) { $0 + $1.balance }
     }
 
-    var savingsAccountIDs: [String] {
-        accounts.filter { $0.kind == .savings }.map(\.id).sorted()
-    }
-
-    var totalSavingsBalance: Decimal {
-        accounts
-            .filter { $0.kind == .savings && $0.balance > 0 }
-            .reduce(.zero) { $0 + $1.balance }
-    }
-
-    var totalGoalAllocations: Decimal {
-        goalPlans.reduce(.zero) { $0 + max(.zero, $1.currentAmount) }
-    }
-
-    var unallocatedSavings: Decimal {
-        max(.zero, totalSavingsBalance - totalGoalAllocations)
-    }
-
-    var overallocatedSavings: Decimal {
-        max(.zero, totalGoalAllocations - totalSavingsBalance)
-    }
-
-    func availableSavings(for goalID: UUID? = nil) -> Decimal {
-        let allocatedElsewhere = goalPlans
-            .filter { $0.id != goalID }
-            .reduce(.zero) { $0 + max(.zero, $1.currentAmount) }
-        return max(.zero, totalSavingsBalance - allocatedElsewhere)
-    }
-
     var financialReferenceDate: Date {
         transactions.map(\.date).max() ?? .now
     }

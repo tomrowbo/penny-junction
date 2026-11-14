@@ -16,18 +16,12 @@ struct PennyGoalPlanEditor: View {
 
     private let originalPlan: PennyGoalPlan?
     private let asOf: Date
-    private let savingsPoolAvailable: Decimal?
-    private let savingsAccountIDs: [String]
     private let onSave: (PennyGoalPlan) -> Void
 
     init(plan: PennyGoalPlan? = nil, asOf: Date = .now,
-         savingsPoolAvailable: Decimal? = nil,
-         savingsAccountIDs: [String] = [],
          onSave: @escaping (PennyGoalPlan) -> Void) {
         originalPlan = plan
         self.asOf = asOf
-        self.savingsPoolAvailable = savingsPoolAvailable
-        self.savingsAccountIDs = savingsAccountIDs
         self.onSave = onSave
         _title = State(initialValue: plan?.title ?? "")
         _targetAmount = State(initialValue: plan.map { NSDecimalNumber(decimal: $0.targetAmount).stringValue } ?? "")
@@ -74,13 +68,12 @@ struct PennyGoalPlanEditor: View {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Your plan").font(.headline)
                         HStack(alignment: .top, spacing: 18) {
-                            amountField("Allocated to this goal", text: $currentAmount, field: .saved)
+                            amountField("Saved so far", text: $currentAmount, field: .saved)
                             Rectangle()
                                 .fill(PennyTheme.textSecondary.opacity(0.18))
                                 .frame(width: 1, height: 52)
                             amountField("Per month", text: $monthlyContribution, field: .monthly)
                         }
-                        allocationNote
                     }
                     .padding(20)
                     .pennyGlassSurface(cornerRadius: 24)
@@ -156,22 +149,6 @@ struct PennyGoalPlanEditor: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    @ViewBuilder
-    private var allocationNote: some View {
-        if savingsAccountIDs.isEmpty {
-            Text("No connected savings account")
-                .foregroundStyle(PennyTheme.textSecondary)
-        } else if let savingsPoolAvailable {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("\(savingsPoolAvailable.euroCurrency) available to allocate")
-                if let originalPlan, originalPlan.currentAmount > savingsPoolAvailable {
-                    Text("Your current allocation stays in place until you reduce it.")
-                }
-            }
-            .foregroundStyle(PennyTheme.textSecondary)
-        }
-    }
-
     private var goalSymbol: String {
         let name = title.lowercased()
         if ["travel", "holiday", "vacation", "trip"].contains(where: name.contains) { return "airplane" }
@@ -190,14 +167,8 @@ struct PennyGoalPlanEditor: View {
         guard let target = amount(targetAmount), target > 0 else {
             return "Enter a target amount greater than zero, with up to two decimal places."
         }
-        guard let current = amount(currentAmount) else {
-            return "Enter zero or a positive allocation, with up to two decimal places."
-        }
-        if let savingsPoolAvailable {
-            let maximumAllocation = max(originalPlan?.currentAmount ?? .zero, savingsPoolAvailable)
-            guard current <= maximumAllocation else {
-                return "Allocate no more than \(maximumAllocation.euroCurrency) from your savings pool."
-            }
+        guard amount(currentAmount) != nil else {
+            return "Enter zero or a positive amount saved, with up to two decimal places."
         }
         guard amount(monthlyContribution) != nil else {
             return "Enter zero or a positive monthly contribution, with up to two decimal places."
@@ -236,7 +207,7 @@ struct PennyGoalPlanEditor: View {
             targetDate: Calendar.current.startOfDay(for: targetDate),
             monthlyContribution: monthly,
             createdAt: originalPlan?.createdAt ?? asOf,
-            accountIDs: savingsAccountIDs
+            accountIDs: []
         )
         onSave(plan)
         dismiss()

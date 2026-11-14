@@ -12,7 +12,6 @@ struct PennyPlanView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 18) {
                         PennyRootHeader(title: "Plan")
-                        savingsPoolSummary
                         HStack(alignment: .center) {
                             Text("Your goals").font(.title2.weight(.bold))
                             Spacer()
@@ -56,52 +55,12 @@ struct PennyPlanView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showsNewGoal) {
-                PennyGoalPlanEditor(
-                    asOf: store.financialReferenceDate,
-                    savingsPoolAvailable: store.availableSavings(),
-                    savingsAccountIDs: store.savingsAccountIDs
-                ) { store.saveGoalPlan($0) }
+                PennyGoalPlanEditor(asOf: store.financialReferenceDate) { store.saveGoalPlan($0) }
             }
             .sheet(item: $planToEdit) { plan in
-                PennyGoalPlanEditor(
-                    plan: plan,
-                    asOf: store.financialReferenceDate,
-                    savingsPoolAvailable: store.availableSavings(for: plan.id),
-                    savingsAccountIDs: store.savingsAccountIDs
-                ) { store.saveGoalPlan($0) }
+                PennyGoalPlanEditor(plan: plan, asOf: store.financialReferenceDate) { store.saveGoalPlan($0) }
             }
         }
-    }
-
-    private var savingsPoolSummary: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Savings pool")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(PennyTheme.textSecondary)
-            Text(store.totalSavingsBalance.euroCurrency)
-                .font(.largeTitle.weight(.bold))
-                .monospacedDigit()
-
-            if store.overallocatedSavings > 0 {
-                Text("\(store.totalGoalAllocations.euroCurrency) allocated · \(store.overallocatedSavings.euroCurrency) overallocated")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.orange)
-            } else {
-                Text("\(store.totalGoalAllocations.euroCurrency) allocated · \(store.unallocatedSavings.euroCurrency) available")
-                    .font(.subheadline)
-                    .foregroundStyle(PennyTheme.textSecondary)
-            }
-
-            if store.savingsAccountIDs.isEmpty {
-                Text("Connect a savings account to fund goals.")
-                    .font(.subheadline)
-                    .foregroundStyle(PennyTheme.textSecondary)
-            }
-        }
-        .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .foregroundStyle(PennyTheme.textPrimary)
-        .pennyGlassSurface(cornerRadius: 24)
     }
 
     private var emptyState: some View {
