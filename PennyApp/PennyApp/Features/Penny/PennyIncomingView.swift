@@ -13,7 +13,8 @@ struct PennyIncomingView: View {
                         UpcomingMoneyCard(
                             summary: store.upcomingMoney,
                             transactions: store.transactions,
-                            accounts: store.accounts
+                            accounts: store.accounts,
+                            onDiscuss: { store.startPennyChat(about: .upcoming($0)) }
                         )
                     }
                     .padding(.horizontal, 20)

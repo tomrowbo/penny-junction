@@ -30,27 +30,20 @@ struct TransactionDetailView: View {
                             LabeledContent("Transaction ID", value: transaction.id.uppercased())
                         }
 
-                        BrandCard {
-                            HStack(spacing: 8) {
-                                PennyMark(size: 22)
-                                Text("Included in Penny")
-                            }
-                                .font(.headline)
-                                .foregroundStyle(PennyTheme.darkGreen)
-                            Text("Penny uses this transaction with your balances, regular commitments and activity across connected banks when answering your questions.")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-
                         Button {
-                            store.discussWithPenny()
+                            store.startPennyChat(about: .transaction(transaction.id))
                         } label: {
-                            Label("Discuss with Penny", systemImage: "bubble.left.and.bubble.right.fill")
-                                .fontWeight(.bold)
+                            HStack(spacing: 10) {
+                                PennyMark(size: 26)
+                                Text("Discuss with Penny")
+                                    .font(.headline)
+                            }
+                                .foregroundStyle(.white)
                                 .frame(maxWidth: .infinity)
+                                .frame(height: 54)
+                                .background(PennyTheme.forest, in: RoundedRectangle(cornerRadius: 18))
                         }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
+                        .buttonStyle(.plain)
                     }
                     .padding()
                 }

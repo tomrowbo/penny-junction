@@ -4,6 +4,7 @@ struct UpcomingMoneyCard: View {
     let summary: UpcomingMoneySummary
     var transactions: [BankTransaction] = []
     var accounts: [BankAccount] = []
+    var onDiscuss: ((String) -> Void)? = nil
     @State private var showsDetails = false
 
     var body: some View {
@@ -35,7 +36,7 @@ struct UpcomingMoneyCard: View {
                 .accessibilityElement(children: .combine)
                 Divider()
                 ForEach(summary.items.prefix(3)) { item in
-                    UpcomingMoneyRow(item: item, calendar: summary.calendar)
+                    row(for: item)
                 }
                 Text("Estimates, not scheduled payments. Tentative items are excluded from totals.")
                     .font(.caption)
@@ -92,7 +93,7 @@ struct UpcomingMoneyCard: View {
                 }
                 ForEach(summary.items) { item in
                     Section {
-                        UpcomingMoneyRow(item: item, calendar: summary.calendar)
+                        row(for: item)
                         Text("\(item.institution.rawValue) · \(accountName(for: item))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -118,6 +119,19 @@ struct UpcomingMoneyCard: View {
             }
         }
         .tint(SMobiiliPalette.green)
+    }
+
+    private func row(for item: UpcomingMoneyItem) -> some View {
+        HStack(spacing: 10) {
+            UpcomingMoneyRow(item: item, calendar: summary.calendar)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if let onDiscuss {
+                DiscussWithPennyAction(itemName: item.merchant) {
+                    showsDetails = false
+                    onDiscuss(item.id)
+                }
+            }
+        }
     }
 
     @ViewBuilder

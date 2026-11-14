@@ -1,17 +1,19 @@
 import SwiftUI
 
 struct PennyCoachView: View {
+    @Environment(AppStore.self) private var store
+    @State private var path: [PennyChatThread] = []
+    @State private var draft = ""
     private let chats = PennyChatThread.samples
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ZStack {
                 PennyAtmosphere()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        PennyRootHeader(title: "Ask Penny", subtitle: "Explore your money in plain language.")
+                        PennyRootHeader(title: "Ask Penny")
                         prompt
-                        newChatButton
                         conversations
                     }
                     .padding(.horizontal, 20)
@@ -22,25 +24,34 @@ struct PennyCoachView: View {
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: PennyChatThread.self) { thread in
                 PennyChatView(thread: thread)
+                    .id(thread.id)
             }
+            .onAppear { openPendingContext() }
+            .onChange(of: store.pendingPennyChatContext) { _, _ in openPendingContext() }
         }
     }
 
     private var prompt: some View {
-        HStack(alignment: .top, spacing: 16) {
-            PennyMark(size: 54, inverse: true)
-            VStack(alignment: .leading, spacing: 7) {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 12) {
+                PennyMark(size: 48)
                 Text("What’s on your mind?")
                     .font(.title2.weight(.bold))
-                Text("Ask about spending, try a what-if, or work through a decision. Penny uses your connected financial picture and shows the evidence behind the answer.")
-                    .font(.subheadline)
-                    .foregroundStyle(PennyTheme.textSecondary)
+            }
+            PennyChatComposer(draft: $draft, isSending: false, onSubmit: openDraft)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(["Can I afford it?", "Review my spending", "Help me save"], id: \.self) { prompt in
+                        PennyPromptChip(prompt: prompt) {
+                            path = [.conversation(initialDraft: prompt)]
+                        }
+                    }
+                }
             }
         }
-        .padding(20)
+        .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundStyle(PennyTheme.textPrimary)
-        .pennyGlassSurface(cornerRadius: 24)
     }
 
     private var conversations: some View {
@@ -84,20 +95,17 @@ struct PennyCoachView: View {
         }
     }
 
-    private var newChatButton: some View {
-        NavigationLink(value: PennyChatThread.newChat) {
-            HStack {
-                Text("Start a conversation")
-                Spacer()
-                Image(systemName: "arrow.up.right")
-            }
-            .font(.headline)
-            .foregroundStyle(PennyTheme.obsidian)
-            .padding(.horizontal, 18)
-            .frame(maxWidth: .infinity, minHeight: 54)
-            .background(PennyTheme.emeraldBright, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
-        }
-        .buttonStyle(.plain)
+    private func openDraft() {
+        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        path = [.conversation(initialDraft: String(text.prefix(4_000)))]
+        draft = ""
+    }
+
+    private func openPendingContext() {
+        guard let context = store.pendingPennyChatContext else { return }
+        store.pendingPennyChatContext = nil
+        path = [.conversation(context: context)]
     }
 
     @ViewBuilder
@@ -114,6 +122,111 @@ struct PennyCoachView: View {
     }
 }
 
+private struct PennyChatComposer: View {
+    @Binding var draft: String
+    let isSending: Bool
+    let onSubmit: () -> Void
+
+    private var canSubmit: Bool {
+        !isSending && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 10) {
+            TextField("Ask Penny anything…", text: $draft, axis: .vertical)
+                .font(.body)
+                .foregroundStyle(PennyTheme.textPrimary)
+                .lineLimit(1...5)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 13)
+                .pennyGlassSurface(cornerRadius: 24)
+                .submitLabel(.send)
+                .onSubmit { if canSubmit { onSubmit() } }
+            Button { if canSubmit { onSubmit() } } label: {
+                Image(systemName: "arrow.up")
+                    .font(.headline.weight(.bold))
+                    .foregroundStyle(Color.white.opacity(canSubmit ? 1 : 0.6))
+                    .frame(width: 46, height: 46)
+                    .background(PennyTheme.forest, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Send message")
+            .accessibilityValue(canSubmit ? "Ready to send" : "Enter a message")
+            .allowsHitTesting(canSubmit)
+        }
+    }
+}
+
+private struct PennyPromptChip: View {
+    let prompt: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(prompt)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(PennyTheme.forest)
+                .padding(.horizontal, 13)
+                .padding(.vertical, 10)
+                .background(Color.white.opacity(0.8), in: Capsule())
+                .overlay { Capsule().strokeBorder(Color.black.opacity(0.08)) }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct PennyChatContextCard: View {
+    let context: PennyChatContext
+
+    private var symbol: String {
+        switch context.type {
+        case .transaction: "creditcard"
+        case .account: "building.columns"
+        case .goal: "target"
+        case .upcoming: "calendar"
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .background(PennyTheme.forest, in: RoundedRectangle(cornerRadius: 14))
+            VStack(alignment: .leading, spacing: 4) {
+                Text(context.title)
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(PennyTheme.textPrimary)
+                Text(context.subtitle.components(separatedBy: " · ").prefix(3).joined(separator: " · "))
+                    .font(.caption)
+                    .foregroundStyle(PennyTheme.textSecondary)
+                    .lineLimit(2)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .pennyGlassSurface(cornerRadius: 20)
+    }
+}
+
+struct DiscussWithPennyAction: View {
+    var itemName: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            PennyMark(size: 30)
+                .frame(width: 44, height: 44)
+                .background(Color.white.opacity(0.8), in: Circle())
+                .overlay { Circle().strokeBorder(Color.black.opacity(0.08)) }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Discuss \(itemName) with Penny")
+    }
+}
+
 struct PennyChatThread: Identifiable, Hashable {
     let id: String
     let title: String
@@ -121,6 +234,14 @@ struct PennyChatThread: Identifiable, Hashable {
     let time: String
     let symbol: String
     let initialMessages: [PennyChatMessage]
+    var context: PennyChatContext? = nil
+    var initialDraft: String = ""
+
+    static func conversation(context: PennyChatContext? = nil, initialDraft: String = "") -> PennyChatThread {
+        PennyChatThread(id: UUID().uuidString, title: "Ask Penny", preview: "", time: "",
+                        symbol: PennyBrand.markAssetName, initialMessages: [],
+                        context: context, initialDraft: initialDraft)
+    }
 
     static let samples: [PennyChatThread] = [
         PennyChatThread(
@@ -160,13 +281,11 @@ struct PennyChatThread: Identifiable, Hashable {
 
     static let newChat = PennyChatThread(
         id: "new",
-        title: "New goal",
-        preview: "Describe what you want to achieve",
+        title: "Ask Penny",
+        preview: "",
         time: "",
         symbol: PennyBrand.markAssetName,
-        initialMessages: [
-            PennyChatMessage(role: .penny, text: "What would you like to achieve? Tell me about the goal, and we’ll work through it together.")
-        ]
+        initialMessages: []
     )
 }
 
@@ -201,6 +320,7 @@ struct PennyChatView: View {
     init(thread: PennyChatThread) {
         self.thread = thread
         _messages = State(initialValue: thread.initialMessages)
+        _draft = State(initialValue: thread.initialDraft)
     }
 
     var body: some View {
@@ -208,7 +328,9 @@ struct PennyChatView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        contextBanner
+                        if let context = thread.context {
+                            PennyChatContextCard(context: context)
+                        }
                         if shouldShowStarters {
                             starterPrompts
                         }
@@ -244,77 +366,20 @@ struct PennyChatView: View {
         .background(PennyAtmosphere())
         .navigationTitle(thread.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
         .onAppear { store.isTabBarHidden = true }
         .onDisappear { store.isTabBarHidden = false }
     }
 
-    private var contextBanner: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Image(systemName: "lock.fill")
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Using \(connectedInstitutionNames)")
-                    .fontWeight(.bold)
-                Text(dataCoverageLabel)
-                    .foregroundStyle(PennyTheme.darkGreen.opacity(0.72))
-            }
-        }
-        .font(.caption)
-        .foregroundStyle(PennyTheme.emeraldBright)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.black.opacity(0.09)) }
-    }
-
-    private var dataCoverageLabel: String {
-        switch store.sBankDataStatus {
-        case .official(let coverage): "Connected history • \(coverage)"
-        case .loading: "Updating your financial history…"
-        case .unavailable: "Financial history is temporarily unavailable"
-        case .fallback: "\(store.transactions.count) recent transactions"
-        }
-    }
-
-    private var connectedInstitutionNames: String {
-        Array(Set(store.accounts.map(\.institution)))
-            .sorted { $0.rawValue < $1.rawValue }
-            .map(\.rawValue)
-            .joined(separator: " + ")
-    }
-
     private var shouldShowStarters: Bool {
-        thread.id == PennyChatThread.newChat.id && !messages.contains { $0.role == .user } && !isSending
+        messages.isEmpty && !isSending
     }
 
     private var starterPrompts: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Explore your money").font(.headline)
-            Text("Start with an idea or ask anything below.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            ForEach(PennyGoalStarter.allCases) { starter in
-                Button { send(starter.prompt) } label: {
-                    HStack(spacing: 10) {
-                        Image(systemName: starter.symbol)
-                            .foregroundStyle(PennyTheme.green)
-                            .frame(width: 28)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(starter.title).font(.subheadline.weight(.semibold))
-                            Text(starter.prompt).font(.caption).foregroundStyle(.secondary).lineLimit(2)
-                        }
-                        Spacer()
-                        Image(systemName: "arrow.up.right")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(PennyTheme.green)
-                    }
-                    .padding(12)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.black.opacity(0.08)) }
-                }
-                .buttonStyle(.plain)
+            ForEach(Array((thread.context?.suggestedPrompts ?? ["What can I spend?", "Help me save"]).prefix(2)), id: \.self) { prompt in
+                PennyPromptChip(prompt: prompt) { draft = prompt }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -327,10 +392,10 @@ struct PennyChatView: View {
                 if message.role == .penny { PennyMark(size: 28, inverse: true) }
                 Text(formattedMessage(message.text))
                     .font(.body)
-                    .foregroundStyle(message.role == .user ? PennyTheme.textPrimary : Color.primary)
+                    .foregroundStyle(message.role == .user ? Color.white : PennyTheme.textPrimary)
                     .padding(13)
                     .background(
-                        message.role == .user ? PennyTheme.emerald : PennyTheme.glassOpaque,
+                        message.role == .user ? PennyTheme.forest : PennyTheme.glassOpaque,
                         in: RoundedRectangle(cornerRadius: 17, style: .continuous)
                     )
                 if message.role == .penny { Spacer(minLength: 54) }
@@ -402,23 +467,7 @@ struct PennyChatView: View {
     }
 
     private var composer: some View {
-        HStack(alignment: .bottom, spacing: 10) {
-            TextField("Discuss this goal…", text: $draft, axis: .vertical)
-                .lineLimit(1...5)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 11)
-                .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 18))
-            Button { send() } label: {
-                Image(systemName: "arrow.up")
-                    .font(.headline.weight(.bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .background(PennyTheme.emerald, in: Circle())
-            }
-            .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            .disabled(isSending)
-            .opacity(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSending ? 0.45 : 1)
-        }
+        PennyChatComposer(draft: $draft, isSending: isSending) { send() }
         .padding()
         .background(.ultraThinMaterial)
     }
@@ -444,7 +493,8 @@ struct PennyChatView: View {
                     goal: thread.title,
                     messages: conversation,
                     accounts: store.accounts,
-                    transactions: store.transactions
+                    transactions: store.transactions,
+                    context: thread.context
                 )
                 messages.append(PennyChatMessage(role: .penny, text: reply.message, evidence: reply.evidence, visualizations: reply.visualizations, suggestedPrompts: reply.suggestedPrompts, source: reply.source))
             } catch {
