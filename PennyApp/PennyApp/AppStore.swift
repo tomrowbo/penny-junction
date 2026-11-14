@@ -2,23 +2,26 @@ import Foundation
 import Observation
 
 enum AppTab: String, CaseIterable, Hashable {
-    case penny
-    case accounts
-    case me
+    case spend
+    case plan
+    case askPenny
+    case incoming
 
     var title: String {
         switch self {
-        case .penny: "Penny"
-        case .accounts: "Accounts"
-        case .me: "Me"
+        case .spend: "Spend"
+        case .plan: "Plan"
+        case .askPenny: "Ask Penny"
+        case .incoming: "Incoming"
         }
     }
 
     var symbol: String {
         switch self {
-        case .penny: PennyBrand.markAssetName
-        case .accounts: "building.columns"
-        case .me: "person"
+        case .spend: "arrow.up.right"
+        case .plan: "scope"
+        case .askPenny: PennyBrand.markAssetName
+        case .incoming: "sparkle"
         }
     }
 }
@@ -49,7 +52,7 @@ enum DemoLaunchState: String, Sendable {
 @Observable
 final class AppStore {
     var isAuthenticated = false
-    var selectedTab: AppTab = .penny
+    var selectedTab: AppTab = .spend
     var isTabBarHidden = false
     var cardPage = 0
     var cardScrollTarget: String?
@@ -102,37 +105,37 @@ final class AppStore {
 
         switch state {
         case .cardOverview:
-            selectedTab = .penny
+            selectedTab = .spend
         case .cardBenefits:
-            selectedTab = .penny
+            selectedTab = .spend
             cardPage = 1
         case .benefitCards:
-            selectedTab = .penny
+            selectedTab = .spend
             cardPage = 1
             cardScrollTarget = "benefit-cards"
         case .bank:
-            selectedTab = .accounts
+            selectedTab = .spend
         case .penny:
-            selectedTab = .penny
+            selectedTab = .askPenny
         case .me:
-            selectedTab = .me
+            selectedTab = .spend
         case .wallet:
-            selectedTab = .penny
+            selectedTab = .spend
             presentedReferenceRoute = .wallet
         case .receipt:
-            selectedTab = .penny
+            selectedTab = .spend
             presentedReferenceRoute = .receipt
         case .saver:
-            selectedTab = .accounts
+            selectedTab = .plan
             presentedReferenceRoute = .saver
         case .transaction:
-            selectedTab = .accounts
+            selectedTab = .spend
             previewTransactionID = "tx-prisma"
         case .connected:
-            selectedTab = .penny
+            selectedTab = .spend
             merge(connection: DemoOpenBankingService.connection(for: .nordea))
         case .chat:
-            selectedTab = .penny
+            selectedTab = .askPenny
             previewChatID = "car"
         }
     }
@@ -211,7 +214,7 @@ final class AppStore {
     }
 
     func login() {
-        selectedTab = .penny
+        selectedTab = .spend
         isTabBarHidden = false
         isAuthenticated = true
     }
@@ -221,7 +224,7 @@ final class AppStore {
         previewTransactionID = nil
         previewChatID = nil
         isTabBarHidden = false
-        selectedTab = .penny
+        selectedTab = .askPenny
     }
 
     func transaction(id: String) -> BankTransaction? {

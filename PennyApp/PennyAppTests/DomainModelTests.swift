@@ -33,7 +33,8 @@ final class DomainModelTests: XCTestCase {
     }
 
     func testEveryTopLevelTabHasReferenceLabelAndSymbol() {
-        XCTAssertEqual(AppTab.allCases.map(\.title), ["Penny", "Accounts", "Me"])
+        XCTAssertEqual(AppTab.allCases.map(\.title), ["Spend", "Plan", "Ask Penny", "Incoming"])
+        XCTAssertEqual(AppTab.allCases.map(\.symbol), ["arrow.up.right", "scope", PennyBrand.markAssetName, "sparkle"])
         XCTAssertTrue(AppTab.allCases.allSatisfy { !$0.symbol.isEmpty })
     }
 

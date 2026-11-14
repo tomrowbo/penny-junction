@@ -4,8 +4,8 @@ import XCTest
 @MainActor
 final class AppStoreTests: XCTestCase {
     func testTopLevelTabsBelongToStandalonePenny() {
-        XCTAssertEqual(AppTab.allCases, [.penny, .accounts, .me])
-        XCTAssertEqual(AppTab.allCases.map(\.title), ["Penny", "Accounts", "Me"])
+        XCTAssertEqual(AppTab.allCases, [.spend, .plan, .askPenny, .incoming])
+        XCTAssertEqual(AppTab.allCases.map(\.title), ["Spend", "Plan", "Ask Penny", "Incoming"])
     }
 
     func testCardBenefitsLaunchStateSelectsSecondCardPage() {
@@ -14,7 +14,7 @@ final class AppStoreTests: XCTestCase {
         store.applyDemoState(.cardBenefits)
 
         XCTAssertTrue(store.isAuthenticated)
-        XCTAssertEqual(store.selectedTab, .penny)
+        XCTAssertEqual(store.selectedTab, .spend)
         XCTAssertEqual(store.cardPage, 1)
         XCTAssertNil(store.presentedReferenceRoute)
     }
@@ -24,7 +24,7 @@ final class AppStoreTests: XCTestCase {
 
         store.applyDemoState(.benefitCards)
 
-        XCTAssertEqual(store.selectedTab, .penny)
+        XCTAssertEqual(store.selectedTab, .spend)
         XCTAssertEqual(store.cardPage, 1)
         XCTAssertEqual(store.cardScrollTarget, "benefit-cards")
     }
@@ -50,7 +50,7 @@ final class AppStoreTests: XCTestCase {
         store.login()
 
         XCTAssertTrue(store.isAuthenticated)
-        XCTAssertEqual(store.selectedTab, .penny)
+        XCTAssertEqual(store.selectedTab, .spend)
     }
 
     func testFreshStoreContainsNoExternalInstitution() {
@@ -65,7 +65,7 @@ final class AppStoreTests: XCTestCase {
 
         store.applyDemoState(.connected)
 
-        XCTAssertEqual(store.selectedTab, .penny)
+        XCTAssertEqual(store.selectedTab, .spend)
         XCTAssertTrue(store.hasConnectedExternalBank)
     }
 
@@ -73,11 +73,11 @@ final class AppStoreTests: XCTestCase {
         let store = AppStore()
         store.applyDemoState(.transaction)
 
-        XCTAssertEqual(store.selectedTab, .accounts)
+        XCTAssertEqual(store.selectedTab, .spend)
 
         store.discussWithPenny()
 
-        XCTAssertEqual(store.selectedTab, .penny)
+        XCTAssertEqual(store.selectedTab, .askPenny)
         XCTAssertNil(store.presentedReferenceRoute)
         XCTAssertNil(store.previewTransactionID)
     }

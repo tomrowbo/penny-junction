@@ -38,6 +38,7 @@
 		91D803F54349C92EB8D847BB /* WalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8A72B88960BE37CEE9498A /* WalletView.swift */; };
 		93DBC451F32E6FECFC6A628E /* PennyGoalPlanEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A495BBCB9E98A5D3A50C6E8 /* PennyGoalPlanEditor.swift */; };
 		94FD1172488559C6F70F335C /* SEtukorttiHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BBF6BD1A4F1740E16B70C6 /* SEtukorttiHomeView.swift */; };
+		9D257B909D4200C2E621E924 /* PennyGlassChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039957B8B99DE92D4C6FCB96 /* PennyGlassChrome.swift */; };
 		A2D08DA5D66F58096FC9B624 /* SMobiiliBankContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A890DDED940EFEB7DA50CC3C /* SMobiiliBankContent.swift */; };
 		A88B4DDCA46728DC9964D4DA /* DomainModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B21CD9DB2C5C21AB8AB5DA /* DomainModelTests.swift */; };
 		A8BE53C332094CED02276447 /* UpcomingMoney.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C4AC3FB6B0F329910A1D91 /* UpcomingMoney.swift */; };
@@ -71,6 +72,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		039957B8B99DE92D4C6FCB96 /* PennyGlassChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyGlassChrome.swift; sourceTree = "<group>"; };
 		06BD607F35FE4178EE1319A8 /* SMobiiliDesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMobiiliDesignSystem.swift; sourceTree = "<group>"; };
 		0FEEC4CC8DF48A191B7036FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A495BBCB9E98A5D3A50C6E8 /* PennyGoalPlanEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyGoalPlanEditor.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				C047E5126BF6C49E8C55A7CB /* BrandComponents.swift */,
+				039957B8B99DE92D4C6FCB96 /* PennyGlassChrome.swift */,
 				56AD8E35138B9471C77E8324 /* SMobiiliChrome.swift */,
 			);
 			path = Shared;
@@ -415,6 +418,7 @@
 				3159F75FB6EB93B143A42760 /* PennyChatService.swift in Sources */,
 				8EF442CE0B8FAC8A3B92B08D /* PennyCoachView.swift in Sources */,
 				579A92DE5E3FC7BCBFA98C1C /* PennyEvidenceVisualization.swift in Sources */,
+				9D257B909D4200C2E621E924 /* PennyGlassChrome.swift in Sources */,
 				8A6E94400D0D481F3A927F62 /* PennyGoalPlan.swift in Sources */,
 				857BAAEA065B31F35E0F5DE9 /* PennyGoalPlanCard.swift in Sources */,
 				93DBC451F32E6FECFC6A628E /* PennyGoalPlanEditor.swift in Sources */,

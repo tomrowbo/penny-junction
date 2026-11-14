@@ -49,19 +49,21 @@ private struct MainTabView: View {
         @Bindable var store = store
         Group {
             switch store.selectedTab {
-            case .penny:
-                PennyCoachView()
-            case .accounts:
+            case .spend:
                 NavigationStack {
                     BankOverviewView()
                 }
-            case .me:
-                MeView()
+            case .plan:
+                PennyCoachView()
+            case .askPenny:
+                PennyCoachView()
+            case .incoming:
+                PennyCoachView()
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if !store.isTabBarHidden {
-                SMobiiliTabBar(selection: $store.selectedTab)
+                PennyGlassTabBar(selection: $store.selectedTab)
             }
         }
     }
