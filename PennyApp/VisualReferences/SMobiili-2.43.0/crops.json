@@ -1,0 +1,12 @@
+{
+  "comparisons": [
+    {"state":"bonus","launchState":"card","source":"01.png","crop":"392x696+0+0","perspective":true,"verifiedRegion":"Angled bonus overview and upper account list.","limitations":"Rotated and partly clipped; compare hierarchy, copy, color, and proportions visually, not pixel geometry."},
+    {"state":"benefits","launchState":"benefits","source":"02.png","crop":"392x696+0+0","perspective":true,"verifiedRegion":"Angled S-Etukortti benefits page.","limitations":"Rotated and clipped on three edges; imagery and visible structure are approximate evidence."},
+    {"state":"wallet","launchState":"wallet","source":"03.png","crop":"304x513+44+183","perspective":false,"verifiedRegion":"Status bar through the visible second wallet card.","limitations":"The bottom of the app screen is outside the marketing image."},
+    {"state":"receipt","launchState":"receipt","source":"04.png","crop":"304x513+44+183","perspective":false,"verifiedRegion":"Status bar through the visible receipt body.","limitations":"The lower receipt is clipped by the marketing image."},
+    {"state":"benefit-cards","launchState":"benefit-cards","source":"05.png","crop":"304x512+52+184","buildOffsetY":72,"perspective":false,"verifiedRegion":"Partial benefits and favourite-locations viewport.","limitations":"The header and lower content are outside the marketing crop."},
+    {"state":"bank","launchState":"bank","source":"06.png","crop":"304x520+44+176","perspective":false,"verifiedRegion":"Status bar through the start of Investments.","limitations":"The service list continues below the marketing crop."},
+    {"state":"saver","launchState":"saver","source":"07.png","crop":"304x520+44+176","perspective":false,"verifiedRegion":"Status bar through the three action rows.","limitations":"Content below the action list is not visible."},
+    {"state":"me","launchState":"me","source":"08.png","crop":"304x512+52+184","perspective":false,"verifiedRegion":"Status bar through the beginning of S-Bank services.","limitations":"The lower service list is clipped by the marketing image."}
+  ]
+}

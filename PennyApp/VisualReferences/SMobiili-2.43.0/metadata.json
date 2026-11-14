@@ -1,0 +1,50 @@
+{
+  "appId": "740514933",
+  "country": "fi",
+  "version": "2.43.0",
+  "retrievedAt": "2026-11-13",
+  "width": 392,
+  "height": 696,
+  "images": [
+    {
+      "file": "01.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/7e/5e/5c/7e5e5cf3-06f2-691b-1055-b6bc1c59d2c6/App_Store_5.5_ENG_01.png/392x696bb.png",
+      "sha256": "7e6307b4139bc47703a65869aff13cc43625be507c0f75ed7316d4c402e1b358"
+    },
+    {
+      "file": "02.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/77/f1/14/77f11465-161a-7888-d2b2-82bb44ecac05/App_Store_5.5_ENG_02.png/392x696bb.png",
+      "sha256": "108c680cb7e91eed7420bdaf6fccf32a775d8faca2c818c3890ff3e839408240"
+    },
+    {
+      "file": "03.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/93/19/06/931906a3-2a96-352e-aefc-baf914e6c319/App_Store_5.5_ENG_03.png/392x696bb.png",
+      "sha256": "0bb2aff3a76903fdb6c537720d0cb54d19ff619632d06f32cb7b86aca7e69b0e"
+    },
+    {
+      "file": "04.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/05/3f/11/053f1175-7b76-a5da-105c-3da01c4b95a5/App_Store_5.5_ENG_07.png/392x696bb.png",
+      "sha256": "a65c2e0ef9bbad549fa45b90438feb840b6206f893b8651ab2751bf155a9bd1e"
+    },
+    {
+      "file": "05.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/d4/93/7a/d4937a3d-4eca-9eef-3592-d7a8129ae4aa/App_Store_5.5_ENG_05.png/392x696bb.png",
+      "sha256": "b330736954460a4c49a7d54f7583ee6ba4a94021661771836f2cf2b3f81a985a"
+    },
+    {
+      "file": "06.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/9c/37/47/9c374760-59c1-ccf5-220c-6fd98ca25054/App_Store_5.5_ENG_04.png/392x696bb.png",
+      "sha256": "1a3a516313d0bbf08225f472cf93e34930667b25641f69867ded430fba5c6d48"
+    },
+    {
+      "file": "07.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/06/b2/f2/06b2f2f5-ca3f-ba9d-de13-f8f49aba5fbe/App_Store_5.5_ENG_08.png/392x696bb.png",
+      "sha256": "4a39a49abc9c32474cea7a139b7f7eba274ff918d13fa37eea63eedceeef62df"
+    },
+    {
+      "file": "08.png",
+      "url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/bf/4c/d0/bf4cd00f-ae9b-d5f7-e105-9143cc8b3c86/App_Store_5.5_ENG_06.png/392x696bb.png",
+      "sha256": "62798d04b27fba83815a8d28daa9b4bbcc6a91493f7288f93b27828b1ad5c703"
+    }
+  ]
+}

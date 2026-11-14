@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Penny — the complete financial picture</title>
+  <style>
+    :root {
+      --forest: #123a2a;
+      --green: #1d7348;
+      --mint: #eaf5ee;
+      --yellow: #fff2c7;
+      --gold-dark: #5f4600;
+      --blue: #eaf3ff;
+      --ink: #14231b;
+      --muted: #4f5f56;
+      --line: #d3ddd7;
+      --paper: #f7f9f7;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Avenir Next", Avenir, Helvetica, sans-serif;
+      padding: 48px;
+    }
+    main { max-width: 1440px; margin: 0 auto; }
+    h1 { margin: 0; max-width: 960px; font-size: 42px; line-height: 1.08; letter-spacing: -.025em; }
+    .subtitle { margin: 13px 0 34px; color: var(--muted); font-size: 18px; line-height: 1.4; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 82px 1.15fr 82px 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .stage {
+      min-height: 470px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .stage.core { background: var(--forest); border-color: var(--forest); color: var(--white); }
+    .number { font-size: 13px; font-weight: 700; color: var(--green); }
+    .core .number { color: #c7ead5; }
+    h2 { margin: 0 0 4px; font-size: 25px; line-height: 1.15; }
+    .stage-copy { margin: 0 0 6px; color: var(--muted); font-size: 15px; line-height: 1.45; }
+    .core .stage-copy { color: #edf8f1; }
+
+    .item {
+      border-radius: 13px;
+      padding: 15px 16px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+    .item.missing { background: var(--yellow); }
+    .item.missing .item-copy { color: var(--gold-dark); }
+    .item.solution { background: #1d4a38; border-color: #39634f; }
+    .item.channel { background: var(--blue); }
+    .item-title { font-size: 16px; font-weight: 700; line-height: 1.25; }
+    .item-copy { margin-top: 5px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+    .solution .item-copy { color: #f4faf6; }
+
+    .plus { text-align: center; color: #9fc7b0; font-size: 24px; line-height: 1; }
+    .arrow {
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .arrow strong { color: var(--green); font-size: 38px; line-height: 1.2; }
+
+    .result {
+      margin-top: auto;
+      border-top: 1px solid var(--line);
+      padding-top: 17px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .core .result { border-color: #39634f; color: #ffffff; }
+
+    .tagline {
+      margin-top: 22px;
+      background: var(--mint);
+      border-radius: 14px;
+      padding: 17px 22px;
+      color: var(--green);
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      body { padding: 24px; }
+      .flow { grid-template-columns: 1fr; }
+      .stage { min-height: auto; }
+      .arrow { min-height: 50px; flex-direction: row; gap: 12px; }
+      .arrow strong { transform: rotate(90deg); }
+    }
+
+    @page { size: 16in 9in; margin: .38in; }
+    @media print {
+      body { padding: 0; zoom: .78; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Your bank sees only part of your financial life.</h1>
+    <p class="subtitle">Penny fills in the missing data, then turns the complete picture into a coach you can simply talk to.</p>
+
+    <section class="flow" aria-label="Penny product architecture">
+      <article class="stage">
+        <div class="number">01</div>
+        <h2>Today: an incomplete picture</h2>
+        <p class="stage-copy">Your bank can see its own accounts and transaction totals—but not your whole financial life.</p>
+
+        <div class="item missing">
+          <div class="item-title">Mortgage at another bank</div>
+          <div class="item-copy">Missing from affordability and safe-to-spend calculations.</div>
+        </div>
+        <div class="item missing">
+          <div class="item-title">€63 at Prisma</div>
+          <div class="item-copy">The bank sees the total, but not which products were inside the basket.</div>
+        </div>
+
+        <div class="result">A coach built on partial data gives partial advice.</div>
+      </article>
+
+      <div class="arrow"><span>Complete<br>the data</span><strong>→</strong></div>
+
+      <article class="stage core">
+        <div class="number">02</div>
+        <h2>Penny fills the gaps</h2>
+        <p class="stage-copy">Two integrations create one complete, customer-controlled financial picture.</p>
+
+        <div class="item solution">
+          <div class="item-title">Open banking</div>
+          <div class="item-copy">Connects mortgages, loans, balances and transactions held at other banks.</div>
+        </div>
+        <div class="plus">+</div>
+        <div class="item solution">
+          <div class="item-title">Loyalty data + attached receipts</div>
+          <div class="item-copy">Adds product-level detail to each transaction—automatically through S Group, manually when needed.</div>
+        </div>
+
+        <div class="result">One model of what you owe, what you spend and what you actually buy.</div>
+      </article>
+
+      <div class="arrow"><span>Turn it into<br>guidance</span><strong>→</strong></div>
+
+      <article class="stage">
+        <div class="number">03</div>
+        <h2>One coach inside S-mobiili</h2>
+        <p class="stage-copy">The hackathon prototype is a concept version of their existing app—not a separate messaging product.</p>
+
+        <div class="item channel">
+          <div class="item-title">Tap a transaction</div>
+          <div class="item-copy">Open the existing transaction detail and see what Penny currently knows.</div>
+        </div>
+        <div class="item channel">
+          <div class="item-title">Add receipt</div>
+          <div class="item-copy">Photograph or upload the receipt; Penny attaches the products to that transaction.</div>
+        </div>
+        <div class="item channel">
+          <div class="item-title">Ask Penny</div>
+          <div class="item-copy">Product-level context now improves spending explanations, safe-to-spend and what-if answers.</div>
+        </div>
+
+        <div class="result">“Can I afford this?” · “Where did my money go?” · “What should I save?”</div>
+      </article>
+    </section>
+
+    <div class="tagline">From transaction history to a complete, product-level understanding of your financial life.</div>
+  </main>
+</body>
+</html>

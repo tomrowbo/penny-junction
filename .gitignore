@@ -1,0 +1,19 @@
+.DS_Store
+node_modules/
+
+# Local tooling and generated presentation environments
+.pptx-venv/
+.impeccable/
+.superpowers/
+
+# Xcode build products and per-user state
+PennyApp/build/
+PennyApp/build-device/
+**/DerivedData/
+**/*.xcodeproj/xcuserdata/
+**/*.xcworkspace/xcuserdata/
+*.xcuserstate
+
+# TypeScript build cache
+*.tsbuildinfo
+

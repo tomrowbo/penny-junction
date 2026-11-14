@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Penny inside S-mobiili</title>
+  <style>
+    :root {
+      --forest:#123a2a; --green:#126b3e; --mint:#e7f5ec; --ink:#15231b;
+      --muted:#5a6860; --line:#d9e0dc; --paper:#f4f7f5; --white:#fff;
+      --yellow:#fff2c7; --blue:#eaf3ff; --red:#b84b4b;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden}
+    body{font-family:"Avenir Next",Avenir,Helvetica,sans-serif;background:var(--paper);color:var(--ink)}
+    main{width:1600px;height:900px;padding:42px 70px 36px;display:flex;flex-direction:column}
+    header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:25px}
+    h1{margin:0;font-size:39px;letter-spacing:-.025em;line-height:1.05}
+    .lead{margin:8px 0 0;color:var(--muted);font-size:16px}
+    .concept{color:var(--green);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .phones{display:grid;grid-template-columns:repeat(3,1fr);gap:62px;align-items:start;justify-items:center;flex:1}
+    .step{width:100%;text-align:center}
+    .step-label{height:35px;font-size:14px;font-weight:700;color:var(--green);letter-spacing:.05em;text-transform:uppercase}
+    .phone{width:338px;height:675px;background:#0b0d0c;border:6px solid #0b0d0c;border-radius:48px;padding:10px;position:relative}
+    .screen{height:100%;background:var(--white);border-radius:34px;overflow:hidden;text-align:left;position:relative}
+    .status{height:34px;padding:11px 18px 0;display:flex;justify-content:space-between;font-size:11px;font-weight:700}
+    .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:82px;height:22px;border-radius:14px;background:#0b0d0c}
+    .appbar{height:65px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px}
+    .logo{width:31px;height:31px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:800}
+    .avatar{width:30px;height:30px;border-radius:50%;background:var(--mint);display:grid;place-items:center;color:var(--green);font-size:11px;font-weight:800}
+    .content{padding:18px}
+    .balance{background:var(--forest);border-radius:17px;color:#fff;padding:18px;margin-bottom:18px}
+    .balance small{display:block;color:#eef8f2;font-size:12px;margin-bottom:5px}
+    .balance strong{font-size:29px;letter-spacing:-.02em}
+    .balance span{display:block;margin-top:7px;color:#eef8f2;font-size:12px}
+    .section-title{font-weight:700;font-size:14px;margin:5px 0 11px}
+    .transaction{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+    .merchant{width:38px;height:38px;border-radius:12px;background:var(--mint);display:grid;place-items:center;font-weight:800;color:var(--green)}
+    .tx-main{min-width:0;flex:1}.tx-main b{font-size:13px}.tx-main span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+    .amount{font-size:13px;font-weight:700}.negative{color:var(--ink)}
+    .selected{background:var(--mint);margin:0 -10px;padding:12px 10px;border-radius:13px;border-bottom:0}
+    .hint{margin-top:16px;background:var(--blue);padding:12px;border-radius:12px;color:#16568e;font-size:12px;line-height:1.4}
+    .back{font-size:12px;color:var(--green);font-weight:700}
+    .detail-head{text-align:center;padding:8px 0 15px}.detail-head .merchant{margin:0 auto 10px;width:50px;height:50px;font-size:17px}.detail-head h2{margin:0;font-size:20px}.detail-head p{margin:5px 0 0;color:var(--muted);font-size:12px}.detail-head strong{display:block;font-size:27px;margin-top:10px}
+    .info{border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:11px}.info-row{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:5px 0}.info-row span{color:var(--muted)}
+    .missing{background:var(--yellow);border-color:#eadba1}.missing b{display:block;font-size:12px}.missing p{margin:5px 0 0;color:#6e5300;font-size:12px;line-height:1.35}
+    .button{margin-top:13px;background:var(--green);color:#fff;border-radius:13px;text-align:center;padding:13px;font-size:13px;font-weight:700}
+    .secondary{margin-top:9px;color:var(--green);text-align:center;font-size:12px;font-weight:700}
+    .matched{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--green);font-size:12px;font-weight:700;margin:2px 0 14px}.check{width:19px;height:19px;border-radius:50%;background:var(--mint);display:grid;place-items:center}
+    .breakdown{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:11px}.bar-row{display:grid;grid-template-columns:1fr 80px 52px;align-items:center;gap:8px;margin:8px 0;font-size:12px}.track{height:7px;background:#e8ece9;border-radius:8px;overflow:hidden}.fill{height:100%;background:var(--green);border-radius:8px}.snack{background:#b1840e}.bar-row strong{text-align:right}
+    .insight{background:var(--forest);color:#fff;border-radius:14px;padding:14px}.insight-label{color:#eef8f2;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.insight p{margin:7px 0 0;font-size:12px;line-height:1.38}.ask{margin-top:10px;background:var(--mint);color:var(--green);border-radius:12px;padding:11px;text-align:center;font-size:12px;font-weight:700}
+    .nav{position:absolute;left:0;right:0;bottom:0;height:58px;border-top:1px solid var(--line);background:#fff;display:flex;justify-content:space-around;align-items:center}.nav-item{font-size:11px;color:#536159;text-align:center}.nav-item b{display:block;font-size:16px;line-height:1;margin-bottom:3px;color:#536159}.nav-item.active{color:var(--green);font-weight:700}.nav-item.active b{color:var(--green)}
+    .flow-arrow{position:absolute;top:410px;font-size:34px;color:var(--green);font-weight:700}.a1{left:510px}.a2{right:510px}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><h1>Penny, built directly into S-mobiili</h1><p class="lead">The transaction becomes the natural place to add missing context—and immediately receive better financial guidance.</p></div>
+      <div class="concept">Product concept</div>
+    </header>
+    <div class="phones">
+      <section class="step">
+        <div class="step-label">1 · Open a transaction</div>
+        <div class="phone"><div class="screen">
+          <div class="status"><span>9:41</span><span>5G&nbsp;&nbsp;100%</span></div><div class="island"></div>
+          <div class="appbar"><div class="brand"><div class="logo">S</div>S-mobiili</div><div class="avatar">TR</div></div>
+          <div class="content">
+            <div class="balance"><small>Available balance</small><strong>€2,842.16</strong><span>Everyday account · FI21 1234</span></div>
+            <div class="section-title">Recent transactions</div>
+            <div class="transaction selected"><div class="merchant">P</div><div class="tx-main"><b>Prisma</b><span>Today · Groceries</span></div><div class="amount negative">−€63.20</div></div>
+            <div class="transaction"><div class="merchant">H</div><div class="tx-main"><b>HSL</b><span>Yesterday · Transport</span></div><div class="amount">−€32.80</div></div>
+            <div class="transaction"><div class="merchant">R</div><div class="tx-main"><b>Rent</b><span>1 Nov · Housing</span></div><div class="amount">−€940.00</div></div>
+            <div class="transaction"><div class="merchant">S</div><div class="tx-main"><b>Salary</b><span>31 Oct · Income</span></div><div class="amount" style="color:var(--green)">+€3,120.00</div></div>
+            <div class="hint">Penny can see €63.20 at Prisma—but not yet what was inside the basket.</div>
+          </div>
+          <div class="nav"><div class="nav-item active"><b>⌂</b>Bank</div><div class="nav-item"><b>◎</b>Purchases</div><div class="nav-item"><b>◇</b>Benefits</div><div class="nav-item"><b>○</b>Me</div></div>
+        </div></div>
+      </section>
+
+      <section class="step">
+        <div class="step-label">2 · Add the missing receipt</div>
+        <div class="phone"><div class="screen">
+          <div class="status"><span>9:41</span><span>5G&nbsp;&nbsp;100%</span></div><div class="island"></div>
+          <div class="appbar"><div class="back">‹ Transactions</div><div class="brand"><div class="logo">S</div></div><div></div></div>
+          <div class="content">
+            <div class="detail-head"><div class="merchant">P</div><h2>Prisma</h2><p>Today at 17:42</p><strong>−€63.20</strong></div>
+            <div class="info"><div class="info-row"><span>Category</span><b>Groceries</b></div><div class="info-row"><span>Paid from</span><b>Everyday account</b></div><div class="info-row"><span>Card</span><b>•• 4821</b></div></div>
+            <div class="info missing"><b>Product detail is missing</b><p>Add the receipt so Penny can understand what you actually bought—not only where you shopped.</p></div>
+            <div class="button">Add receipt</div>
+            <div class="secondary">Match S-Etukortti purchase instead</div>
+          </div>
+          <div class="nav"><div class="nav-item active"><b>⌂</b>Bank</div><div class="nav-item"><b>◎</b>Purchases</div><div class="nav-item"><b>◇</b>Benefits</div><div class="nav-item"><b>○</b>Me</div></div>
+        </div></div>
+      </section>
+
+      <section class="step">
+        <div class="step-label">3 · Get product-level coaching</div>
+        <div class="phone"><div class="screen">
+          <div class="status"><span>9:41</span><span>5G&nbsp;&nbsp;100%</span></div><div class="island"></div>
+          <div class="appbar"><div class="back">‹ Transaction</div><div class="brand"><div class="logo">S</div>Penny</div><div></div></div>
+          <div class="content">
+            <div class="matched"><span class="check">✓</span>Receipt matched · 14 products</div>
+            <div class="breakdown">
+              <div class="section-title">What was inside</div>
+              <div class="bar-row"><span>Essential groceries</span><div class="track"><div class="fill" style="width:74%"></div></div><strong>€31.40</strong></div>
+              <div class="bar-row"><span>Prepared meals</span><div class="track"><div class="fill" style="width:36%"></div></div><strong>€13.40</strong></div>
+              <div class="bar-row"><span>Snacks</span><div class="track"><div class="fill snack" style="width:48%"></div></div><strong>€18.40</strong></div>
+            </div>
+            <div class="info"><div class="info-row"><span>Mandatory regular</span><b>€31.40</b></div><div class="info-row"><span>Everyday spending</span><b>€31.80</b></div></div>
+            <div class="insight"><div class="insight-label">Penny insight</div><p>Prepared meals and snacks are €42 above your usual monthly pace. Reducing them by 20% would add about €34 to your car fund this month.</p></div>
+            <div class="ask">Ask Penny about this purchase</div>
+          </div>
+          <div class="nav"><div class="nav-item"><b>⌂</b>Bank</div><div class="nav-item active"><b>◎</b>Penny</div><div class="nav-item"><b>◇</b>Benefits</div><div class="nav-item"><b>○</b>Me</div></div>
+        </div></div>
+      </section>
+    </div>
+    <div class="flow-arrow a1">→</div><div class="flow-arrow a2">→</div>
+  </main>
+</body>
+</html>

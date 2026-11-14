@@ -1,0 +1,10 @@
+.next/
+node_modules/
+.env*
+!.env.example
+private*.pem
+private*.key
+*.crt
+data/*.sqlite
+data/*.sqlite-*
+data/source/*.csv

@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "mandatory_regular": [
+    "housing",
+    "rent",
+    "mortgage",
+    "utilities",
+    "insurance",
+    "childcare",
+    "telecommunications",
+    "transport"
+  ],
+  "mandatory_irregular": [
+    "healthcare",
+    "health",
+    "medical",
+    "dentist",
+    "repairs",
+    "home repairs",
+    "home & tech",
+    "maintenance",
+    "education",
+    "taxes",
+    "emergency"
+  ],
+  "everyday": [
+    "groceries",
+    "dining",
+    "dining out",
+    "restaurants",
+    "eating out",
+    "coffee",
+    "lifestyle",
+    "entertainment",
+    "shopping",
+    "leisure",
+    "travel"
+    ,"transportation"
+  ],
+  "non_spending": [
+    "salary",
+    "income",
+    "transfer",
+    "transfers",
+    "savings"
+    ,"invest deposit"
+    ,"invest withdraw"
+    ,"salary sweep"
+  ]
+}

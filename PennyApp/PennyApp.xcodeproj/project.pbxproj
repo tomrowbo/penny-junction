@@ -1,0 +1,692 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		221B622295DFD7783989EEF3 /* TransactionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ADB583E98BFD52C03F2BE5 /* TransactionDetailView.swift */; };
+		28220124A007657AA332704F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A22B921936CE1C4E2FDF702 /* LoginView.swift */; };
+		3159F75FB6EB93B143A42760 /* PennyChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752B53B2BA60A0B2A0A068B6 /* PennyChatService.swift */; };
+		3259D2F6DB1323AD45A1A787 /* SBankDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAC15EDB8657C8564F616F7 /* SBankDataService.swift */; };
+		37E5E2CC3FD4AFD5BD615734 /* SBankHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D47F58750A51549C08A272 /* SBankHomeView.swift */; };
+		43664961B1736A8B46C5D576 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98453F3F72F8C3C463C7782 /* AppStore.swift */; };
+		43ADF31FE0B4FC3374F7901A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E40D847C7B7078123406DA /* Models.swift */; };
+		4450269BAC941E0BD205F3BE /* DemoOpenBankingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B391D83C8ECBD4F72C3296 /* DemoOpenBankingService.swift */; };
+		4C96700D34A88682D7AD62A3 /* SEtukorttiDemoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392CB5D1B2203AB0511B15EC /* SEtukorttiDemoContent.swift */; };
+		62F1DA604FE7F5750111F76F /* PennyAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2ACB5F2741BC306EF9EF8C /* PennyAppUITests.swift */; };
+		68903DC8D224D2CA35C7630F /* SMobiiliChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AD8E35138B9471C77E8324 /* SMobiiliChrome.swift */; };
+		69911531E4DD3AE0100029E8 /* ReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF36B4302D29318F784400F1 /* ReceiptView.swift */; };
+		705FD066C54F1FB4AA84DFD8 /* BrandComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C047E5126BF6C49E8C55A7CB /* BrandComponents.swift */; };
+		7C751FDE6E879DB6E389FFE0 /* ConnectBankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4994BA41F06AB7A63C801943 /* ConnectBankView.swift */; };
+		7D9EEB7B6D262190AD7BB056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FEEC4CC8DF48A191B7036FA /* Assets.xcassets */; };
+		7F768763A3296431F3B532A7 /* SMobiiliDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BD607F35FE4178EE1319A8 /* SMobiiliDesignSystem.swift */; };
+		8EF442CE0B8FAC8A3B92B08D /* PennyCoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D91CEEB879734A3D89D006 /* PennyCoachView.swift */; };
+		91D803F54349C92EB8D847BB /* WalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8A72B88960BE37CEE9498A /* WalletView.swift */; };
+		94FD1172488559C6F70F335C /* SEtukorttiHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BBF6BD1A4F1740E16B70C6 /* SEtukorttiHomeView.swift */; };
+		A2D08DA5D66F58096FC9B624 /* SMobiiliBankContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A890DDED940EFEB7DA50CC3C /* SMobiiliBankContent.swift */; };
+		A88B4DDCA46728DC9964D4DA /* DomainModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B21CD9DB2C5C21AB8AB5DA /* DomainModelTests.swift */; };
+		AEBE869CCFF02B4587EC256D /* AppStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA45FEADD5C9E27BD05756F /* AppStoreTests.swift */; };
+		B1252E45B1858E8B31D52B52 /* BankOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AAE99B3EF086F37988ECA9 /* BankOverviewView.swift */; };
+		BB885023B88DE6AB171F0623 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9ADA8C99562B8549ED2112 /* DemoData.swift */; };
+		BC7321C3C18A3DB2F3FAA67A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DD75E2E45B5E7F219AF97E /* Theme.swift */; };
+		CD556071145B8C1D27FE9A5E /* EnableBankingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED78D5CF042F0139228B38A3 /* EnableBankingService.swift */; };
+		D0B0A2629AFAA96E625248F1 /* SaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A951086A908AE2DD80F4094 /* SaverView.swift */; };
+		E54CF21571BB279E29EFC083 /* MeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B47CC2AF61571F9B7133BD1 /* MeView.swift */; };
+		F9F227FB3FF27EC17690131F /* OpenBankingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB82F7BB8C6B2C585C8AABA3 /* OpenBankingService.swift */; };
+		FD594BB2CE08B01421A05F63 /* PennyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744E2323E7FE5DF284C2349B /* PennyApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B95E32BB928A117FE44D6D9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D7D87DAB1E7391C828805232 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 964D1BCFEBFC8A3388825CDC;
+			remoteInfo = PennyApp;
+		};
+		C98917BAD7FE2759E14ECB58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D7D87DAB1E7391C828805232 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 964D1BCFEBFC8A3388825CDC;
+			remoteInfo = PennyApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		06BD607F35FE4178EE1319A8 /* SMobiiliDesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMobiiliDesignSystem.swift; sourceTree = "<group>"; };
+		0FEEC4CC8DF48A191B7036FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1AA45FEADD5C9E27BD05756F /* AppStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreTests.swift; sourceTree = "<group>"; };
+		1EAC15EDB8657C8564F616F7 /* SBankDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBankDataService.swift; sourceTree = "<group>"; };
+		392CB5D1B2203AB0511B15EC /* SEtukorttiDemoContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SEtukorttiDemoContent.swift; sourceTree = "<group>"; };
+		43D47F58750A51549C08A272 /* SBankHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBankHomeView.swift; sourceTree = "<group>"; };
+		4994BA41F06AB7A63C801943 /* ConnectBankView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectBankView.swift; sourceTree = "<group>"; };
+		56AD8E35138B9471C77E8324 /* SMobiiliChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMobiiliChrome.swift; sourceTree = "<group>"; };
+		59BBF6BD1A4F1740E16B70C6 /* SEtukorttiHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SEtukorttiHomeView.swift; sourceTree = "<group>"; };
+		5A22B921936CE1C4E2FDF702 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		5B47CC2AF61571F9B7133BD1 /* MeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeView.swift; sourceTree = "<group>"; };
+		5B99E4EE772813287F6939C9 /* PennyAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PennyAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		66DD75E2E45B5E7F219AF97E /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		68D91CEEB879734A3D89D006 /* PennyCoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyCoachView.swift; sourceTree = "<group>"; };
+		744E2323E7FE5DF284C2349B /* PennyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyApp.swift; sourceTree = "<group>"; };
+		752B53B2BA60A0B2A0A068B6 /* PennyChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyChatService.swift; sourceTree = "<group>"; };
+		7A951086A908AE2DD80F4094 /* SaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaverView.swift; sourceTree = "<group>"; };
+		7E2ACB5F2741BC306EF9EF8C /* PennyAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyAppUITests.swift; sourceTree = "<group>"; };
+		80E40D847C7B7078123406DA /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		8750B6F69C9E654D23350F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		88B391D83C8ECBD4F72C3296 /* DemoOpenBankingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoOpenBankingService.swift; sourceTree = "<group>"; };
+		8E8A72B88960BE37CEE9498A /* WalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletView.swift; sourceTree = "<group>"; };
+		90B21CD9DB2C5C21AB8AB5DA /* DomainModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModelTests.swift; sourceTree = "<group>"; };
+		A890DDED940EFEB7DA50CC3C /* SMobiiliBankContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMobiiliBankContent.swift; sourceTree = "<group>"; };
+		AF36B4302D29318F784400F1 /* ReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptView.swift; sourceTree = "<group>"; };
+		AF9ADA8C99562B8549ED2112 /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
+		B1ADB583E98BFD52C03F2BE5 /* TransactionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailView.swift; sourceTree = "<group>"; };
+		B7AAE99B3EF086F37988ECA9 /* BankOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankOverviewView.swift; sourceTree = "<group>"; };
+		BB82F7BB8C6B2C585C8AABA3 /* OpenBankingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenBankingService.swift; sourceTree = "<group>"; };
+		C047E5126BF6C49E8C55A7CB /* BrandComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandComponents.swift; sourceTree = "<group>"; };
+		C44C9B272DB450E9BD7E86BD /* PennyAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PennyAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E40892AC690145920DA6B913 /* PennyApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PennyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED78D5CF042F0139228B38A3 /* EnableBankingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableBankingService.swift; sourceTree = "<group>"; };
+		F98453F3F72F8C3C463C7782 /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0B76802E4646B3D64779B4BB /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				B0A79EDB4BBCF0DEE18DDDBF /* Bank */,
+				A10B9CE00D65A3E2503A37FB /* Card */,
+				62A0C4B3590CEAD71B243E49 /* Login */,
+				F1C249C3A4F5C3509891DB95 /* OpenBanking */,
+				3ECB99B4AE337B700C1703F7 /* Penny */,
+				29223D5373E39B096DE5B270 /* Profile */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		29223D5373E39B096DE5B270 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				5B47CC2AF61571F9B7133BD1 /* MeView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		3ECB99B4AE337B700C1703F7 /* Penny */ = {
+			isa = PBXGroup;
+			children = (
+				68D91CEEB879734A3D89D006 /* PennyCoachView.swift */,
+			);
+			path = Penny;
+			sourceTree = "<group>";
+		};
+		53C1D2D4F09396F9998685DC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E40892AC690145920DA6B913 /* PennyApp.app */,
+				C44C9B272DB450E9BD7E86BD /* PennyAppTests.xctest */,
+				5B99E4EE772813287F6939C9 /* PennyAppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		597017F76BCD24347C45D632 = {
+			isa = PBXGroup;
+			children = (
+				98FFF3C86C0E0032DEEE1A41 /* PennyApp */,
+				6295FCCDA4811F8D2837D34F /* PennyAppTests */,
+				76F1A34DC6AF6D71EB8426AD /* PennyAppUITests */,
+				53C1D2D4F09396F9998685DC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6295FCCDA4811F8D2837D34F /* PennyAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				1AA45FEADD5C9E27BD05756F /* AppStoreTests.swift */,
+				90B21CD9DB2C5C21AB8AB5DA /* DomainModelTests.swift */,
+			);
+			path = PennyAppTests;
+			sourceTree = "<group>";
+		};
+		62A0C4B3590CEAD71B243E49 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				5A22B921936CE1C4E2FDF702 /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		76F1A34DC6AF6D71EB8426AD /* PennyAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				7E2ACB5F2741BC306EF9EF8C /* PennyAppUITests.swift */,
+			);
+			path = PennyAppUITests;
+			sourceTree = "<group>";
+		};
+		939434125668A7B55ED7AEB2 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				AF9ADA8C99562B8549ED2112 /* DemoData.swift */,
+				80E40D847C7B7078123406DA /* Models.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		98FFF3C86C0E0032DEEE1A41 /* PennyApp */ = {
+			isa = PBXGroup;
+			children = (
+				F98453F3F72F8C3C463C7782 /* AppStore.swift */,
+				0FEEC4CC8DF48A191B7036FA /* Assets.xcassets */,
+				8750B6F69C9E654D23350F48 /* Info.plist */,
+				744E2323E7FE5DF284C2349B /* PennyApp.swift */,
+				FEF003E81BBBB53848D31456 /* Design */,
+				939434125668A7B55ED7AEB2 /* Domain */,
+				0B76802E4646B3D64779B4BB /* Features */,
+				B48C82F921DB37A0FDF95EFD /* Services */,
+				A18D1EB75CE743459C45EEF1 /* Shared */,
+			);
+			path = PennyApp;
+			sourceTree = "<group>";
+		};
+		A10B9CE00D65A3E2503A37FB /* Card */ = {
+			isa = PBXGroup;
+			children = (
+				AF36B4302D29318F784400F1 /* ReceiptView.swift */,
+				392CB5D1B2203AB0511B15EC /* SEtukorttiDemoContent.swift */,
+				59BBF6BD1A4F1740E16B70C6 /* SEtukorttiHomeView.swift */,
+				8E8A72B88960BE37CEE9498A /* WalletView.swift */,
+			);
+			path = Card;
+			sourceTree = "<group>";
+		};
+		A18D1EB75CE743459C45EEF1 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C047E5126BF6C49E8C55A7CB /* BrandComponents.swift */,
+				56AD8E35138B9471C77E8324 /* SMobiiliChrome.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		B0A79EDB4BBCF0DEE18DDDBF /* Bank */ = {
+			isa = PBXGroup;
+			children = (
+				B7AAE99B3EF086F37988ECA9 /* BankOverviewView.swift */,
+				7A951086A908AE2DD80F4094 /* SaverView.swift */,
+				43D47F58750A51549C08A272 /* SBankHomeView.swift */,
+				A890DDED940EFEB7DA50CC3C /* SMobiiliBankContent.swift */,
+				B1ADB583E98BFD52C03F2BE5 /* TransactionDetailView.swift */,
+			);
+			path = Bank;
+			sourceTree = "<group>";
+		};
+		B48C82F921DB37A0FDF95EFD /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				88B391D83C8ECBD4F72C3296 /* DemoOpenBankingService.swift */,
+				ED78D5CF042F0139228B38A3 /* EnableBankingService.swift */,
+				BB82F7BB8C6B2C585C8AABA3 /* OpenBankingService.swift */,
+				752B53B2BA60A0B2A0A068B6 /* PennyChatService.swift */,
+				1EAC15EDB8657C8564F616F7 /* SBankDataService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		F1C249C3A4F5C3509891DB95 /* OpenBanking */ = {
+			isa = PBXGroup;
+			children = (
+				4994BA41F06AB7A63C801943 /* ConnectBankView.swift */,
+			);
+			path = OpenBanking;
+			sourceTree = "<group>";
+		};
+		FEF003E81BBBB53848D31456 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				06BD607F35FE4178EE1319A8 /* SMobiiliDesignSystem.swift */,
+				66DD75E2E45B5E7F219AF97E /* Theme.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		897E0E087B2193C97645E9A3 /* PennyAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC98319E43A1400805C02C0B /* Build configuration list for PBXNativeTarget "PennyAppUITests" */;
+			buildPhases = (
+				85A9464DF20D237E9C859FEA /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5BE4E1C8D96476879EC4A370 /* PBXTargetDependency */,
+			);
+			name = PennyAppUITests;
+			productName = PennyAppUITests;
+			productReference = 5B99E4EE772813287F6939C9 /* PennyAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		964D1BCFEBFC8A3388825CDC /* PennyApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E9F54D5AC241932E2B9DFBE7 /* Build configuration list for PBXNativeTarget "PennyApp" */;
+			buildPhases = (
+				4F2AF18D0FDA63C6CAE58AF3 /* Sources */,
+				9E63767C45B194C6C8907791 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PennyApp;
+			productName = PennyApp;
+			productReference = E40892AC690145920DA6B913 /* PennyApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A7000115A5F4F86B9E935DA9 /* PennyAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E430349DA9B581DC5E78DF37 /* Build configuration list for PBXNativeTarget "PennyAppTests" */;
+			buildPhases = (
+				78B30B3FC4BB936E19F4EA5D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6C798CDC0191C00B7B6D1072 /* PBXTargetDependency */,
+			);
+			name = PennyAppTests;
+			productName = PennyAppTests;
+			productReference = C44C9B272DB450E9BD7E86BD /* PennyAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D7D87DAB1E7391C828805232 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					897E0E087B2193C97645E9A3 = {
+						TestTargetID = 964D1BCFEBFC8A3388825CDC;
+					};
+					964D1BCFEBFC8A3388825CDC = {
+						DevelopmentTeam = X9YTM22ZL7;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2654AD8B4CC45BF6E8F4A949 /* Build configuration list for PBXProject "PennyApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 597017F76BCD24347C45D632;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				964D1BCFEBFC8A3388825CDC /* PennyApp */,
+				A7000115A5F4F86B9E935DA9 /* PennyAppTests */,
+				897E0E087B2193C97645E9A3 /* PennyAppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9E63767C45B194C6C8907791 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D9EEB7B6D262190AD7BB056 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4F2AF18D0FDA63C6CAE58AF3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43664961B1736A8B46C5D576 /* AppStore.swift in Sources */,
+				B1252E45B1858E8B31D52B52 /* BankOverviewView.swift in Sources */,
+				705FD066C54F1FB4AA84DFD8 /* BrandComponents.swift in Sources */,
+				7C751FDE6E879DB6E389FFE0 /* ConnectBankView.swift in Sources */,
+				BB885023B88DE6AB171F0623 /* DemoData.swift in Sources */,
+				4450269BAC941E0BD205F3BE /* DemoOpenBankingService.swift in Sources */,
+				CD556071145B8C1D27FE9A5E /* EnableBankingService.swift in Sources */,
+				28220124A007657AA332704F /* LoginView.swift in Sources */,
+				E54CF21571BB279E29EFC083 /* MeView.swift in Sources */,
+				43ADF31FE0B4FC3374F7901A /* Models.swift in Sources */,
+				F9F227FB3FF27EC17690131F /* OpenBankingService.swift in Sources */,
+				FD594BB2CE08B01421A05F63 /* PennyApp.swift in Sources */,
+				3159F75FB6EB93B143A42760 /* PennyChatService.swift in Sources */,
+				8EF442CE0B8FAC8A3B92B08D /* PennyCoachView.swift in Sources */,
+				69911531E4DD3AE0100029E8 /* ReceiptView.swift in Sources */,
+				3259D2F6DB1323AD45A1A787 /* SBankDataService.swift in Sources */,
+				37E5E2CC3FD4AFD5BD615734 /* SBankHomeView.swift in Sources */,
+				4C96700D34A88682D7AD62A3 /* SEtukorttiDemoContent.swift in Sources */,
+				94FD1172488559C6F70F335C /* SEtukorttiHomeView.swift in Sources */,
+				A2D08DA5D66F58096FC9B624 /* SMobiiliBankContent.swift in Sources */,
+				68903DC8D224D2CA35C7630F /* SMobiiliChrome.swift in Sources */,
+				7F768763A3296431F3B532A7 /* SMobiiliDesignSystem.swift in Sources */,
+				D0B0A2629AFAA96E625248F1 /* SaverView.swift in Sources */,
+				BC7321C3C18A3DB2F3FAA67A /* Theme.swift in Sources */,
+				221B622295DFD7783989EEF3 /* TransactionDetailView.swift in Sources */,
+				91D803F54349C92EB8D847BB /* WalletView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78B30B3FC4BB936E19F4EA5D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AEBE869CCFF02B4587EC256D /* AppStoreTests.swift in Sources */,
+				A88B4DDCA46728DC9964D4DA /* DomainModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85A9464DF20D237E9C859FEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62F1DA604FE7F5750111F76F /* PennyAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5BE4E1C8D96476879EC4A370 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 964D1BCFEBFC8A3388825CDC /* PennyApp */;
+			targetProxy = B95E32BB928A117FE44D6D9C /* PBXContainerItemProxy */;
+		};
+		6C798CDC0191C00B7B6D1072 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 964D1BCFEBFC8A3388825CDC /* PennyApp */;
+			targetProxy = C98917BAD7FE2759E14ECB58 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		08A2AF43A279A71DAF0DFD29 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PennyApp.app/PennyApp";
+			};
+			name = Debug;
+		};
+		1AE1D01FA407D2C497924042 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		33484BB2075982210AC6BE9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		4F5F1C1DE75B76A6400C0ED0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PennyApp;
+			};
+			name = Debug;
+		};
+		8EA3E7615304CBA0FB5B56D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PennyApp.app/PennyApp";
+			};
+			name = Release;
+		};
+		C177AB20A12B4D0638E6C69B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = X9YTM22ZL7;
+				INFOPLIST_FILE = PennyApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PENNY_API_BASE_URL = "http://Toms-MacBook-Pro-8.local:3000";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		C96DB7D7A6F867B834C23306 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = X9YTM22ZL7;
+				INFOPLIST_FILE = PennyApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PENNY_API_BASE_URL = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		E922EB7D100825B57CA76961 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PennyApp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2654AD8B4CC45BF6E8F4A949 /* Build configuration list for PBXProject "PennyApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AE1D01FA407D2C497924042 /* Debug */,
+				33484BB2075982210AC6BE9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CC98319E43A1400805C02C0B /* Build configuration list for PBXNativeTarget "PennyAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F5F1C1DE75B76A6400C0ED0 /* Debug */,
+				E922EB7D100825B57CA76961 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E430349DA9B581DC5E78DF37 /* Build configuration list for PBXNativeTarget "PennyAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				08A2AF43A279A71DAF0DFD29 /* Debug */,
+				8EA3E7615304CBA0FB5B56D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E9F54D5AC241932E2B9DFBE7 /* Build configuration list for PBXNativeTarget "PennyApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C177AB20A12B4D0638E6C69B /* Debug */,
+				C96DB7D7A6F867B834C23306 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D7D87DAB1E7391C828805232 /* Project object */;
+}
