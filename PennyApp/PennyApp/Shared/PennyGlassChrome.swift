@@ -101,9 +101,7 @@ struct PennyRootHeader: View {
             Button {
                 showsProfile = true
             } label: {
-                PennyMark(size: 34)
-                    .padding(4)
-                    .background(Color.white.opacity(0.92), in: Circle())
+                ProfileAvatar(size: 38)
                     .frame(width: 48, height: 48)
             }
             .buttonStyle(.plain)
@@ -112,5 +110,21 @@ struct PennyRootHeader: View {
         .sheet(isPresented: $showsProfile) {
             MeView()
         }
+    }
+}
+
+struct ProfileAvatar: View {
+    var size: CGFloat
+
+    var body: some View {
+        Image("ProfileAvatar")
+            .renderingMode(.original)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size, height: size)
+            .padding(4)
+            .background(Color.white.opacity(0.94), in: Circle())
+            .overlay { Circle().strokeBorder(Color.black.opacity(0.08), lineWidth: 0.75) }
+            .accessibilityHidden(true)
     }
 }

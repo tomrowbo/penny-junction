@@ -12,6 +12,7 @@ enum PennyProfileContent {
 
 struct MeView: View {
     @Environment(AppStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
     @State private var showsResetGoalsConfirmation = false
 
     var body: some View {
@@ -49,7 +50,7 @@ struct MeView: View {
     private var identityCard: some View {
         BrandCard {
             HStack(spacing: 14) {
-                PennyMark(size: 58)
+                ProfileAvatar(size: 58)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(PennyProfileContent.customerName)
                         .font(.headline)
@@ -100,6 +101,14 @@ struct MeView: View {
                 showsResetGoalsConfirmation = true
             } label: {
                 Label("Reset goals", systemImage: "arrow.counterclockwise")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            Divider()
+            Button(role: .destructive) {
+                dismiss()
+                store.isAuthenticated = false
+            } label: {
+                Label("Log out", systemImage: "rectangle.portrait.and.arrow.right")
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
