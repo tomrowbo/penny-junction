@@ -80,7 +80,7 @@ const simulationResult = z.object({
 
 export function buildCategoryVisualization(result: z.infer<typeof categoriesResult>, referenceID: string): PennyVisualization {
   return barVisual(referenceID, "Spending by category", "Actual spending in the selected period.", { period: result.coverage, institutions: result.institutions },
-    result.categories.map((item, index) => ({ id: `category-${index}`, label: item.category, value: item.total })));
+    result.categories.slice(0, 5).map((item, index) => ({ id: `category-${index}`, label: item.category, value: item.total })));
 }
 
 export function buildBasketVisualization(result: z.infer<typeof basketsResult>, referenceID: string): PennyVisualization {
@@ -99,7 +99,7 @@ export function buildComparisonVisualization(result: z.infer<typeof comparisonRe
 export function buildSafeToSpendVisualization(result: z.infer<typeof safeResult>, referenceID: string): PennyVisualization {
   const rows = [
     { id: "spend", cells: [`Safe to spend · ${result.horizonDays} days`, eur(result.safeToSpend)], referenceIDs: [referenceID] },
-    { id: "reserved", cells: ["Reserved commitments", eur(result.protectedBalance)], referenceIDs: [referenceID] },
+    { id: "reserved", cells: ["Kept aside for unexpected costs", eur(result.protectedBalance)], referenceIDs: [referenceID] },
     { id: "save", cells: ["Safe to save · monthly", eur(result.safeToSavePerMonth)], referenceIDs: [referenceID] },
   ];
   const caption = `Estimate · ${result.confidence} confidence. Historical coverage is shown below. ${result.assumptions.join(" ")}`.trim();

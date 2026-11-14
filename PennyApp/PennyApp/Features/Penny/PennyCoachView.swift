@@ -566,7 +566,7 @@ struct PennyChatView: View {
                     context: thread.context
                 )
                 showsThinking = false
-                let chunks = PennyReplyChunker.chunks(from: reply.message)
+                let chunks = PennyReplyChunker.chunks(from: reply.message, maxChunks: 2)
                 for (index, chunk) in chunks.enumerated() {
                     if index > 0 { try? await Task.sleep(for: .milliseconds(240)) }
                     let isLast = index == chunks.count - 1
