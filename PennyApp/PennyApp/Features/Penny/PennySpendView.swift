@@ -10,9 +10,8 @@ struct PennySpendView: View {
                 PennyAtmosphere()
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 24) {
-                        PennyRootHeader(title: "Spend", subtitle: "A clear view of what is available now.")
+                        PennyRootHeader(title: "Hi \(PennyProfileContent.customerName)", subtitle: "Here’s what your money can do today.")
                         SafeToSpendCard(result: store.safeToSpend)
-                        balanceSummary
                         accounts
                         recentTransactions
                     }
@@ -31,22 +30,6 @@ struct PennySpendView: View {
         }
     }
 
-    private var balanceSummary: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Across your accounts")
-                .font(.headline)
-                .foregroundStyle(PennyTheme.textSecondary)
-            Text(store.totalPositiveBalance.euroCurrency)
-                .font(.system(.largeTitle, weight: .bold))
-                .monospacedDigit()
-                .foregroundStyle(PennyTheme.textPrimary)
-            Text(store.hasConnectedExternalBank ? "Connected view across your banks" : "S-Bank accounts only")
-                .font(.subheadline)
-                .foregroundStyle(PennyTheme.textSecondary)
-        }
-        .accessibilityElement(children: .combine)
-    }
-
     private var accounts: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -62,7 +45,7 @@ struct PennySpendView: View {
             VStack(spacing: 0) {
                 ForEach(store.accounts) { account in
                     HStack(spacing: 12) {
-                        InstitutionBadge(institution: account.institution, size: 36)
+                        InstitutionBadge(institution: account.institution, size: 46)
                         VStack(alignment: .leading, spacing: 3) {
                             Text(account.name).font(.subheadline.weight(.semibold))
                             Text("\(account.institution.rawValue) · \(account.maskedNumber)")
@@ -75,9 +58,10 @@ struct PennySpendView: View {
                             .monospacedDigit()
                     }
                     .padding(.horizontal, 16)
-                    .frame(minHeight: 66)
+                    .padding(.vertical, 12)
+                    .frame(minHeight: 74)
                     if account.id != store.accounts.last?.id {
-                        Divider().overlay(Color.black.opacity(0.08)).padding(.leading, 64)
+                        Divider().overlay(Color.black.opacity(0.08)).padding(.leading, 74)
                     }
                 }
             }
