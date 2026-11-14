@@ -201,6 +201,27 @@ export function selectedContextInstructions(context: ChatRequest["selectedContex
   ];
 }
 
+export function goalPlanInstructions(goals: ChatRequest["goals"]): string[] {
+  const suppliedGoals = goals ?? [];
+  const unfinished = suppliedGoals.filter((goal) => goal.currentAmount < goal.targetAmount);
+  const facts = {
+    totalMonthlyTarget: unfinished.reduce((total, goal) => total + goal.monthlyContribution, 0),
+    goals: suppliedGoals.map((goal) => ({
+      title: redactPII(goal.title),
+      targetAmount: goal.targetAmount,
+      currentAmount: goal.currentAmount,
+      targetDate: goal.targetDate,
+      monthlyContribution: goal.monthlyContribution,
+      completed: goal.currentAmount >= goal.targetAmount,
+    })),
+  };
+  return [
+    "Goal plans are user-entered planning data, not verified balances, reserved funds or completed transfers.",
+    "Use analytical tools for bank-derived facts. The deterministic goal facts below may be quoted directly.",
+    `Goal planning facts (JSON): ${JSON.stringify(facts)}`,
+  ];
+}
+
 export async function runCoachWithTools(request: ChatRequest, analytics: ChallengeAnalytics, model: CoachModel): Promise<PennyChatResponse> {
   const coverage = analytics.dataCoverage();
   const instructions = [
@@ -213,6 +234,7 @@ export async function runCoachWithTools(request: ChatRequest, analytics: Challen
     "Do not request names, account numbers or other direct identifiers.",
     `The synthetic dataset anchor is ${coverage.to}; interpret relative dates from that anchor, not today's date.`,
     `Current goal: ${redactPII(request.goal)}`,
+    ...goalPlanInstructions(request.goals),
     ...selectedContextInstructions(request.selectedContext),
   ].join("\n");
   let input: unknown = request.messages.map((message) => ({ role: message.role, content: redactPII(message.text) }));

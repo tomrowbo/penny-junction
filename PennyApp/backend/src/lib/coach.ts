@@ -5,7 +5,7 @@ import { analyzeFinances } from "./finance-engine";
 import { redactPII } from "./privacy";
 import { existsSync } from "node:fs";
 import { ChallengeAnalytics } from "./challenge-analytics";
-import { runCoachWithTools, selectedContextInstructions, type CoachModel, type PennyChatResponse } from "./coach-tools";
+import { goalPlanInstructions, runCoachWithTools, selectedContextInstructions, type CoachModel, type PennyChatResponse } from "./coach-tools";
 import { SBankRepository } from "./sbank-repository";
 
 const accountSchema = z.object({
@@ -43,6 +43,15 @@ const selectedContextSchema = z.object({
   suggestedPrompts: z.array(z.string().min(1).max(300)).max(2),
 }).strict();
 
+const goalPlanSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string().min(1).max(200),
+  targetAmount: z.number().nonnegative(),
+  currentAmount: z.number().nonnegative(),
+  targetDate: z.string().max(100),
+  monthlyContribution: z.number().nonnegative(),
+}).strict();
+
 export const chatRequestSchema = z.object({
   goal: z.string().min(1).max(300),
   messages: z.array(z.object({
@@ -51,10 +60,12 @@ export const chatRequestSchema = z.object({
   })).min(1).max(30),
   financialData: financialSnapshotSchema,
   selectedContext: selectedContextSchema.optional(),
+  goals: z.array(goalPlanSchema).max(50).default([]),
 });
 
 export type FinancialSnapshot = z.infer<typeof financialSnapshotSchema>;
-export type ChatRequest = z.infer<typeof chatRequestSchema>;
+type ParsedChatRequest = z.infer<typeof chatRequestSchema>;
+export type ChatRequest = Omit<ParsedChatRequest, "goals"> & { goals?: ParsedChatRequest["goals"] };
 
 export function buildFinancialContext(snapshot: FinancialSnapshot): FinancialSnapshot {
   return {
@@ -86,6 +97,7 @@ export function buildCoachModelInput(request: ChatRequest) {
       "Safe-to-spend and safe-to-save are educational estimates, not guarantees or regulated investment advice.",
       "The supplied facts are minimized aggregates. Do not ask for or infer names, account numbers, or other direct identifiers.",
       `Current goal: ${redactPII(request.goal)}`,
+      ...goalPlanInstructions(request.goals),
       ...selectedContextInstructions(request.selectedContext),
       `Calculated financial facts (JSON): ${JSON.stringify(analysis)}`,
     ].join("\n"),

@@ -8,10 +8,11 @@ struct PennyChatService: Sendable {
         messages: [PennyChatMessage],
         accounts: [BankAccount],
         transactions: [BankTransaction],
+        goals: [PennyGoalPlan] = [],
         context: PennyChatContext? = nil
     ) async throws -> PennyChatReply {
         let request = try makeRequest(goal: goal, messages: messages, accounts: accounts,
-                                      transactions: transactions, context: context)
+                                      transactions: transactions, goals: goals, context: context)
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw PennyChatError.invalidResponse }
         guard (200..<300).contains(http.statusCode) else {
@@ -29,6 +30,7 @@ struct PennyChatService: Sendable {
         messages: [PennyChatMessage],
         accounts: [BankAccount],
         transactions: [BankTransaction],
+        goals: [PennyGoalPlan] = [],
         context: PennyChatContext?
     ) throws -> URLRequest {
         var request = URLRequest(url: baseURL.appending(path: "api/chat"))
@@ -44,7 +46,8 @@ struct PennyChatService: Sendable {
                 ChatMessage(role: $0.role == .user ? "user" : "assistant", text: String($0.text.prefix(4_000)))
             },
             financialData: FinancialData(accounts: limitedAccounts, transactions: limitedTransactions),
-            selectedContext: context
+            selectedContext: context,
+            goals: Array(goals.prefix(50)).map(GoalPlan.init)
         )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -58,6 +61,7 @@ struct PennyChatService: Sendable {
         let messages: [ChatMessage]
         let financialData: FinancialData
         let selectedContext: PennyChatContext?
+        let goals: [GoalPlan]
     }
 
     private struct ChatMessage: Encodable {
@@ -68,6 +72,24 @@ struct PennyChatService: Sendable {
     private struct FinancialData: Encodable {
         let accounts: [BankAccount]
         let transactions: [BankTransaction]
+    }
+
+    private struct GoalPlan: Encodable {
+        let id: UUID
+        let title: String
+        let targetAmount: Decimal
+        let currentAmount: Decimal
+        let targetDate: Date
+        let monthlyContribution: Decimal
+
+        init(_ plan: PennyGoalPlan) {
+            id = plan.id
+            title = plan.title
+            targetAmount = plan.targetAmount
+            currentAmount = plan.currentAmount
+            targetDate = plan.targetDate
+            monthlyContribution = plan.monthlyContribution
+        }
     }
 
     private struct APIError: Decodable { let error: String }

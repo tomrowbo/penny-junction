@@ -596,6 +596,7 @@ struct PennyChatView: View {
                     messages: conversation,
                     accounts: store.accounts,
                     transactions: store.transactions,
+                    goals: store.goalPlans,
                     context: thread.context
                 )
                 showsThinking = false
