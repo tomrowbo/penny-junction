@@ -84,7 +84,7 @@ struct PennyChatService: Sendable {
 
         init(_ plan: PennyGoalPlan) {
             id = plan.id
-            title = plan.title
+            title = String(plan.title.prefix(200))
             targetAmount = plan.targetAmount
             currentAmount = plan.currentAmount
             targetDate = plan.targetDate

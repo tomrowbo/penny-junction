@@ -318,7 +318,7 @@ final class AppStore {
             guard let goal = goalPlans.first(where: { $0.id == id }) else { return nil }
             return chatContext(type: .goal, referenceID: goal.id.uuidString, title: goal.title,
                 subtitle: "\(goal.currentAmount.euroCurrency) saved of \(goal.targetAmount.euroCurrency) · \(goal.monthlyContribution.euroCurrency)/month · Target \(chatDate(goal.targetDate))",
-                accountIDs: goal.accountIDs, transactionIDs: [],
+                accountIDs: [], transactionIDs: [],
                 prompts: ["Help me review this goal", "What could I change in my saving plan?"])
         case .upcoming(let id):
             guard let item = upcomingMoney.items.first(where: { $0.id == id }) else { return nil }

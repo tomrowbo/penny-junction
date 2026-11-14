@@ -82,7 +82,7 @@ struct PennyPlanView: View {
             guard let month = calendar.date(byAdding: .month, value: -offset, to: referenceMonth),
                   let interval = calendar.dateInterval(of: .month, for: month) else { return nil }
             let net = store.transactions
-                .filter { interval.contains($0.date) }
+                .filter { $0.date >= interval.start && $0.date < interval.end }
                 .reduce(Decimal.zero) { $0 + $1.amount }
             return MonthlySavingsPoint(month: month, amount: net)
         }
