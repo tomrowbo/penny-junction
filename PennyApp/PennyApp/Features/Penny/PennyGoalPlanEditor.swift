@@ -8,6 +8,11 @@ struct PennyGoalPlanEditor: View {
     @State private var monthlyContribution: String
     @State private var targetDate: Date
     @State private var attemptedSave = false
+    @FocusState private var focusedField: Field?
+
+    private enum Field: Hashable {
+        case name, target, saved, monthly
+    }
 
     private let originalPlan: PennyGoalPlan?
     private let asOf: Date
@@ -27,61 +32,132 @@ struct PennyGoalPlanEditor: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Your goal") {
-                    TextField("Goal name", text: $title)
-                        .textInputAutocapitalization(.sentences)
-                        .accessibilityLabel("Goal name")
-                    amountField("Target amount", text: $targetAmount)
-                    DatePicker("Target date", selection: $targetDate, displayedComponents: .date)
-                }
-                Section {
-                    amountField("Already saved", text: $currentAmount)
-                    amountField("Monthly contribution", text: $monthlyContribution)
-                } header: {
-                    Text("Your saving plan")
-                } footer: {
-                    Text("Enter amounts in euros, with up to two decimal places. Choose how much you plan to set aside each month.")
-                }
-                if attemptedSave, let validationMessage {
-                    Section {
+            ScrollView {
+                VStack(spacing: 20) {
+                    Image(systemName: goalSymbol)
+                        .font(.system(size: 30, weight: .semibold))
+                        .foregroundStyle(PennyTheme.forest)
+                        .frame(width: 64, height: 64)
+                        .background(Color(red: 1, green: 0.84, blue: 0.40), in: RoundedRectangle(cornerRadius: 21))
+                        .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Goal").font(.headline)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Name")
+                                .font(.caption)
+                                .foregroundStyle(PennyTheme.textSecondary)
+                            TextField("What are you saving for?", text: $title)
+                                .font(.title3.weight(.semibold))
+                                .textInputAutocapitalization(.sentences)
+                                .focused($focusedField, equals: .name)
+                                .submitLabel(.done)
+                                .onSubmit { focusedField = nil }
+                                .accessibilityLabel("Goal name")
+                        }
+                        Divider()
+                        amountField("Target amount", text: $targetAmount, field: .target)
+                        Divider()
+                        DatePicker("Target date", selection: $targetDate, displayedComponents: .date)
+                            .font(.subheadline)
+                            .datePickerStyle(.compact)
+                    }
+                    .padding(20)
+                    .pennyGlassSurface(cornerRadius: 24)
+
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Your plan").font(.headline)
+                        HStack(alignment: .top, spacing: 18) {
+                            amountField("Already saved", text: $currentAmount, field: .saved)
+                            Rectangle()
+                                .fill(PennyTheme.textSecondary.opacity(0.18))
+                                .frame(width: 1, height: 52)
+                            amountField("Per month", text: $monthlyContribution, field: .monthly)
+                        }
+                    }
+                    .padding(20)
+                    .pennyGlassSurface(cornerRadius: 24)
+
+                    if attemptedSave, let validationMessage {
                         Label(validationMessage, systemImage: "exclamationmark.circle")
                             .font(.subheadline)
                             .foregroundStyle(.red)
                             .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(14)
+                            .background(Color.red.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
                             .accessibilityIdentifier("goalPlanValidationError")
                     }
+
+                    Button(action: save) {
+                        Text(originalPlan == nil ? "Create goal" : "Save changes")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, minHeight: 54)
+                            .background(PennyTheme.forest, in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Save goal")
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 28)
+                .foregroundStyle(PennyTheme.textPrimary)
             }
-            .scrollContentBackground(.hidden)
+            .scrollDismissesKeyboard(.interactively)
             .background(PennyAtmosphere())
             .navigationTitle(originalPlan == nil ? "Create goal" : "Edit goal")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                        .frame(minWidth: SMobiiliMetrics.minimumTapTarget, minHeight: SMobiiliMetrics.minimumTapTarget)
+                    Button { dismiss() } label: {
+                        Text("Cancel")
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(PennyTheme.textPrimary)
+                            .fixedSize()
+                            .frame(minWidth: 64, minHeight: 44)
+                    }
+                    .buttonStyle(.plain)
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", action: save)
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { focusedField = nil }
                         .fontWeight(.semibold)
-                        .frame(minWidth: SMobiiliMetrics.minimumTapTarget, minHeight: SMobiiliMetrics.minimumTapTarget)
-                        .accessibilityLabel("Save goal")
                 }
             }
-            .tint(SMobiiliPalette.green)
+            .toolbarBackground(Color.white.opacity(0.96), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .tint(PennyTheme.forest)
         }
     }
 
-    private func amountField(_ label: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(label).font(.subheadline)
-            TextField("0.00", text: text)
-                .keyboardType(.decimalPad)
-                .monospacedDigit()
-                .accessibilityLabel("\(label), euros")
+    private func amountField(_ label: String, text: Binding<String>, field: Field) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(PennyTheme.textSecondary)
+            HStack(spacing: 5) {
+                TextField("0.00", text: text)
+                    .keyboardType(.decimalPad)
+                    .focused($focusedField, equals: field)
+                    .monospacedDigit()
+                    .accessibilityLabel("\(label), euros")
+                Text("€").foregroundStyle(PennyTheme.textSecondary)
+            }
+            .font(.title3.weight(.semibold))
         }
-        .padding(.vertical, 3)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var goalSymbol: String {
+        let name = title.lowercased()
+        if ["travel", "holiday", "vacation", "trip"].contains(where: name.contains) { return "airplane" }
+        if ["home", "house", "deposit"].contains(where: name.contains) { return "house.fill" }
+        if ["car", "vehicle"].contains(where: name.contains) { return "car.fill" }
+        if ["emergency", "buffer", "rainy"].contains(where: name.contains) { return "shield.fill" }
+        if ["study", "education", "university"].contains(where: name.contains) { return "graduationcap.fill" }
+        if ["wedding", "marriage"].contains(where: name.contains) { return "heart.fill" }
+        return "flag.checkered"
     }
 
     private var validationMessage: String? {
