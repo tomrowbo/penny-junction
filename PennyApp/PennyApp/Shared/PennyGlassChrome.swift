@@ -62,8 +62,6 @@ struct PennyGlassTabBar: View {
             artworkIcon("SpendNavIcon", size: 30, for: tab)
         case .plan:
             artworkIcon("PlanNavIcon", size: 36, for: tab)
-        case .incoming:
-            artworkIcon("IncomingNavIcon", size: 32, for: tab)
         }
     }
 
@@ -82,6 +80,7 @@ struct PennyGlassTabBar: View {
 struct PennyRootHeader: View {
     let title: String
     var subtitle: String? = nil
+    var subtitleAction: (() -> Void)? = nil
     @State private var showsProfile = false
 
     var body: some View {
@@ -91,10 +90,23 @@ struct PennyRootHeader: View {
                     .font(.largeTitle.weight(.bold))
                     .foregroundStyle(PennyTheme.textPrimary)
                 if let subtitle {
-                    Text(subtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(PennyTheme.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                    if let subtitleAction {
+                        Button(action: subtitleAction) {
+                            Text(subtitle)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(PennyTheme.emeraldBright)
+                                .padding(.vertical, 12)
+                        }
+                        .buttonStyle(.plain)
+                        .frame(minHeight: 44, alignment: .leading)
+                        .accessibilityLabel("Open Penny’s saving recommendation: \(subtitle)")
+                        .accessibilityHint("Opens a conversation explaining the recommendation")
+                    } else {
+                        Text(subtitle)
+                            .font(.subheadline)
+                            .foregroundStyle(PennyTheme.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
             }
             Spacer(minLength: 12)

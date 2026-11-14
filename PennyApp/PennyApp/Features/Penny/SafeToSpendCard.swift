@@ -40,6 +40,8 @@ struct AvailableBalanceCard: View {
                 }
                 .frame(width: proxy.size.width, height: proxy.size.height)
                 .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
             }
         }
         .overlay {

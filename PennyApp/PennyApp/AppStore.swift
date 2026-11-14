@@ -421,7 +421,7 @@ final class AppStore {
     private func insightMessages(_ insight: DashboardSavingInsight) -> [PennyChatMessage] {
         let category = insight.category.lowercased()
         let evidence = "Last month, you spent \(insight.latestMonthlySpend.euroCurrency) on \(category) — \(insight.monthlyOpportunity.euroCurrency) above your recent monthly average."
-        let goalEnding = insight.goalTitle.map { " for your \($0) goal" } ?? ""
+        let goalEnding = insight.goalTitle.map { " towards your \(insightGoalName($0)) goal" } ?? ""
         let action = "Keeping it near \(insight.baselineMonthlySpend.euroCurrency) could free up \(insight.monthlyOpportunity.euroCurrency) this month\(goalEnding)."
         return [
             PennyChatMessage(role: .penny, text: evidence, source: "local-dashboard-insight"),
@@ -436,8 +436,11 @@ final class AppStore {
     }
 
     private func insightVisualization(_ insight: DashboardSavingInsight) -> PennyVisualization {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withFullDate]
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar.current
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = Calendar.current.timeZone
+        formatter.dateFormat = "yyyy-MM-dd"
         let periodEnd = Calendar.current.date(byAdding: .day, value: -1, to: insight.latestMonthEnd) ?? insight.latestMonthEnd
         let sourceIDs = insight.transactionIDs.isEmpty ? ["dashboard-insight"] : insight.transactionIDs
         let sourceIDSet = Set(sourceIDs)
@@ -475,6 +478,14 @@ final class AppStore {
                 )
             ])
         )
+    }
+
+    private func insightGoalName(_ title: String) -> String {
+        let clean = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lowercased = clean.lowercased()
+        let prefixes = ["buy a new ", "buy a ", "save for a new ", "save for a ", "save for "]
+        guard let prefix = prefixes.first(where: lowercased.hasPrefix) else { return clean.lowercased() }
+        return String(clean.dropFirst(prefix.count)).lowercased()
     }
 
     private func chatDate(_ date: Date) -> String {

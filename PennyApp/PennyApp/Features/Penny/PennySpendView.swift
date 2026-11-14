@@ -10,7 +10,7 @@ struct PennySpendView: View {
                 PennyAtmosphere()
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 24) {
-                        PennyRootHeader(title: "Hi \(PennyProfileContent.customerName)", subtitle: "Here’s what your money can do today.")
+                        dashboardHeader
                         switch store.sBankDataStatus {
                         case .loading:
                             SpendLoadingSkeleton()
@@ -39,6 +39,25 @@ struct PennySpendView: View {
                 ConnectBankView()
             }
         }
+    }
+
+    private var dashboardHeader: some View {
+        let insight = store.dashboardSavingInsight
+        return PennyRootHeader(
+            title: "Hi \(PennyProfileContent.customerName)",
+            subtitle: dashboardSubtitle(for: insight),
+            subtitleAction: insight.map { insight in
+                { store.startPennyChat(for: insight) }
+            }
+        )
+    }
+
+    private func dashboardSubtitle(for insight: DashboardSavingInsight?) -> String {
+        if let insight {
+            let amount = NSDecimalNumber(decimal: insight.monthlyOpportunity).intValue
+            return "Save an extra €\(amount) a month →"
+        }
+        return store.dashboardSubtitles.first ?? "Here’s what your money can do today."
     }
 
     private var accounts: some View {
