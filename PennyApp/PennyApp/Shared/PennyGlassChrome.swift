@@ -53,16 +53,29 @@ struct PennyGlassTabBar: View {
 
     @ViewBuilder
     private func icon(for tab: AppTab) -> some View {
-        if tab == .askPenny {
+        switch tab {
+        case .askPenny:
             PennyMark(size: selection == tab ? 30 : 25)
                 .padding(2)
                 .background(Color.white.opacity(selection == tab ? 0.96 : 0.72), in: Circle())
-        } else {
-            Image(systemName: tab.symbol)
-                .font(.system(size: 19, weight: selection == tab ? .bold : .medium))
-                .symbolVariant(selection == tab ? .fill : .none)
-                .frame(width: 32, height: 28)
+        case .spend:
+            artworkIcon("SpendNavIcon", size: 30, for: tab)
+        case .plan:
+            artworkIcon("PlanNavIcon", size: 36, for: tab)
+        case .incoming:
+            artworkIcon("IncomingNavIcon", size: 32, for: tab)
         }
+    }
+
+    private func artworkIcon(_ name: String, size: CGFloat, for tab: AppTab) -> some View {
+        Image(name)
+            .renderingMode(.original)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size, height: size)
+            .scaleEffect(selection == tab ? 1.05 : 1)
+            .frame(width: 36, height: 28)
+            .accessibilityHidden(true)
     }
 }
 
