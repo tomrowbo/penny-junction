@@ -408,6 +408,7 @@ struct PennyChatView: View {
     let thread: PennyChatThread
     @State private var messages: [PennyChatMessage]
     @State private var draft = ""
+    @State private var pendingInitialSubmission: String?
     @State private var isSending = false
     @State private var showsThinking = false
     @State private var errorMessage: String?
@@ -415,7 +416,8 @@ struct PennyChatView: View {
     init(thread: PennyChatThread) {
         self.thread = thread
         _messages = State(initialValue: thread.initialMessages)
-        _draft = State(initialValue: thread.initialDraft)
+        _draft = State(initialValue: "")
+        _pendingInitialSubmission = State(initialValue: thread.initialDraft.isEmpty ? nil : thread.initialDraft)
     }
 
     var body: some View {
@@ -457,7 +459,13 @@ struct PennyChatView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
-        .onAppear { store.isTabBarHidden = true }
+        .onAppear {
+            store.isTabBarHidden = true
+            if let initialSubmission = pendingInitialSubmission {
+                pendingInitialSubmission = nil
+                send(initialSubmission)
+            }
+        }
         .onDisappear { store.isTabBarHidden = false }
     }
 
