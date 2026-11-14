@@ -5,14 +5,12 @@ enum AppTab: String, CaseIterable, Hashable {
     case spend
     case plan
     case askPenny
-    case incoming
 
     var title: String {
         switch self {
         case .spend: "Spend"
         case .plan: "Plan"
         case .askPenny: "Ask Penny"
-        case .incoming: "Incoming"
         }
     }
 
@@ -21,7 +19,6 @@ enum AppTab: String, CaseIterable, Hashable {
         case .spend: "arrow.up.right"
         case .plan: "scope"
         case .askPenny: PennyBrand.markAssetName
-        case .incoming: "sparkle"
         }
     }
 }
@@ -174,11 +171,31 @@ final class AppStore {
     }
 
     var financialReferenceDate: Date {
-        transactions.map(\.date).max() ?? .now
+        transactions
+            .filter { $0.institution == .sBank }
+            .map(\.date)
+            .max() ?? transactions.map(\.date).max() ?? .now
     }
 
     var upcomingMoney: UpcomingMoneySummary {
         UpcomingMoneyDetector.detect(transactions: transactions, asOf: financialReferenceDate)
+    }
+
+    var dashboardSubtitles: [String] {
+        DashboardSubtitleBuilder.make(
+            transactions: transactions,
+            goals: goalPlans,
+            asOf: financialReferenceDate
+        )
+    }
+
+    var dashboardSavingInsight: DashboardSavingInsight? {
+        guard case .official = sBankDataStatus else { return nil }
+        return DashboardSavingInsightCalculator.make(
+            transactions: transactions,
+            goals: goalPlans,
+            asOf: financialReferenceDate
+        )
     }
 
     var safeToSpend: SafeToSpendResult {
@@ -233,6 +250,11 @@ final class AppStore {
 
     func deleteGoalPlan(id: UUID) {
         goalPlans.removeAll { $0.id == id }
+        persistGoalPlans()
+    }
+
+    func resetGoalPlans() {
+        goalPlans = [Self.sampleGoalPlan(referenceDate: financialReferenceDate)]
         persistGoalPlans()
     }
 
