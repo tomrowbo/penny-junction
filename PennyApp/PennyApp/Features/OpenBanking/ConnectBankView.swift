@@ -66,6 +66,8 @@ struct ConnectBankView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(PennyAtmosphere())
             .navigationTitle("Connect a bank")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -155,5 +157,7 @@ private struct BankConsentView: View {
             .disabled(isConnecting)
         }
         .padding(24)
+        .foregroundStyle(.white)
+        .background(PennyAtmosphere())
     }
 }

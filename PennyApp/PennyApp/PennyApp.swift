@@ -51,15 +51,13 @@ private struct MainTabView: View {
         Group {
             switch store.selectedTab {
             case .spend:
-                NavigationStack {
-                    BankOverviewView()
-                }
+                PennySpendView()
             case .plan:
-                PennyCoachView()
+                PennyPlanView()
             case .askPenny:
                 PennyCoachView()
             case .incoming:
-                PennyCoachView()
+                PennyIncomingView()
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {

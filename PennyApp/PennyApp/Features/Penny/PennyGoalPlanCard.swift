@@ -71,7 +71,8 @@ struct PennyGoalPlanCard: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius))
+        .foregroundStyle(.white)
+        .pennyGlassSurface(cornerRadius: 24)
         .accessibilityElement(children: .contain)
     }
 

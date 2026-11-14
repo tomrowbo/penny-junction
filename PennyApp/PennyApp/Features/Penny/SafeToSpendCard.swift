@@ -8,7 +8,7 @@ struct SafeToSpendCard: View {
         VStack(alignment: .leading, spacing: 14) {
             Label("Safe to spend", systemImage: "checkmark.shield")
                 .font(.headline)
-                .foregroundStyle(PennyTheme.green)
+                .foregroundStyle(PennyTheme.emeraldBright)
                 .accessibilityAddTraits(.isHeader)
 
             VStack(alignment: .leading, spacing: 4) {
@@ -64,8 +64,25 @@ struct SafeToSpendCard: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .foregroundStyle(.primary)
-        .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius, style: .continuous))
+        .foregroundStyle(.white)
+        .background {
+            ZStack {
+                Image(PennyTheme.spendHeroAssetName)
+                    .resizable()
+                    .scaledToFill()
+                LinearGradient(
+                    colors: [Color.black.opacity(0.22), Color.black.opacity(0.72), PennyTheme.obsidian.opacity(0.94)],
+                    startPoint: .topTrailing,
+                    endPoint: .bottomLeading
+                )
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.16), lineWidth: 0.75)
+        }
+        .shadow(color: .black.opacity(0.32), radius: 22, y: 12)
         .accessibilityElement(children: .contain)
     }
 

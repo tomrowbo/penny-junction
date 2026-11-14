@@ -62,7 +62,8 @@ struct UpcomingMoneyCard: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius, style: .continuous))
+        .foregroundStyle(.white)
+        .pennyGlassSurface(cornerRadius: 24)
         .sheet(isPresented: $showsDetails) {
             details
         }
@@ -105,6 +106,8 @@ struct UpcomingMoneyCard: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(PennyAtmosphere())
             .navigationTitle("Upcoming money")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

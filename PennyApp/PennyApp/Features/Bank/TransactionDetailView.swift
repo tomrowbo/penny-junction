@@ -54,12 +54,13 @@ struct TransactionDetailView: View {
                     }
                     .padding()
                 }
-                .background(PennyTheme.canvas)
+                .background(PennyAtmosphere())
                 .navigationTitle("Transaction")
                 .navigationBarTitleDisplayMode(.inline)
             } else {
                 ContentUnavailableView("Transaction unavailable", systemImage: "exclamationmark.triangle")
             }
         }
+        .foregroundStyle(.white)
     }
 }

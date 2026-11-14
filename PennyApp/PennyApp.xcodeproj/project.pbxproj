@@ -29,9 +29,11 @@
 		68F646B5F8C763307FEFCE97 /* PennyVisualization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6346931B2774B2D46BB1CB3E /* PennyVisualization.swift */; };
 		69911531E4DD3AE0100029E8 /* ReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF36B4302D29318F784400F1 /* ReceiptView.swift */; };
 		705FD066C54F1FB4AA84DFD8 /* BrandComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C047E5126BF6C49E8C55A7CB /* BrandComponents.swift */; };
+		7A8B098C50AA7522F9B4F31B /* PennySpendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EF94C8D6AA7A47957C07F /* PennySpendView.swift */; };
 		7C751FDE6E879DB6E389FFE0 /* ConnectBankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4994BA41F06AB7A63C801943 /* ConnectBankView.swift */; };
 		7D9EEB7B6D262190AD7BB056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FEEC4CC8DF48A191B7036FA /* Assets.xcassets */; };
 		7F768763A3296431F3B532A7 /* SMobiiliDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BD607F35FE4178EE1319A8 /* SMobiiliDesignSystem.swift */; };
+		835D63277368EA60842787EB /* PennyPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726BAF744C08E136AB0FC494 /* PennyPlanView.swift */; };
 		857BAAEA065B31F35E0F5DE9 /* PennyGoalPlanCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D5484DBBBFBF16749B494F /* PennyGoalPlanCard.swift */; };
 		8A6E94400D0D481F3A927F62 /* PennyGoalPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E02BBE964137DBA35A9C235 /* PennyGoalPlan.swift */; };
 		8EF442CE0B8FAC8A3B92B08D /* PennyCoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D91CEEB879734A3D89D006 /* PennyCoachView.swift */; };
@@ -48,6 +50,7 @@
 		BC7321C3C18A3DB2F3FAA67A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DD75E2E45B5E7F219AF97E /* Theme.swift */; };
 		CD556071145B8C1D27FE9A5E /* EnableBankingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED78D5CF042F0139228B38A3 /* EnableBankingService.swift */; };
 		D0B0A2629AFAA96E625248F1 /* SaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A951086A908AE2DD80F4094 /* SaverView.swift */; };
+		DCFF7A1C1A652D1D1B661184 /* PennyIncomingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE9ECE2ED5DDED7FBE7E1DF /* PennyIncomingView.swift */; };
 		DF05EB29BACCEA6FA2E8ED89 /* UpcomingMoneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC542949725D96BAEBE0E5F3 /* UpcomingMoneyTests.swift */; };
 		E54CF21571BB279E29EFC083 /* MeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B47CC2AF61571F9B7133BD1 /* MeView.swift */; };
 		F9F227FB3FF27EC17690131F /* OpenBankingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB82F7BB8C6B2C585C8AABA3 /* OpenBankingService.swift */; };
@@ -93,6 +96,9 @@
 		6346931B2774B2D46BB1CB3E /* PennyVisualization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyVisualization.swift; sourceTree = "<group>"; };
 		66DD75E2E45B5E7F219AF97E /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		68D91CEEB879734A3D89D006 /* PennyCoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyCoachView.swift; sourceTree = "<group>"; };
+		6EE9ECE2ED5DDED7FBE7E1DF /* PennyIncomingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyIncomingView.swift; sourceTree = "<group>"; };
+		726BAF744C08E136AB0FC494 /* PennyPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyPlanView.swift; sourceTree = "<group>"; };
+		727EF94C8D6AA7A47957C07F /* PennySpendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennySpendView.swift; sourceTree = "<group>"; };
 		744E2323E7FE5DF284C2349B /* PennyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyApp.swift; sourceTree = "<group>"; };
 		752B53B2BA60A0B2A0A068B6 /* PennyChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyChatService.swift; sourceTree = "<group>"; };
 		77D5484DBBBFBF16749B494F /* PennyGoalPlanCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyGoalPlanCard.swift; sourceTree = "<group>"; };
@@ -152,6 +158,9 @@
 				F5E47F5FD7EF502B3E427C5A /* PennyEvidenceVisualization.swift */,
 				77D5484DBBBFBF16749B494F /* PennyGoalPlanCard.swift */,
 				1A495BBCB9E98A5D3A50C6E8 /* PennyGoalPlanEditor.swift */,
+				6EE9ECE2ED5DDED7FBE7E1DF /* PennyIncomingView.swift */,
+				726BAF744C08E136AB0FC494 /* PennyPlanView.swift */,
+				727EF94C8D6AA7A47957C07F /* PennySpendView.swift */,
 				7E63933F32B0E265F8740BE0 /* SafeToSpendCard.swift */,
 				C70BB0AA1382C742A56780BB /* UpcomingMoneyCard.swift */,
 			);
@@ -423,6 +432,9 @@
 				857BAAEA065B31F35E0F5DE9 /* PennyGoalPlanCard.swift in Sources */,
 				93DBC451F32E6FECFC6A628E /* PennyGoalPlanEditor.swift in Sources */,
 				02CA9E7ECBD9009B22C264CD /* PennyGoalPlanStore.swift in Sources */,
+				DCFF7A1C1A652D1D1B661184 /* PennyIncomingView.swift in Sources */,
+				835D63277368EA60842787EB /* PennyPlanView.swift in Sources */,
+				7A8B098C50AA7522F9B4F31B /* PennySpendView.swift in Sources */,
 				68F646B5F8C763307FEFCE97 /* PennyVisualization.swift in Sources */,
 				69911531E4DD3AE0100029E8 /* ReceiptView.swift in Sources */,
 				3259D2F6DB1323AD45A1A787 /* SBankDataService.swift in Sources */,
