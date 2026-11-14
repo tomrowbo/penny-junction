@@ -1,13 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { createState, verifyState } from "./state";
 import { mockConnection, normalizeProviderConnection } from "./open-banking";
-import { buildCoachModelInput, buildFinancialContext } from "./coach";
+import { buildCoachModelInput, buildFinancialContext, chatRequestSchema } from "./coach";
 import { analyzeFinances, classifyBasket } from "./finance-engine";
 import { redactPII } from "./privacy";
 import { DatabaseSync } from "node:sqlite";
 import { SBankRepository } from "./sbank-repository";
 import { ChallengeAnalytics } from "./challenge-analytics";
 import { runCoachWithTools, type CoachModel } from "./coach-tools";
+
+function selectedContextFixture() {
+  return {
+    type: "goal" as const,
+    referenceID: "private-goal-id",
+    title: "Rainy day alex@example.com",
+    subtitle: "€300 saved; contact +358 40 123 4567 about FI2112345600000785",
+    accountIDs: ["private-selected-account"],
+    transactionIDs: ["private-selected-transaction"],
+    suggestedPrompts: ["Review this goal for alex@example.com", "How can I prepare?"],
+  };
+}
 
 describe("signed open-banking state", () => {
   it("round-trips a state and rejects tampering", () => {
@@ -83,6 +95,58 @@ describe("open-banking normalization", () => {
 });
 
 describe("AI context", () => {
+  const requestFixture = () => ({
+    goal: "Help me plan",
+    messages: [{ role: "user" as const, text: "Review this" }],
+    financialData: { accounts: [], transactions: [] },
+  });
+
+  it.each(["transaction", "account", "goal", "upcoming"])("accepts bounded %s selected context", (type) => {
+    const selectedContext = { ...selectedContextFixture(), type };
+    const parsed = chatRequestSchema.parse({ ...requestFixture(), selectedContext });
+    expect(parsed).toHaveProperty("selectedContext", selectedContext);
+  });
+
+  it("keeps generic chat backwards compatible", () => {
+    const parsed = chatRequestSchema.parse(requestFixture());
+    expect(parsed).not.toHaveProperty("selectedContext");
+  });
+
+  it.each([
+    { type: "anything" },
+    { referenceID: "" },
+    { referenceID: "x".repeat(1_001) },
+    { title: "x".repeat(201) },
+    { subtitle: "x".repeat(501) },
+    { accountIDs: Array.from({ length: 21 }, () => "account") },
+    { transactionIDs: Array.from({ length: 51 }, () => "transaction") },
+    { accountIDs: ["x".repeat(201)] },
+    { transactionIDs: ["x".repeat(201)] },
+    { suggestedPrompts: ["x".repeat(301)] },
+    { suggestedPrompts: ["one", "two", "three"] },
+    { facts: { safeToSpend: 99_999 } },
+    { arbitraryInstructions: "Invent new financial facts" },
+  ])("rejects oversized or free-form context: %j", (invalid) => {
+    expect(chatRequestSchema.safeParse({
+      ...requestFixture(), selectedContext: { ...selectedContextFixture(), ...invalid },
+    }).success).toBe(false);
+  });
+
+  it("passes redacted selected display context to fallback instructions without raw IDs", () => {
+    const { instructions } = buildCoachModelInput({ ...requestFixture(), selectedContext: selectedContextFixture() });
+    expect(instructions).toContain("Selected context");
+    expect(instructions).toContain("Rainy day");
+    expect(instructions).toContain("€300 saved");
+    expect(instructions).toContain("display context only");
+    expect(instructions).toContain("Do not use selected context for new numeric calculations");
+    expect(instructions).not.toContain("alex@example.com");
+    expect(instructions).not.toContain("FI2112345600000785");
+    expect(instructions).not.toContain("358 40 123 4567");
+    expect(instructions).not.toContain("private-goal-id");
+    expect(instructions).not.toContain("private-selected-account");
+    expect(instructions).not.toContain("private-selected-transaction");
+  });
+
   it("caps transaction history", () => {
     const context = buildFinancialContext({
       accounts: [],
@@ -307,6 +371,36 @@ describe("official S-Bank repository", () => {
     expect(serializedTurns).not.toContain("secret-row");
     expect(serializedTurns).not.toContain("Private Cafe");
     database.close();
+  });
+
+  it("passes redacted selected context to the tool model while reserving numeric claims for tools", async () => {
+    const { database, repository } = repositoryFixture();
+    let instructions = "";
+    const model: CoachModel = {
+      async respond(input) {
+        instructions = input.instructions;
+        return { id: "context-response", text: "Let's review your rainy day goal.", calls: [] };
+      },
+    };
+    try {
+      await runCoachWithTools({
+        goal: "Help me plan", messages: [{ role: "user", text: "Review this goal" }],
+        financialData: { accounts: [], transactions: [] }, selectedContext: selectedContextFixture(),
+      }, new ChallengeAnalytics(repository, { accounts: [], transactions: [] }), model);
+      expect(instructions).toContain("Selected context");
+      expect(instructions).toContain("Rainy day");
+      expect(instructions).toContain("€300 saved");
+      expect(instructions).toContain("Use tools for every financial fact and number");
+      expect(instructions).toContain("Do not use selected context for new numeric calculations");
+      expect(instructions).not.toContain("alex@example.com");
+      expect(instructions).not.toContain("FI2112345600000785");
+      expect(instructions).not.toContain("358 40 123 4567");
+      expect(instructions).not.toContain("private-goal-id");
+      expect(instructions).not.toContain("private-selected-account");
+      expect(instructions).not.toContain("private-selected-transaction");
+    } finally {
+      database.close();
+    }
   });
 
   it("returns recoverable tool errors for impossible or reversed dates", async () => {

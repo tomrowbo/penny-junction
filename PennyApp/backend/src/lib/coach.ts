@@ -5,7 +5,7 @@ import { analyzeFinances } from "./finance-engine";
 import { redactPII } from "./privacy";
 import { existsSync } from "node:fs";
 import { ChallengeAnalytics } from "./challenge-analytics";
-import { runCoachWithTools, type CoachModel, type PennyChatResponse } from "./coach-tools";
+import { runCoachWithTools, selectedContextInstructions, type CoachModel, type PennyChatResponse } from "./coach-tools";
 import { SBankRepository } from "./sbank-repository";
 
 const accountSchema = z.object({
@@ -32,6 +32,17 @@ export const financialSnapshotSchema = z.object({
   transactions: z.array(transactionSchema).max(1_000),
 });
 
+const selectedContextSchema = z.object({
+  type: z.enum(["transaction", "account", "goal", "upcoming"]),
+  // Upcoming recurrence IDs include the series identity and predicted date.
+  referenceID: z.string().min(1).max(1_000),
+  title: z.string().min(1).max(200),
+  subtitle: z.string().max(500),
+  accountIDs: z.array(z.string().min(1).max(200)).max(20),
+  transactionIDs: z.array(z.string().min(1).max(200)).max(50),
+  suggestedPrompts: z.array(z.string().min(1).max(300)).max(2),
+}).strict();
+
 export const chatRequestSchema = z.object({
   goal: z.string().min(1).max(300),
   messages: z.array(z.object({
@@ -39,6 +50,7 @@ export const chatRequestSchema = z.object({
     text: z.string().min(1).max(4000),
   })).min(1).max(30),
   financialData: financialSnapshotSchema,
+  selectedContext: selectedContextSchema.optional(),
 });
 
 export type FinancialSnapshot = z.infer<typeof financialSnapshotSchema>;
@@ -72,6 +84,7 @@ export function buildCoachModelInput(request: ChatRequest) {
       "Safe-to-spend and safe-to-save are educational estimates, not guarantees or regulated investment advice.",
       "The supplied facts are minimized aggregates. Do not ask for or infer names, account numbers, or other direct identifiers.",
       `Current goal: ${redactPII(request.goal)}`,
+      ...selectedContextInstructions(request.selectedContext),
       `Calculated financial facts (JSON): ${JSON.stringify(analysis)}`,
     ].join("\n"),
     conversation,

@@ -59,6 +59,7 @@ final class AppStore {
     var presentedReferenceRoute: SMobiiliRoute?
     var previewTransactionID: String?
     var previewChatID: String?
+    var pendingPennyChatContext: PennyChatContext?
     private(set) var accounts: [BankAccount]
     private(set) var transactions: [BankTransaction]
     private(set) var sBankDataStatus: SBankDataStatus = .fallback
@@ -220,11 +221,64 @@ final class AppStore {
     }
 
     func discussWithPenny() {
+        startPennyChat(about: nil)
+    }
+
+    func startPennyChat(about subject: PennyChatSubject?) {
+        pendingPennyChatContext = subject.flatMap { context(for: $0) }
         presentedReferenceRoute = nil
         previewTransactionID = nil
         previewChatID = nil
         isTabBarHidden = false
         selectedTab = .askPenny
+    }
+
+    func context(for subject: PennyChatSubject) -> PennyChatContext? {
+        switch subject {
+        case .transaction(let id):
+            guard let transaction = transaction(id: id) else { return nil }
+            return chatContext(type: .transaction, referenceID: transaction.id,
+                title: transaction.merchant,
+                subtitle: "\(transaction.amount.euroCurrency) · \(chatDate(transaction.date)) · \(transaction.category)",
+                accountIDs: [transaction.accountID], transactionIDs: [transaction.id],
+                prompts: ["Help me understand this transaction", "How does this fit into my spending?"])
+        case .account(let id):
+            guard let account = accounts.first(where: { $0.id == id }) else { return nil }
+            return chatContext(type: .account, referenceID: account.id, title: account.name,
+                subtitle: "\(account.institution.rawValue) · \(account.kind.rawValue) · \(account.balance.euroCurrency)",
+                accountIDs: [account.id], transactionIDs: [],
+                prompts: ["Help me understand this account", "How does this account fit into my plan?"])
+        case .goal(let id):
+            guard let goal = goalPlans.first(where: { $0.id == id }) else { return nil }
+            return chatContext(type: .goal, referenceID: goal.id.uuidString, title: goal.title,
+                subtitle: "\(goal.currentAmount.euroCurrency) saved of \(goal.targetAmount.euroCurrency) · \(goal.monthlyContribution.euroCurrency)/month · Target \(chatDate(goal.targetDate))",
+                accountIDs: goal.accountIDs, transactionIDs: [],
+                prompts: ["Help me review this goal", "What could I change in my saving plan?"])
+        case .upcoming(let id):
+            guard let item = upcomingMoney.items.first(where: { $0.id == id }) else { return nil }
+            return chatContext(type: .upcoming, referenceID: item.id, title: item.merchant,
+                subtitle: "Estimated \(item.direction == .income ? "income" : "outflow") \(item.amount.euroCurrency) · \(chatDate(item.nextDate)) · \(item.cadence.label) · \(item.confidence.rawValue) confidence",
+                accountIDs: [item.accountID], transactionIDs: item.sourceTransactionIDs,
+                prompts: ["Explain this upcoming estimate", "How can I prepare for this payment?"])
+        }
+    }
+
+    private func chatContext(type: PennyChatContext.Kind, referenceID: String, title: String,
+                             subtitle: String, accountIDs: [String], transactionIDs: [String],
+                             prompts: [String]) -> PennyChatContext {
+        let knownAccounts = Set(accounts.map(\.id))
+        let knownTransactions = Set(transactions.map(\.id))
+        return PennyChatContext(type: type, referenceID: referenceID,
+            title: String(title.prefix(200)), subtitle: String(subtitle.prefix(500)),
+            accountIDs: Array(accountIDs.filter { knownAccounts.contains($0) }.prefix(20)),
+            transactionIDs: Array(transactionIDs.filter { knownTransactions.contains($0) }.prefix(50)),
+            suggestedPrompts: prompts)
+    }
+
+    private func chatDate(_ date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        return formatter.string(from: date)
     }
 
     func transaction(id: String) -> BankTransaction? {

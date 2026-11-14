@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		02CA9E7ECBD9009B22C264CD /* PennyGoalPlanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493A7CB72E1240AA89218B82 /* PennyGoalPlanStore.swift */; };
+		074004CBAA23D581BBA5ECBE /* PennyChatContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2420D27DA1D04F375A8C9445 /* PennyChatContext.swift */; };
 		221B622295DFD7783989EEF3 /* TransactionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ADB583E98BFD52C03F2BE5 /* TransactionDetailView.swift */; };
 		28220124A007657AA332704F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A22B921936CE1C4E2FDF702 /* LoginView.swift */; };
 		2C3DD6384ABF8FBBF69D476C /* PennyGoalPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201A5CBA4E07E1A72F65B4AA /* PennyGoalPlanTests.swift */; };
@@ -82,6 +83,7 @@
 		1AA45FEADD5C9E27BD05756F /* AppStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreTests.swift; sourceTree = "<group>"; };
 		1EAC15EDB8657C8564F616F7 /* SBankDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBankDataService.swift; sourceTree = "<group>"; };
 		201A5CBA4E07E1A72F65B4AA /* PennyGoalPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyGoalPlanTests.swift; sourceTree = "<group>"; };
+		2420D27DA1D04F375A8C9445 /* PennyChatContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyChatContext.swift; sourceTree = "<group>"; };
 		35C59D89950C632C36218380 /* PennyVisualizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PennyVisualizationTests.swift; sourceTree = "<group>"; };
 		392CB5D1B2203AB0511B15EC /* SEtukorttiDemoContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SEtukorttiDemoContent.swift; sourceTree = "<group>"; };
 		43D47F58750A51549C08A272 /* SBankHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBankHomeView.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			children = (
 				AF9ADA8C99562B8549ED2112 /* DemoData.swift */,
 				80E40D847C7B7078123406DA /* Models.swift */,
+				2420D27DA1D04F375A8C9445 /* PennyChatContext.swift */,
 				8E02BBE964137DBA35A9C235 /* PennyGoalPlan.swift */,
 				6346931B2774B2D46BB1CB3E /* PennyVisualization.swift */,
 				A871B3BFCEDF7019FD791342 /* SafeToSpend.swift */,
@@ -424,6 +427,7 @@
 				43ADF31FE0B4FC3374F7901A /* Models.swift in Sources */,
 				F9F227FB3FF27EC17690131F /* OpenBankingService.swift in Sources */,
 				FD594BB2CE08B01421A05F63 /* PennyApp.swift in Sources */,
+				074004CBAA23D581BBA5ECBE /* PennyChatContext.swift in Sources */,
 				3159F75FB6EB93B143A42760 /* PennyChatService.swift in Sources */,
 				8EF442CE0B8FAC8A3B92B08D /* PennyCoachView.swift in Sources */,
 				579A92DE5E3FC7BCBFA98C1C /* PennyEvidenceVisualization.swift in Sources */,
