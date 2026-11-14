@@ -67,9 +67,6 @@ struct PennySpendView: View {
                         Text(account.balance.euroCurrency)
                             .font(.subheadline.weight(.bold))
                             .monospacedDigit()
-                        DiscussWithPennyAction(itemName: account.name) {
-                            store.startPennyChat(about: .account(account.id))
-                        }
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)

@@ -6,22 +6,16 @@ struct AvailableBalanceCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 12) {
-                Image(systemName: "wallet.bifold")
-                    .font(.largeTitle)
-                    .foregroundStyle(PennyTheme.heroAccent)
-                    .accessibilityHidden(true)
-                Text("Available now")
-                    .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
-            }
+            Text("Balance")
+                .font(.headline)
+                .accessibilityAddTraits(.isHeader)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(amount.euroCurrency)
                     .font(.system(size: amountSize, weight: .bold))
                     .monospacedDigit()
                     .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityLabel("Available now, \(amount.euroCurrency)")
+                    .accessibilityLabel("Balance, \(amount.euroCurrency)")
                 Text("Across your connected accounts")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(PennyTheme.heroSecondary)
