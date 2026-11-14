@@ -11,17 +11,21 @@ struct PennyPlanView: View {
                 PennyAtmosphere()
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 18) {
-                        PennyRootHeader(title: "Plan", subtitle: "Turn the next big thing into a monthly plan.")
-                        HStack(alignment: .firstTextBaseline) {
+                        PennyRootHeader(title: "Plan")
+                        HStack(alignment: .center) {
                             Text("Your goals").font(.title2.weight(.bold))
                             Spacer()
                             Button {
                                 showsNewGoal = true
                             } label: {
-                                Label("Add goal", systemImage: "plus")
-                                    .font(.subheadline.weight(.semibold))
-                                    .frame(minHeight: 44)
+                                Image(systemName: "plus")
+                                    .font(.title3.weight(.semibold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 44, height: 44)
+                                    .background(PennyTheme.forest, in: Circle())
                             }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Add goal")
                         }
                         .foregroundStyle(PennyTheme.textPrimary)
 
@@ -35,9 +39,12 @@ struct PennyPlanView: View {
                             emptyState
                         } else {
                             ForEach(store.goalPlans) { plan in
-                                PennyGoalPlanCard(plan: plan, asOf: store.financialReferenceDate) {
-                                    planToEdit = plan
-                                }
+                                PennyGoalPlanCard(
+                                    plan: plan,
+                                    asOf: store.financialReferenceDate,
+                                    onDiscuss: { store.startPennyChat(about: .goal(plan.id)) },
+                                    onEdit: { planToEdit = plan }
+                                )
                             }
                         }
                     }
@@ -57,20 +64,28 @@ struct PennyPlanView: View {
     }
 
     private var emptyState: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Image(systemName: "scope")
-                .font(.largeTitle)
-                .foregroundStyle(PennyTheme.emeraldBright)
-            Text("Give your money a direction")
-                .font(.title3.weight(.bold))
-            Text("Set a target and monthly amount. Penny will keep the projection here as your finances change.")
+        VStack(alignment: .leading, spacing: 18) {
+            Image(systemName: "flag.checkered")
+                .font(.system(size: 42, weight: .semibold))
+                .foregroundStyle(PennyTheme.forest)
+                .frame(width: 80, height: 80)
+                .background(Color(red: 1, green: 0.84, blue: 0.40), in: RoundedRectangle(cornerRadius: 24))
+                .accessibilityHidden(true)
+            Text("What are you saving for?")
+                .font(.title2.weight(.bold))
+            Text("Make a plan for something that matters to you.")
                 .font(.subheadline)
                 .foregroundStyle(PennyTheme.textSecondary)
-            Button("Create your first goal") { showsNewGoal = true }
-                .buttonStyle(.borderedProminent)
-                .tint(PennyTheme.emerald)
+            Button { showsNewGoal = true } label: {
+                Text("Create goal")
+                    .font(.headline)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, minHeight: 52)
+                    .background(PennyTheme.forest, in: Capsule())
+            }
+            .buttonStyle(.plain)
         }
-        .padding(20)
+        .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundStyle(PennyTheme.textPrimary)
         .pennyGlassSurface(cornerRadius: 24)
