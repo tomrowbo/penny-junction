@@ -6,6 +6,7 @@ struct ConnectBankView: View {
     private let service: any OpenBankingService
 
     @State private var banks: [AvailableBank] = []
+    @State private var isLoadingBanks = true
     @State private var selectedBank: AvailableBank?
     @State private var isConnecting = false
     @State private var errorMessage: String?
@@ -37,6 +38,14 @@ struct ConnectBankView: View {
                 }
 
                 Section("Choose your bank") {
+                    if isLoadingBanks {
+                        HStack(spacing: 10) {
+                            ProgressView()
+                            Text("Loading banks…")
+                                .foregroundStyle(PennyTheme.textSecondary)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 64, alignment: .center)
+                    }
                     ForEach(banks) { bank in
                         Button {
                             selectedBank = bank
@@ -71,11 +80,22 @@ struct ConnectBankView: View {
             .navigationTitle("Connect a bank")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                if #available(iOS 26.0, *) {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
+                            .buttonStyle(.plain)
+                    }
+                    .sharedBackgroundVisibility(.hidden)
+                } else {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
+                            .buttonStyle(.plain)
+                    }
                 }
             }
             .task {
+                isLoadingBanks = true
+                defer { isLoadingBanks = false }
                 do {
                     banks = try await service.availableBanks()
                 } catch {

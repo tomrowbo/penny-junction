@@ -109,15 +109,29 @@ struct PennyGoalPlanEditor: View {
             .navigationTitle(originalPlan == nil ? "Create goal" : "Edit goal")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button { dismiss() } label: {
-                        Text("Cancel")
-                            .font(.body.weight(.medium))
-                            .foregroundStyle(PennyTheme.textPrimary)
-                            .fixedSize()
-                            .frame(minWidth: 64, minHeight: 44)
+                if #available(iOS 26.0, *) {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button { dismiss() } label: {
+                            Text("Cancel")
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(PennyTheme.textPrimary)
+                                .fixedSize()
+                                .frame(minWidth: 64, minHeight: 44)
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
+                    .sharedBackgroundVisibility(.hidden)
+                } else {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button { dismiss() } label: {
+                            Text("Cancel")
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(PennyTheme.textPrimary)
+                                .fixedSize()
+                                .frame(minWidth: 64, minHeight: 44)
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()

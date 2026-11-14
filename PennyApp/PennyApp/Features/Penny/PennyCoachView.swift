@@ -497,11 +497,6 @@ struct PennyChatView: View {
                     )
                 if message.role == .penny { Spacer(minLength: 54) }
             }
-            if let evidence = message.evidence {
-                evidenceDisclosure(evidence)
-                    .padding(.leading, 36)
-                    .padding(.trailing, 54)
-            }
             if !message.visualizations.isEmpty {
                 VStack(spacing: 10) {
                     ForEach(message.visualizations) { visualization in
@@ -527,35 +522,6 @@ struct PennyChatView: View {
             }
         }
         .frame(maxWidth: .infinity)
-    }
-
-    private func evidenceDisclosure(_ evidence: PennyEvidence) -> some View {
-        DisclosureGroup {
-            VStack(alignment: .leading, spacing: 7) {
-                Label(evidence.coverage, systemImage: "calendar")
-                Label("\(evidence.transactionCount) transactions • \(evidence.institutions.joined(separator: " + "))", systemImage: "building.columns")
-                Label("\(evidence.confidence.capitalized) confidence", systemImage: "checkmark.shield")
-                ForEach(evidence.baskets, id: \.id) { basket in
-                    HStack {
-                        Text(basket.label)
-                        Spacer()
-                        Text(basket.amount.euroCurrency).fontWeight(.semibold)
-                    }
-                }
-                ForEach(evidence.assumptions, id: \.self) { assumption in
-                    Text("• \(assumption)").foregroundStyle(.secondary)
-                }
-            }
-            .padding(.top, 8)
-        } label: {
-            Label("How this was calculated", systemImage: "info.circle")
-                .fontWeight(.semibold)
-        }
-        .font(.caption)
-        .foregroundStyle(PennyTheme.emeraldBright)
-        .padding(11)
-        .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.black.opacity(0.09)) }
     }
 
     private func formattedMessage(_ text: String) -> AttributedString {
