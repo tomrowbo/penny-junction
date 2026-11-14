@@ -38,6 +38,7 @@ struct BankConnection: Equatable, Sendable {
     let institution: Institution
     let accounts: [BankAccount]
     let transactions: [BankTransaction]
+    let sessionID: String?
 }
 
 struct DemoSnapshot: Equatable, Sendable {

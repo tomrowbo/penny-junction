@@ -1,62 +1,10 @@
-import Foundation
-
-struct DemoOpenBankingService: OpenBankingService {
+struct UnavailableOpenBankingService: OpenBankingService {
     func availableBanks() async throws -> [AvailableBank] {
-        [
-            AvailableBank(institution: .nordea, name: "Nordea", description: "Personal accounts and mortgages"),
-            AvailableBank(institution: .op, name: "OP", description: "Accounts, loans and cards"),
-            AvailableBank(institution: .danske, name: "Danske Bank", description: "Personal banking")
-        ]
+        throw OpenBankingError.backendNotConfigured
     }
 
     func connect(_ bank: AvailableBank) async throws -> BankConnection {
-        try await Task.sleep(for: .milliseconds(850))
-        return Self.connection(for: bank.institution)
-    }
-
-    static func connection(for institution: Institution) -> BankConnection {
-        let prefix = institution.rawValue.lowercased().replacingOccurrences(of: " ", with: "-")
-        let calendar = Calendar.current
-        let latestMortgageDate = calendar.date(byAdding: .day, value: -6, to: .now) ?? .now
-        let account = BankAccount(
-            id: "\(prefix)-current",
-            institution: institution,
-            name: "Current account",
-            kind: .current,
-            balance: DemoData.decimal("1640.50"),
-            maskedNumber: "•• 7714"
-        )
-        let mortgage = BankAccount(
-            id: "\(prefix)-mortgage",
-            institution: institution,
-            name: "Home mortgage",
-            kind: .mortgage,
-            balance: DemoData.decimal("-186450.00"),
-            maskedNumber: "•• 2048"
-        )
-        let mortgagePayments = (0..<3).map { monthsAgo in
-            BankTransaction(
-                id: "\(prefix)-mortgage-payment-\(monthsAgo)",
-                accountID: account.id,
-                institution: institution,
-                merchant: "Mortgage payment",
-                amount: DemoData.decimal("-1120.00"),
-                date: calendar.date(byAdding: .month, value: -monthsAgo, to: latestMortgageDate) ?? latestMortgageDate,
-                category: "Housing"
-            )
-        }
-        let transactions = [
-            BankTransaction(
-                id: "\(prefix)-fuel",
-                accountID: account.id,
-                institution: institution,
-                merchant: "Neste Helsinki",
-                amount: DemoData.decimal("-74.30"),
-                date: Calendar.current.date(byAdding: .day, value: -2, to: .now) ?? .now,
-                category: "Transport"
-            )
-        ] + mortgagePayments
-        return BankConnection(institution: institution, accounts: [account, mortgage], transactions: transactions)
+        throw OpenBankingError.backendNotConfigured
     }
 }
 

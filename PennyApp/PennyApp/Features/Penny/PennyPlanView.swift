@@ -13,39 +13,18 @@ struct PennyPlanView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 18) {
                         PennyRootHeader(title: "Plan")
-                        monthlySavingsSummary
-                        HStack(alignment: .center) {
-                            Text("Savings breakdown").font(.title2.weight(.bold))
-                            Spacer()
-                            Button {
-                                showsNewGoal = true
-                            } label: {
-                                Image(systemName: "plus")
-                                    .font(.title3.weight(.semibold))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 44, height: 44)
-                                    .background(PennyTheme.forest, in: Circle())
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel("Add goal")
-                        }
-                        .foregroundStyle(PennyTheme.textPrimary)
-
-                        if let error = store.goalPlanError {
-                            Label(error, systemImage: "exclamationmark.circle")
-                                .font(.subheadline)
-                                .foregroundStyle(.orange)
-                        }
-
-                        if store.goalPlans.isEmpty {
-                            emptyState
-                        } else {
-                            ForEach(activeGoals) { plan in
-                                goalBreakdownRow(plan)
-                            }
-                            if activeGoals.isEmpty {
-                                emptyState
-                            }
+                        switch store.sBankDataStatus {
+                        case .loading:
+                            ProgressView("Loading your plan…")
+                                .frame(maxWidth: .infinity, minHeight: 220)
+                        case .unavailable:
+                            PennyDataUnavailableCard(
+                                title: "We couldn’t load your plan",
+                                message: "Check your connection and try again.",
+                                retry: { Task { await store.loadOfficialSBankData() } }
+                            )
+                        case .official:
+                            planContent
                         }
                     }
                     .padding(.horizontal, 20)
@@ -59,6 +38,44 @@ struct PennyPlanView: View {
             }
             .sheet(item: $planToEdit) { plan in
                 PennyGoalPlanEditor(plan: plan, asOf: store.financialReferenceDate) { store.saveGoalPlan($0) }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var planContent: some View {
+        monthlySavingsSummary
+        HStack(alignment: .center) {
+            Text("Savings breakdown").font(.title2.weight(.bold))
+            Spacer()
+            Button {
+                showsNewGoal = true
+            } label: {
+                Image(systemName: "plus")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(PennyTheme.forest, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Add goal")
+        }
+        .foregroundStyle(PennyTheme.textPrimary)
+
+        if let error = store.goalPlanError {
+            Label(error, systemImage: "exclamationmark.circle")
+                .font(.subheadline)
+                .foregroundStyle(.orange)
+        }
+
+        if store.goalPlans.isEmpty {
+            emptyState
+        } else {
+            ForEach(activeGoals) { plan in
+                goalBreakdownRow(plan)
+            }
+            if activeGoals.isEmpty {
+                emptyState
             }
         }
     }
@@ -81,16 +98,23 @@ struct PennyPlanView: View {
         return (0..<6).reversed().compactMap { offset in
             guard let month = calendar.date(byAdding: .month, value: -offset, to: referenceMonth),
                   let interval = calendar.dateInterval(of: .month, for: month) else { return nil }
-            let net = store.transactions
-                .filter { $0.date >= interval.start && $0.date < interval.end }
-                .reduce(Decimal.zero) { $0 + $1.amount }
-            return MonthlySavingsPoint(month: month, amount: net)
+            let contribution = store.transactions
+                .filter {
+                    $0.date >= interval.start && $0.date < interval.end
+                        && $0.category == Self.savingsContributionCategory
+                }
+                .reduce(Decimal.zero) { total, transaction in
+                    total + max(.zero, -transaction.amount)
+                }
+            return MonthlySavingsPoint(month: month, amount: contribution)
         }
     }
 
     private var savedThisMonth: Decimal {
         savingsHistory.last?.amount ?? .zero
     }
+
+    private static let savingsContributionCategory = "Invest Deposit"
 
     private var monthlySavingsSummary: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -102,7 +126,7 @@ struct PennyPlanView: View {
                     .monospacedDigit()
                     .minimumScaleFactor(0.72)
                     .lineLimit(1)
-                Text("saved this month")
+                Text("saved in \(store.financialReferenceDate.formatted(.dateTime.month(.wide)))")
                     .font(.subheadline)
                     .foregroundStyle(PennyTheme.textSecondary)
             }
@@ -154,7 +178,7 @@ struct PennyPlanView: View {
             }
             .chartYAxis(.hidden)
             .frame(height: 150)
-            .accessibilityLabel("Net savings over the last six months")
+            .accessibilityLabel("Savings contributions over the last six months")
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)

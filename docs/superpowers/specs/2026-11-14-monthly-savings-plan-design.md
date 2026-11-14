@@ -2,20 +2,20 @@
 
 ## Intent
 
-Make Plan answer three questions immediately: how much the customer aims to save each month, how much their connected transaction activity shows they saved in the latest month, and which goals make up the target. Penny must also understand every locally saved goal in any conversation.
+Make Plan answer three questions immediately: how much the customer aims to save each month, how much their connected transaction activity shows they contributed to savings in the latest month, and which goals make up the target. Penny must also understand every locally saved goal in any conversation.
 
 This remains a read-only planning feature. It does not create accounts, earmark funds, initiate transfers, or claim that net cash flow was deposited into a goal.
 
 ## Approved calculation
 
 - Monthly target is the sum of `monthlyContribution` for unfinished goals.
-- Monthly saved is net connected cash flow for the latest data month: the sum of positive income and negative spending transactions.
-- The six-month chart uses the same net-cash-flow calculation for each calendar month ending with `financialReferenceDate`.
-- Negative months remain visible below zero.
+- Monthly saved is the total value of connected `Invest Deposit` outflows in the latest data month, displayed as a positive contribution amount.
+- The six-month chart uses the same actual savings-contribution calculation for each calendar month ending with `financialReferenceDate`.
+- Other income, spending, withdrawals and internal sweeps do not change the savings-contribution figure.
 - Goal breakdown rows show each unfinished goal's monthly contribution and together equal the displayed target.
 - Goal progress remains based on the locally entered `currentAmount` and `targetAmount`.
 - “Unfinished” means `currentAmount < targetAmount`; unfinished €0/month goals remain visible but add zero to the target.
-- Do not cap a positive or negative monthly net figure at the target.
+- Do not cap the monthly contribution figure at the target.
 
 ## Plan page
 
@@ -23,7 +23,7 @@ Keep the light S-Bank typography and Penny glass styling. Under the Plan header,
 
 1. “Monthly savings”
 2. “€saved / €target” with “saved this month”
-3. A six-month line/area chart with month labels and a visible zero baseline
+3. A six-month line/area chart of actual savings contributions with month labels and a visible zero baseline
 
 Below it, show “Savings breakdown” with the add button and compact goal rows. Each row includes the goal icon, name, monthly amount, and progress. Tapping the row opens a new contextual Penny conversation; the trailing action edits the goal. Do not repeat the existing large goal cards below the breakdown.
 
@@ -39,7 +39,7 @@ The backend field defaults to an empty list so older installed clients remain co
 
 - Manual monthly savings history: rejected because no history exists yet and the chart would initially be empty.
 - Synthetic goal deposits: rejected because fabricated savings would undermine the read-only product.
-- Transaction-derived net savings plus user-entered goal targets: selected because it uses real connected data and keeps the distinction between actual cash flow and planned goals.
+- Transaction-derived `Invest Deposit` contributions plus user-entered goal targets: selected because it uses real connected saving activity without mislabelling disposable cash-flow surplus as savings.
 
 ## Verification and constraints
 

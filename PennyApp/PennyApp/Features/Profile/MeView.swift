@@ -148,7 +148,6 @@ struct MeView: View {
         case .official(let coverage): "Connected history · \(coverage)"
         case .loading: "Updating financial history…"
         case .unavailable: "Financial history is temporarily unavailable"
-        case .fallback: "\(store.transactions.count) recent transactions"
         }
     }
 }

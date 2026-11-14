@@ -18,7 +18,7 @@ struct ConnectBankView: View {
         } else if let baseURL = PennyAPIConfiguration.baseURL {
             self.service = EnableBankingService(baseURL: baseURL)
         } else {
-            self.service = DemoOpenBankingService()
+            self.service = UnavailableOpenBankingService()
         }
     }
 
@@ -134,7 +134,7 @@ struct ConnectBankView: View {
         do {
             let connection = try await service.connect(bank)
             try Task.checkCancellation()
-            store.merge(connection: connection)
+            await store.refreshAllData(adding: connection)
             isConnecting = false
             connectionTask = nil
             selectedBank = nil

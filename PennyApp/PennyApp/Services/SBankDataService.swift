@@ -1,14 +1,13 @@
 import Foundation
 
 enum SBankDataStatus: Equatable, Sendable {
-    case fallback
     case loading
     case official(coverage: String)
     case unavailable
 }
 
-struct SBankCustomerSummary: Decodable, Sendable {
-    struct Coverage: Decodable, Sendable {
+struct SBankCustomerSummary: Codable, Sendable {
+    struct Coverage: Codable, Sendable {
         let from: String
         let to: String
         let transactionCount: Int
@@ -29,6 +28,32 @@ struct SBankCustomerSummary: Decodable, Sendable {
     let coverage: Coverage
     let accounts: [BankAccount]
     let transactions: [BankTransaction]
+}
+
+struct CachedFinancialData: Codable, Sendable {
+    let coverage: String
+    let accounts: [BankAccount]
+    let transactions: [BankTransaction]
+    let openBankingSessionIDs: [String]
+}
+
+struct FinancialDataCache {
+    private let defaults: UserDefaults
+    private let key = "penny.financialData.v1"
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+    }
+
+    func load() -> CachedFinancialData? {
+        guard let data = defaults.data(forKey: key) else { return nil }
+        return try? JSONDecoder().decode(CachedFinancialData.self, from: data)
+    }
+
+    func save(_ value: CachedFinancialData) {
+        guard let data = try? JSONEncoder().encode(value) else { return }
+        defaults.set(data, forKey: key)
+    }
 }
 
 struct SBankDataService: Sendable {

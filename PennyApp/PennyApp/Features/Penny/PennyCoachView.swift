@@ -12,8 +12,20 @@ struct PennyCoachView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         PennyRootHeader(title: "Ask Penny")
-                        prompt
-                        conversations
+                        switch store.sBankDataStatus {
+                        case .loading:
+                            ProgressView("Loading your financial data…")
+                                .frame(maxWidth: .infinity, minHeight: 220)
+                        case .unavailable:
+                            PennyDataUnavailableCard(
+                                title: "Penny can’t access your data yet",
+                                message: "Check your connection and try again.",
+                                retry: { Task { await store.loadOfficialSBankData() } }
+                            )
+                        case .official:
+                            prompt
+                            conversations
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 14)

@@ -79,9 +79,13 @@ struct EnableBankingService: OpenBankingService, Sendable {
             throw OpenBankingError.invalidResponse
         }
 
+        return try await connection(sessionID: sessionID)
+    }
+
+    func connection(sessionID: String) async throws -> BankConnection {
         let data = try await send(URLRequest(url: endpoint("api/open-banking/sessions/\(sessionID)")))
         let dto = try apiDecoder.decode(ConnectionDTO.self, from: data)
-        return try dto.domainValue
+        return try dto.domainValue(sessionID: sessionID)
     }
 
     private var apiDecoder: JSONDecoder {
@@ -130,17 +134,16 @@ struct EnableBankingService: OpenBankingService, Sendable {
         let accounts: [AccountDTO]
         let transactions: [TransactionDTO]
 
-        var domainValue: BankConnection {
-            get throws {
-                guard let institution = Institution(rawValue: institution) else {
-                    throw OpenBankingError.invalidResponse
-                }
-                return BankConnection(
-                    institution: institution,
-                    accounts: try accounts.map { try $0.domainValue(institution: institution) },
-                    transactions: transactions.map { $0.domainValue(institution: institution) }
-                )
+        func domainValue(sessionID: String) throws -> BankConnection {
+            guard let institution = Institution(rawValue: institution) else {
+                throw OpenBankingError.invalidResponse
             }
+            return BankConnection(
+                institution: institution,
+                accounts: try accounts.map { try $0.domainValue(institution: institution) },
+                transactions: transactions.map { $0.domainValue(institution: institution) },
+                sessionID: sessionID
+            )
         }
     }
 

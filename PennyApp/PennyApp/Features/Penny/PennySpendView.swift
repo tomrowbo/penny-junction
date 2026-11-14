@@ -20,7 +20,7 @@ struct PennySpendView: View {
                                 message: "Check your connection and try again. No demo balances are shown.",
                                 retry: { Task { await store.loadOfficialSBankData() } }
                             )
-                        case .official, .fallback:
+                        case .official:
                             AvailableBalanceCard(amount: store.totalPositiveBalance)
                             accounts
                             recentTransactions

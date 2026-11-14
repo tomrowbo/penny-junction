@@ -19,7 +19,7 @@ struct PennyIncomingView: View {
                                 message: "Check your connection and try again.",
                                 retry: { Task { await store.loadOfficialSBankData() } }
                             )
-                        case .official, .fallback:
+                        case .official:
                             UpcomingMoneyCard(
                                 summary: store.upcomingMoney,
                                 transactions: store.transactions,

@@ -68,15 +68,30 @@ final class AppStore {
     private(set) var chatHistory: [PennyChatThread]
     private let goalPlanStore: any PennyGoalPlanStore
     private let conversationStore: any PennyConversationStore
+    private let financialDataCache: FinancialDataCache
+    private var openBankingSessionIDs: [String]
+    private var loadedFinancialDataFromCache: Bool
 
     init(
-        snapshot: DemoSnapshot = DemoData.initial,
+        snapshot: DemoSnapshot? = nil,
         goalPlanStore: (any PennyGoalPlanStore)? = nil,
         conversationStore: (any PennyConversationStore)? = nil
     ) {
-        accounts = snapshot.accounts
-        transactions = snapshot.transactions
-        sBankDataStatus = PennyAPIConfiguration.baseURL == nil ? .fallback : .loading
+        let cache = FinancialDataCache()
+        financialDataCache = cache
+        let cached = snapshot == nil ? cache.load() : nil
+        let initialTransactions = snapshot?.transactions ?? cached?.transactions ?? []
+        accounts = snapshot?.accounts ?? cached?.accounts ?? []
+        transactions = initialTransactions
+        openBankingSessionIDs = cached?.openBankingSessionIDs ?? []
+        loadedFinancialDataFromCache = cached != nil
+        if snapshot != nil {
+            sBankDataStatus = .official(coverage: "Injected data")
+        } else if let cached {
+            sBankDataStatus = .official(coverage: cached.coverage)
+        } else {
+            sBankDataStatus = PennyAPIConfiguration.baseURL == nil ? .unavailable : .loading
+        }
         let resolvedGoalPlanStore = goalPlanStore ?? UserDefaultsPennyGoalPlanStore()
         self.goalPlanStore = resolvedGoalPlanStore
         let resolvedConversationStore = conversationStore ?? UserDefaultsPennyConversationStore()
@@ -86,14 +101,14 @@ final class AppStore {
         do {
             let saved = try resolvedGoalPlanStore.load()
             if saved.isEmpty {
-                let sample = Self.sampleGoalPlan(referenceDate: snapshot.transactions.map(\.date).max() ?? .now)
+                let sample = Self.sampleGoalPlan(referenceDate: initialTransactions.map(\.date).max() ?? .now)
                 goalPlans = [sample]
                 try resolvedGoalPlanStore.save(goalPlans)
             } else {
                 goalPlans = saved
             }
         } catch {
-            goalPlans = [Self.sampleGoalPlan(referenceDate: snapshot.transactions.map(\.date).max() ?? .now)]
+            goalPlans = [Self.sampleGoalPlan(referenceDate: initialTransactions.map(\.date).max() ?? .now)]
             goalPlanError = "Saved goals could not be loaded. Showing the demo goal instead."
         }
 
@@ -142,7 +157,6 @@ final class AppStore {
             previewTransactionID = "tx-prisma"
         case .connected:
             selectedTab = .spend
-            merge(connection: DemoOpenBankingService.connection(for: .nordea))
         case .chat:
             selectedTab = .askPenny
             previewChatID = "car"
@@ -351,16 +365,19 @@ final class AppStore {
         transactions.first { $0.id == id }
     }
 
-    func merge(connection: BankConnection) {
-        let accountIDs = Set(accounts.map(\.id))
-        accounts.append(contentsOf: connection.accounts.filter { !accountIDs.contains($0.id) })
-
-        let transactionIDs = Set(transactions.map(\.id))
-        transactions.append(contentsOf: connection.transactions.filter { !transactionIDs.contains($0.id) })
+    func merge(connection: BankConnection, persist: Bool = true) {
+        accounts.removeAll { $0.institution == connection.institution }
+        accounts.append(contentsOf: connection.accounts)
+        transactions.removeAll { $0.institution == connection.institution }
+        transactions.append(contentsOf: connection.transactions)
         transactions.sort { $0.date > $1.date }
+        if let sessionID = connection.sessionID, !openBankingSessionIDs.contains(sessionID) {
+            openBankingSessionIDs.append(sessionID)
+        }
+        if persist { persistFinancialData() }
     }
 
-    func replaceSBankData(with summary: SBankCustomerSummary) {
+    func replaceSBankData(with summary: SBankCustomerSummary, persist: Bool = true) {
         let requestedPreview = previewTransactionID
         accounts.removeAll { $0.institution == .sBank }
         accounts.insert(contentsOf: summary.accounts, at: 0)
@@ -371,16 +388,65 @@ final class AppStore {
             previewTransactionID = summary.transactions.first?.id
         }
         sBankDataStatus = .official(coverage: summary.coverage.displayRange)
+        loadedFinancialDataFromCache = true
+        if persist { persistFinancialData() }
     }
 
     func loadOfficialSBankData() async {
-        guard let baseURL = PennyAPIConfiguration.baseURL else { return }
+        guard let baseURL = PennyAPIConfiguration.baseURL else {
+            if accounts.isEmpty { sBankDataStatus = .unavailable }
+            return
+        }
+        if loadedFinancialDataFromCache {
+            await refreshConnectedBanks(baseURL: baseURL)
+            return
+        }
         sBankDataStatus = .loading
         do {
             replaceSBankData(with: try await SBankDataService(baseURL: baseURL).summary())
         } catch {
             sBankDataStatus = .unavailable
         }
+    }
+
+    func refreshAllData(adding connection: BankConnection) async {
+        guard let baseURL = PennyAPIConfiguration.baseURL else {
+            merge(connection: connection)
+            return
+        }
+        let previousStatus = sBankDataStatus
+        sBankDataStatus = .loading
+        do {
+            let summary = try await SBankDataService(baseURL: baseURL).summary()
+            replaceSBankData(with: summary, persist: false)
+            merge(connection: connection, persist: false)
+            await refreshConnectedBanks(baseURL: baseURL)
+            persistFinancialData()
+        } catch {
+            sBankDataStatus = previousStatus
+            merge(connection: connection)
+        }
+    }
+
+    private func refreshConnectedBanks(baseURL: URL) async {
+        guard !openBankingSessionIDs.isEmpty else { return }
+        let service = EnableBankingService(baseURL: baseURL)
+        for sessionID in openBankingSessionIDs {
+            if let connection = try? await service.connection(sessionID: sessionID) {
+                merge(connection: connection, persist: false)
+            }
+        }
+        persistFinancialData()
+    }
+
+    private func persistFinancialData() {
+        guard case .official(let coverage) = sBankDataStatus else { return }
+        financialDataCache.save(CachedFinancialData(
+            coverage: coverage,
+            accounts: accounts,
+            transactions: transactions,
+            openBankingSessionIDs: openBankingSessionIDs
+        ))
     }
 
     private func persistGoalPlans() {
