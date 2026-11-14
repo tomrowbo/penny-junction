@@ -3,6 +3,8 @@ import SwiftUI
 struct PennyCoachView: View {
     @Environment(AppStore.self) private var store
     @State private var showConnectBank = false
+    @State private var showNewGoal = false
+    @State private var goalPlanToEdit: PennyGoalPlan?
     private let chats = PennyChatThread.samples
 
     var body: some View {
@@ -12,6 +14,13 @@ struct PennyCoachView: View {
                 ScrollView {
                     VStack(spacing: 14) {
                         header
+                        SafeToSpendCard(result: store.safeToSpend)
+                        UpcomingMoneyCard(
+                            summary: store.upcomingMoney,
+                            transactions: store.transactions,
+                            accounts: store.accounts
+                        )
+                        goalPlans
                         dataSources
                         conversations
                         newChatButton
@@ -26,6 +35,12 @@ struct PennyCoachView: View {
                 PennyChatView(thread: thread)
             }
             .sheet(isPresented: $showConnectBank) { ConnectBankView() }
+            .sheet(isPresented: $showNewGoal) {
+                PennyGoalPlanEditor(asOf: store.financialReferenceDate) { store.saveGoalPlan($0) }
+            }
+            .sheet(item: $goalPlanToEdit) { plan in
+                PennyGoalPlanEditor(plan: plan, asOf: store.financialReferenceDate) { store.saveGoalPlan($0) }
+            }
         }
     }
 
@@ -48,6 +63,46 @@ struct PennyCoachView: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius, style: .continuous))
+    }
+
+    private var goalPlans: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Your plans").font(.headline)
+                Spacer()
+                Button {
+                    showNewGoal = true
+                } label: {
+                    Label("Add goal", systemImage: "plus")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minHeight: SMobiiliMetrics.minimumTapTarget)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(SMobiiliPalette.green)
+            }
+            if let error = store.goalPlanError {
+                Label(error, systemImage: "exclamationmark.circle")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+            ForEach(store.goalPlans) { plan in
+                PennyGoalPlanCard(plan: plan, asOf: store.financialReferenceDate) {
+                    goalPlanToEdit = plan
+                }
+            }
+            if store.goalPlans.isEmpty {
+                Button {
+                    showNewGoal = true
+                } label: {
+                    Text("Create a goal and Penny will keep its progress here.")
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
+                        .padding(.horizontal, 16)
+                        .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius))
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
 
     private var dataSources: some View {
@@ -104,7 +159,7 @@ struct PennyCoachView: View {
 
     private var conversations: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Your goals").font(.headline)
+            Text("Conversations").font(.headline)
             VStack(spacing: 0) {
                 ForEach(chats) { chat in
                     NavigationLink(value: chat) {
@@ -140,7 +195,7 @@ struct PennyCoachView: View {
 
     private var newChatButton: some View {
         NavigationLink(value: PennyChatThread.newChat) {
-            Label("Create new goal", systemImage: "plus.circle.fill")
+            Label("Ask Penny", systemImage: "plus.circle.fill")
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity)
         }
@@ -224,13 +279,15 @@ struct PennyChatMessage: Identifiable, Hashable {
     let role: Role
     let text: String
     let evidence: PennyEvidence?
+    let visualizations: [PennyVisualization]
     let suggestedPrompts: [String]
     let source: String?
 
-    init(role: Role, text: String, evidence: PennyEvidence? = nil, suggestedPrompts: [String] = [], source: String? = nil) {
+    init(role: Role, text: String, evidence: PennyEvidence? = nil, visualizations: [PennyVisualization] = [], suggestedPrompts: [String] = [], source: String? = nil) {
         self.role = role
         self.text = text
         self.evidence = evidence
+        self.visualizations = visualizations
         self.suggestedPrompts = suggestedPrompts
         self.source = source
     }
@@ -384,6 +441,15 @@ struct PennyChatView: View {
                     .padding(.leading, 36)
                     .padding(.trailing, 54)
             }
+            if !message.visualizations.isEmpty {
+                VStack(spacing: 10) {
+                    ForEach(message.visualizations) { visualization in
+                        PennyEvidenceVisualization(visualization: visualization)
+                    }
+                }
+                .padding(.leading, 36)
+                .padding(.trailing, 12)
+            }
             if !message.suggestedPrompts.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -480,7 +546,7 @@ struct PennyChatView: View {
                     accounts: store.accounts,
                     transactions: store.transactions
                 )
-                messages.append(PennyChatMessage(role: .penny, text: reply.message, evidence: reply.evidence, suggestedPrompts: reply.suggestedPrompts, source: reply.source))
+                messages.append(PennyChatMessage(role: .penny, text: reply.message, evidence: reply.evidence, visualizations: reply.visualizations, suggestedPrompts: reply.suggestedPrompts, source: reply.source))
             } catch {
                 errorMessage = error.localizedDescription
             }

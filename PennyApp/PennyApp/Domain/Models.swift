@@ -87,7 +87,21 @@ struct PennyEvidence: Decodable, Hashable, Sendable {
 struct PennyChatReply: Decodable, Hashable, Sendable {
     let message: String
     let evidence: PennyEvidence?
+    let visualizations: [PennyVisualization]
     let suggestedPrompts: [String]
     let source: String
+
+    private enum CodingKeys: String, CodingKey {
+        case message, evidence, visualizations, suggestedPrompts, source
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        message = try container.decode(String.self, forKey: .message)
+        evidence = try container.decodeIfPresent(PennyEvidence.self, forKey: .evidence)
+        visualizations = try container.decodeIfPresent([PennyVisualization].self, forKey: .visualizations) ?? []
+        suggestedPrompts = try container.decode([String].self, forKey: .suggestedPrompts)
+        source = try container.decode(String.self, forKey: .source)
+    }
 }
 

@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { ChatRequest } from "./coach";
 import { ChallengeAnalytics } from "./challenge-analytics";
 import { redactPII } from "./privacy";
+import { buildPennyVisualization, type PennyVisualization } from "./penny-visualization";
 
 export type CoachToolCall = { callID: string; name: string; arguments: string };
 export type CoachModelResponse = { id: string; text: string; calls: CoachToolCall[] };
@@ -36,6 +37,7 @@ export type PennyEvidence = {
 export type PennyChatResponse = {
   message: string;
   evidence?: PennyEvidence;
+  visualizations?: PennyVisualization[];
   suggestedPrompts: string[];
   source: "official-synthetic-dataset" | "fallback-demo";
 };
@@ -196,7 +198,7 @@ export async function runCoachWithTools(request: ChatRequest, analytics: Challen
   ].join("\n");
   let input: unknown = request.messages.map((message) => ({ role: message.role, content: redactPII(message.text) }));
   let previousResponseID: string | undefined;
-  const executed: Array<{ name: string; result: Record<string, unknown> }> = [];
+  const executed: Array<{ callID: string; name: string; result: Record<string, unknown> }> = [];
 
   for (let round = 0; round < 5; round += 1) {
     const response = await model.respond({ instructions, input, tools: coachToolDefinitions, previousResponseID });
@@ -206,6 +208,10 @@ export async function runCoachWithTools(request: ChatRequest, analytics: Challen
       return {
         message,
         evidence: combinedEvidence(executed.map((item) => item.result), analytics),
+        visualizations: executed.flatMap((item) => {
+          const visualization = buildPennyVisualization(item.name, item.result, item.callID);
+          return visualization ? [visualization] : [];
+        }),
         suggestedPrompts: suggestionsFor(executed.map((item) => item.name)),
         source: "official-synthetic-dataset",
       };
@@ -215,7 +221,7 @@ export async function runCoachWithTools(request: ChatRequest, analytics: Challen
       try {
         const result = executeTool(call, analytics);
         const record = result && typeof result === "object" ? result as Record<string, unknown> : { value: result };
-        executed.push({ name: call.name, result: record });
+        executed.push({ callID: call.callID, name: call.name, result: record });
         return { type: "function_call_output", call_id: call.callID, output: JSON.stringify(record) };
       } catch (error) {
         const message = error instanceof Error ? error.message : "Invalid tool request.";
