@@ -35,10 +35,24 @@ enum DashboardSavingInsightCalculator {
         }
         guard monthStarts.count == 4 else { return nil }
 
+        let comparisonEnd = currentMonthStart
+        let institutionsWithBoundaryCoverage = Set(Dictionary(grouping: transactions, by: \.institution).compactMap { institution, rows in
+            guard institution != .sBank else { return institution }
+            guard let earliest = rows.map(\.date).min(),
+                  let latest = rows.map(\.date).max(),
+                  earliest < baselineStart,
+                  latest >= comparisonEnd else { return nil }
+            return institution
+        })
+
         let coveredInstitutions = monthStarts.reduce(nil as Set<Institution>?) { common, monthStart in
             guard let monthEnd = calendar.date(byAdding: .month, value: 1, to: monthStart) else { return [] }
             let present = Set(transactions.lazy
-                .filter { $0.date >= monthStart && $0.date < monthEnd }
+                .filter {
+                    institutionsWithBoundaryCoverage.contains($0.institution)
+                        && $0.date >= monthStart
+                        && $0.date < monthEnd
+                }
                 .map(\.institution))
             return common.map { $0.intersection(present) } ?? present
         } ?? []

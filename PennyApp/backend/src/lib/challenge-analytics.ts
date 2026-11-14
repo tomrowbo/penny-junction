@@ -3,7 +3,7 @@ import { categoryAliases, classifyBasket, isExpense, isIncome, normalizeTransact
 import type { DateRange } from "./sbank-repository";
 import { SBankRepository } from "./sbank-repository";
 
-type SummaryQuery = DateRange & { category?: string; basket?: string };
+type SummaryQuery = DateRange & { category?: string; basket?: string; institutions?: string[] };
 type SimulationQuery = SummaryQuery & { percentage: number };
 
 function round(value: number): number {
@@ -47,6 +47,7 @@ export class ChallengeAnalytics {
   private connectedExpenses(query: SummaryQuery) {
     return this.connected.transactions.filter((transaction) => {
       if (transaction.institution === "S-Bank" || !isExpense(transaction.amount, transaction.category) || !inside(transaction.date, query)) return false;
+      if (query.institutions && !query.institutions.includes(transaction.institution)) return false;
       if (query.category && normalizeTransactionCategory(transaction.category).toLowerCase() !== normalizeTransactionCategory(query.category).toLowerCase()) return false;
       if (query.basket && classifyBasket(transaction.category, transaction.merchant) !== query.basket) return false;
       return true;
@@ -59,7 +60,9 @@ export class ChallengeAnalytics {
 
   spendingSummary(query: SummaryQuery) {
     this.validateCategory(query.category);
-    const bank = this.repository.spendingSummary(query);
+    const bank = query.institutions && !query.institutions.includes("S-Bank")
+      ? { total: 0, transactionCount: 0 }
+      : this.repository.spendingSummary(query);
     const external = this.connectedExpenses(query);
     const total = bank.total + external.reduce((sum, transaction) => sum + Math.abs(transaction.amount), 0);
     return {
@@ -69,11 +72,14 @@ export class ChallengeAnalytics {
       to: query.to,
       category: query.category,
       basket: query.basket,
-      institutions: ["S-Bank", ...new Set(external.map((transaction) => transaction.institution))].sort(),
+      institutions: [
+        ...(query.institutions && !query.institutions.includes("S-Bank") ? [] : ["S-Bank"]),
+        ...new Set(external.map((transaction) => transaction.institution)),
+      ].sort(),
     };
   }
 
-  compareSpending(current: SummaryQuery, previous: DateRange) {
+  compareSpending(current: SummaryQuery, previous: SummaryQuery) {
     const currentResult = this.spendingSummary(current);
     const previousResult = this.spendingSummary({ ...previous, category: current.category, basket: current.basket });
     const change = currentResult.total - previousResult.total;
@@ -85,9 +91,11 @@ export class ChallengeAnalytics {
     };
   }
 
-  basketProfile(range: DateRange) {
+  basketProfile(range: SummaryQuery) {
     const totals = new Map<string, { total: number; transactionCount: number }>();
-    for (const row of this.repository.basketProfile(range)) totals.set(row.basket, { total: row.total, transactionCount: row.transactionCount });
+    if (!range.institutions || range.institutions.includes("S-Bank")) {
+      for (const row of this.repository.basketProfile(range)) totals.set(row.basket, { total: row.total, transactionCount: row.transactionCount });
+    }
     for (const transaction of this.connectedExpenses(range)) {
       const basket = classifyBasket(transaction.category, transaction.merchant);
       const current = totals.get(basket) ?? { total: 0, transactionCount: 0 };
@@ -98,11 +106,13 @@ export class ChallengeAnalytics {
     return [...totals.entries()].map(([basket, value]) => ({ basket, total: round(value.total), transactionCount: value.transactionCount }));
   }
 
-  categoryBreakdown(range: DateRange) {
+  categoryBreakdown(range: SummaryQuery) {
     const totals = new Map<string, { category: string; basket: string; total: number; transactionCount: number }>();
-    for (const row of this.repository.categoryBreakdown(range)) {
-      const key = normalizeTransactionCategory(row.category).toLowerCase();
-      totals.set(key, { ...row, total: row.total, transactionCount: row.transactionCount });
+    if (!range.institutions || range.institutions.includes("S-Bank")) {
+      for (const row of this.repository.categoryBreakdown(range)) {
+        const key = normalizeTransactionCategory(row.category).toLowerCase();
+        totals.set(key, { ...row, total: row.total, transactionCount: row.transactionCount });
+      }
     }
     for (const transaction of this.connectedExpenses(range)) {
       const category = normalizeTransactionCategory(transaction.category);

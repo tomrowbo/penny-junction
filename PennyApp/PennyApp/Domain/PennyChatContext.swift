@@ -21,4 +21,37 @@ struct PennyChatContext: Hashable, Codable, Sendable {
     let accountIDs: [String]
     let transactionIDs: [String]
     let suggestedPrompts: [String]
+    let insight: PennyInsightContext?
+
+    init(
+        type: Kind,
+        referenceID: String,
+        title: String,
+        subtitle: String,
+        accountIDs: [String],
+        transactionIDs: [String],
+        suggestedPrompts: [String],
+        insight: PennyInsightContext? = nil
+    ) {
+        self.type = type
+        self.referenceID = referenceID
+        self.title = title
+        self.subtitle = subtitle
+        self.accountIDs = accountIDs
+        self.transactionIDs = transactionIDs
+        self.suggestedPrompts = suggestedPrompts
+        self.insight = insight
+    }
+}
+
+/// The deterministic evidence envelope behind a proactive dashboard recommendation.
+struct PennyInsightContext: Hashable, Codable, Sendable {
+    let category: String
+    let monthlyOpportunity: Decimal
+    let latestMonthlySpend: Decimal
+    let baselineMonthlySpend: Decimal
+    let baselineFrom: String
+    let latestFrom: String
+    let latestTo: String
+    let institutions: [String]
 }

@@ -41,6 +41,16 @@ const selectedContextSchema = z.object({
   accountIDs: z.array(z.string().min(1).max(200)).max(20),
   transactionIDs: z.array(z.string().min(1).max(200)).max(50),
   suggestedPrompts: z.array(z.string().min(1).max(300)).max(2),
+  insight: z.object({
+    category: z.string().min(1).max(100),
+    monthlyOpportunity: z.number().nonnegative(),
+    latestMonthlySpend: z.number().nonnegative(),
+    baselineMonthlySpend: z.number().nonnegative(),
+    baselineFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    latestFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    latestTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    institutions: z.array(z.string().min(1).max(100)).min(1).max(20),
+  }).strict().optional(),
 }).strict();
 
 const goalPlanSchema = z.object({

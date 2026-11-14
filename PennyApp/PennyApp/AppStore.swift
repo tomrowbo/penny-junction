@@ -391,14 +391,14 @@ final class AppStore {
 
     private func chatContext(type: PennyChatContext.Kind, referenceID: String, title: String,
                              subtitle: String, accountIDs: [String], transactionIDs: [String],
-                             prompts: [String]) -> PennyChatContext {
+                             prompts: [String], insight: PennyInsightContext? = nil) -> PennyChatContext {
         let knownAccounts = Set(accounts.map(\.id))
         let knownTransactions = Set(transactions.map(\.id))
         return PennyChatContext(type: type, referenceID: referenceID,
             title: String(title.prefix(200)), subtitle: String(subtitle.prefix(500)),
             accountIDs: Array(accountIDs.filter { knownAccounts.contains($0) }.prefix(20)),
             transactionIDs: Array(transactionIDs.filter { knownTransactions.contains($0) }.prefix(50)),
-            suggestedPrompts: prompts)
+            suggestedPrompts: prompts, insight: insight)
     }
 
     private func insightChatContext(_ insight: DashboardSavingInsight) -> PennyChatContext {
@@ -407,6 +407,22 @@ final class AppStore {
         let accountIDs = Array(Set(transactions
             .filter { transactionIDs.contains($0.id) }
             .map(\.accountID)).prefix(20))
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar.current
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = Calendar.current.timeZone
+        formatter.dateFormat = "yyyy-MM-dd"
+        let latestEnd = Calendar.current.date(byAdding: .day, value: -1, to: insight.latestMonthEnd) ?? insight.latestMonthEnd
+        let evidence = PennyInsightContext(
+            category: insight.category,
+            monthlyOpportunity: insight.monthlyOpportunity,
+            latestMonthlySpend: insight.latestMonthlySpend,
+            baselineMonthlySpend: insight.baselineMonthlySpend,
+            baselineFrom: formatter.string(from: insight.baselineStart),
+            latestFrom: formatter.string(from: insight.latestMonthStart),
+            latestTo: formatter.string(from: latestEnd),
+            institutions: insight.institutions
+        )
         return chatContext(
             type: .insight,
             referenceID: "dashboard-\(insight.category.lowercased().replacingOccurrences(of: " ", with: "-"))",
@@ -414,7 +430,8 @@ final class AppStore {
             subtitle: "\(insight.monthlyOpportunity.euroCurrency) monthly opportunity · Based on your recent average",
             accountIDs: accountIDs,
             transactionIDs: transactionIDs,
-            prompts: ["Show me where", "Try another idea"]
+            prompts: ["Show me where", "Try another idea"],
+            insight: evidence
         )
     }
 
