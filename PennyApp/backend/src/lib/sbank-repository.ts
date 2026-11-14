@@ -135,8 +135,9 @@ export class SBankRepository {
     return Number(row.balance);
   }
 
-  customerSummary(limit = 30) {
-    const coverage = this.coverage();
+  customerSummary() {
+    const fullCoverage = this.coverage();
+    const range = this.resolvePeriod("last_180_days");
     const accounts = (this.database.prepare(`
       WITH ranked AS (
         SELECT bank_account_id, balance_after_eur,
@@ -154,8 +155,10 @@ export class SBankRepository {
     }));
     const transactions = (this.database.prepare(`
       SELECT id, bank_account_id, category, tx_amount_eur, tx_timestamp, merchant_id
-      FROM transactions WHERE customer_id = ? ORDER BY tx_timestamp DESC, id DESC LIMIT ?
-    `).all(this.customerID, limit) as Array<Record<string, unknown>>).map((row) => ({
+      FROM transactions
+      WHERE customer_id = ? AND tx_timestamp >= ? AND tx_timestamp <= ?
+      ORDER BY tx_timestamp DESC, id DESC
+    `).all(this.customerID, `${range.from}T00:00:00Z`, `${range.to}T23:59:59Z`) as Array<Record<string, unknown>>).map((row) => ({
       id: `sbank-${row.id}`,
       accountID: String(row.bank_account_id),
       institution: "S-Bank",
@@ -164,7 +167,12 @@ export class SBankRepository {
       date: String(row.tx_timestamp),
       category: String(row.category),
     }));
-    return { source: "official-synthetic-dataset", anchorDate: coverage.to, coverage, accounts, transactions };
+    const coverage = transactions.length > 0 ? {
+      from: dateOnly(transactions[transactions.length - 1].date),
+      to: dateOnly(transactions[0].date),
+      transactionCount: transactions.length,
+    } : { from: range.from, to: range.to, transactionCount: 0 };
+    return { source: "official-synthetic-dataset", anchorDate: fullCoverage.to, coverage, accounts, transactions };
   }
 
   mortgageSummary() {
