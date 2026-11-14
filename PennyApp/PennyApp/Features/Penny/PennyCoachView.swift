@@ -322,12 +322,77 @@ struct PennyChatMessage: Identifiable, Hashable, Codable {
     }
 }
 
+enum PennyReplyChunker {
+    static func chunks(from text: String, maxChunks: Int = 3) -> [String] {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, maxChunks > 1 else { return trimmed.isEmpty ? [] : [trimmed] }
+
+        let paragraphs = trimmed
+            .components(separatedBy: "\n\n")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        if paragraphs.count > 1 {
+            return grouped(paragraphs, maxChunks: maxChunks, separator: "\n\n")
+        }
+
+        var sentences: [String] = []
+        trimmed.enumerateSubstrings(in: trimmed.startIndex..<trimmed.endIndex, options: .bySentences) { sentence, _, _, _ in
+            if let sentence = sentence?.trimmingCharacters(in: .whitespacesAndNewlines), !sentence.isEmpty {
+                sentences.append(sentence)
+            }
+        }
+        guard sentences.count > 1, trimmed.count > 180 else { return [trimmed] }
+        return grouped(sentences, maxChunks: maxChunks, separator: " ")
+    }
+
+    private static func grouped(_ parts: [String], maxChunks: Int, separator: String) -> [String] {
+        guard parts.count > maxChunks else { return parts }
+        return Array(parts.prefix(maxChunks - 1)) + [parts.dropFirst(maxChunks - 1).joined(separator: separator)]
+    }
+}
+
+private struct PennyThinkingBubble: View {
+    @State private var shimmerOffset: CGFloat = -1
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 8) {
+            PennyMark(size: 28, inverse: true)
+            Text("Thinking…")
+                .font(.body.weight(.medium))
+                .foregroundStyle(PennyTheme.textSecondary)
+                .padding(.horizontal, 15)
+                .padding(.vertical, 13)
+                .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
+                .overlay {
+                    GeometryReader { proxy in
+                        LinearGradient(
+                            colors: [.clear, Color.white.opacity(0.75), .clear],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                        .frame(width: proxy.size.width * 0.55)
+                        .offset(x: shimmerOffset * proxy.size.width * 1.7)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
+                }
+            Spacer(minLength: 54)
+        }
+        .onAppear {
+            withAnimation(.linear(duration: 1.25).repeatForever(autoreverses: false)) {
+                shimmerOffset = 1
+            }
+        }
+        .accessibilityLabel("Penny is thinking")
+    }
+}
+
 struct PennyChatView: View {
     @Environment(AppStore.self) private var store
     let thread: PennyChatThread
     @State private var messages: [PennyChatMessage]
     @State private var draft = ""
     @State private var isSending = false
+    @State private var showsThinking = false
     @State private var errorMessage: String?
 
     init(thread: PennyChatThread) {
@@ -350,14 +415,8 @@ struct PennyChatView: View {
                         ForEach(messages) { message in
                             messageBubble(message).id(message.id)
                         }
-                        if isSending {
-                            HStack(alignment: .bottom, spacing: 8) {
-                                PennyMark(size: 28, inverse: true)
-                                ProgressView()
-                                    .padding(15)
-                                    .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
-                                Spacer(minLength: 54)
-                            }
+                        if showsThinking {
+                            PennyThinkingBubble()
                         }
                         if let errorMessage {
                             Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
@@ -495,9 +554,13 @@ struct PennyChatView: View {
         draft = ""
         errorMessage = nil
         isSending = true
+        showsThinking = true
         let conversation = messages
         Task { @MainActor in
-            defer { isSending = false }
+            defer {
+                isSending = false
+                showsThinking = false
+            }
             guard let baseURL = PennyAPIConfiguration.baseURL else {
                 errorMessage = "The Penny API has not been configured."
                 return
@@ -510,8 +573,21 @@ struct PennyChatView: View {
                     transactions: store.transactions,
                     context: thread.context
                 )
-                messages.append(PennyChatMessage(role: .penny, text: reply.message, evidence: reply.evidence, visualizations: reply.visualizations, suggestedPrompts: reply.suggestedPrompts, source: reply.source))
-                store.saveConversation(thread: thread, messages: messages)
+                showsThinking = false
+                let chunks = PennyReplyChunker.chunks(from: reply.message)
+                for (index, chunk) in chunks.enumerated() {
+                    if index > 0 { try? await Task.sleep(for: .milliseconds(240)) }
+                    let isLast = index == chunks.count - 1
+                    messages.append(PennyChatMessage(
+                        role: .penny,
+                        text: chunk,
+                        evidence: isLast ? reply.evidence : nil,
+                        visualizations: isLast ? reply.visualizations : [],
+                        suggestedPrompts: isLast ? reply.suggestedPrompts : [],
+                        source: isLast ? reply.source : nil
+                    ))
+                    store.saveConversation(thread: thread, messages: messages)
+                }
             } catch {
                 errorMessage = error.localizedDescription
             }
