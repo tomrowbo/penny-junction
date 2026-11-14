@@ -12,11 +12,12 @@ enum PennyProfileContent {
 
 struct MeView: View {
     @Environment(AppStore.self) private var store
+    @State private var showsResetGoalsConfirmation = false
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                SMobiiliHeader(title: "Me", showsMessages: false)
+                SMobiiliHeader(title: "Profile", showsMessages: false)
                 ScrollView {
                     VStack(spacing: 14) {
                         identityCard
@@ -26,10 +27,22 @@ struct MeView: View {
                     }
                     .padding(SMobiiliMetrics.contentInset)
                 }
-                .background(PennyTheme.canvas)
+                .background(PennyAtmosphere())
             }
             .toolbar(.hidden, for: .navigationBar)
-            .background(SMobiiliPalette.surface.ignoresSafeArea(edges: .top))
+            .background(PennyTheme.obsidian.ignoresSafeArea())
+            .confirmationDialog(
+                "Reset goals?",
+                isPresented: $showsResetGoalsConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Reset goals", role: .destructive) {
+                    store.resetGoalPlans()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Your saved goals will be replaced with Penny’s starting goal.")
+            }
         }
     }
 
@@ -82,6 +95,13 @@ struct MeView: View {
             Text("Personal guidance built around your complete financial picture.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            Divider()
+            Button(role: .destructive) {
+                showsResetGoalsConfirmation = true
+            } label: {
+                Label("Reset goals", systemImage: "arrow.counterclockwise")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
     }
 

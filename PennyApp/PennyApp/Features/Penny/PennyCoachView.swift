@@ -1,165 +1,53 @@
 import SwiftUI
 
 struct PennyCoachView: View {
-    @Environment(AppStore.self) private var store
-    @State private var showConnectBank = false
-    @State private var showNewGoal = false
-    @State private var goalPlanToEdit: PennyGoalPlan?
     private let chats = PennyChatThread.samples
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                SMobiiliHeader(title: "Penny")
+            ZStack {
+                PennyAtmosphere()
                 ScrollView {
-                    VStack(spacing: 14) {
-                        header
-                        SafeToSpendCard(result: store.safeToSpend)
-                        UpcomingMoneyCard(
-                            summary: store.upcomingMoney,
-                            transactions: store.transactions,
-                            accounts: store.accounts
-                        )
-                        goalPlans
-                        dataSources
-                        conversations
+                    VStack(alignment: .leading, spacing: 20) {
+                        PennyRootHeader(title: "Ask Penny", subtitle: "Explore your money in plain language.")
+                        prompt
                         newChatButton
+                        conversations
                     }
-                    .padding(SMobiiliMetrics.contentInset)
-                    .padding(.bottom, SMobiiliMetrics.tabBarHeight)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 14)
+                    .padding(.bottom, 26)
                 }
-                .background(SMobiiliPalette.canvas)
             }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: PennyChatThread.self) { thread in
                 PennyChatView(thread: thread)
             }
-            .sheet(isPresented: $showConnectBank) { ConnectBankView() }
-            .sheet(isPresented: $showNewGoal) {
-                PennyGoalPlanEditor(asOf: store.financialReferenceDate) { store.saveGoalPlan($0) }
-            }
-            .sheet(item: $goalPlanToEdit) { plan in
-                PennyGoalPlanEditor(plan: plan, asOf: store.financialReferenceDate) { store.saveGoalPlan($0) }
-            }
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                PennyMark(size: 30)
-                Spacer()
-                Text("YOUR MONEY, IN PLAIN LANGUAGE")
-                    .font(.caption2.weight(.bold))
-                    .foregroundStyle(SMobiiliPalette.green)
+    private var prompt: some View {
+        HStack(alignment: .top, spacing: 16) {
+            PennyMark(size: 54, inverse: true)
+            VStack(alignment: .leading, spacing: 7) {
+                Text("What’s on your mind?")
+                    .font(.title2.weight(.bold))
+                Text("Ask about spending, try a what-if, or work through a decision. Penny uses your connected financial picture and shows the evidence behind the answer.")
+                    .font(.subheadline)
+                    .foregroundStyle(PennyTheme.textSecondary)
             }
-            Text("What are you working towards?")
-                .font(.title2.weight(.bold))
-            Text("Create a goal, explore what-if scenarios and keep discussing it with Penny as your finances change.")
-                .font(.subheadline)
-                .foregroundStyle(SMobiiliPalette.secondaryLabel)
         }
-        .foregroundStyle(.primary)
-        .padding(16)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius, style: .continuous))
-    }
-
-    private var goalPlans: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Your plans").font(.headline)
-                Spacer()
-                Button {
-                    showNewGoal = true
-                } label: {
-                    Label("Add goal", systemImage: "plus")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(minHeight: SMobiiliMetrics.minimumTapTarget)
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(SMobiiliPalette.green)
-            }
-            if let error = store.goalPlanError {
-                Label(error, systemImage: "exclamationmark.circle")
-                    .font(.caption)
-                    .foregroundStyle(.red)
-            }
-            ForEach(store.goalPlans) { plan in
-                PennyGoalPlanCard(plan: plan, asOf: store.financialReferenceDate) {
-                    goalPlanToEdit = plan
-                }
-            }
-            if store.goalPlans.isEmpty {
-                Button {
-                    showNewGoal = true
-                } label: {
-                    Text("Create a goal and Penny will keep its progress here.")
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
-                        .padding(.horizontal, 16)
-                        .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius))
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-
-    private var dataSources: some View {
-        BrandCard {
-            HStack {
-                Text("Connected data").font(.headline)
-                Spacer()
-                Text(store.hasConnectedExternalBank ? "2 banks" : "S-Bank only")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-            sourceRow(institution: .sBank, title: "S-Bank", detail: "Accounts and transactions")
-            Divider()
-            if let external = store.accounts.first(where: { $0.institution != .sBank }) {
-                sourceRow(institution: external.institution, title: external.institution.rawValue, detail: "Accounts and mortgage")
-            } else {
-                Button {
-                    showConnectBank = true
-                } label: {
-                    HStack(spacing: 12) {
-                        Image(systemName: "plus")
-                            .font(.headline)
-                            .frame(width: 38, height: 38)
-                            .background(PennyTheme.mint, in: RoundedRectangle(cornerRadius: 11))
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("Connect another bank").font(.body.weight(.semibold))
-                            Text("Include mortgages, loans and other accounts")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                    }
-                    .foregroundStyle(.primary)
-                }
-            }
-
-        }
-    }
-
-    private func sourceRow(institution: Institution, title: String, detail: String) -> some View {
-        HStack(spacing: 12) {
-            InstitutionBadge(institution: institution)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(.body.weight(.semibold))
-                Text(detail).font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer()
-            Image(systemName: "checkmark.circle.fill").foregroundStyle(PennyTheme.green)
-        }
+        .foregroundStyle(.white)
+        .pennyGlassSurface(cornerRadius: 24)
     }
 
     private var conversations: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Conversations").font(.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Recent conversations")
+                .font(.title2.weight(.bold))
+                .foregroundStyle(.white)
             VStack(spacing: 0) {
                 ForEach(chats) { chat in
                     NavigationLink(value: chat) {
@@ -168,51 +56,60 @@ struct PennyCoachView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(chat.title)
                                     .font(.body.weight(.semibold))
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(.white)
                                     .lineLimit(1)
                                 Text(chat.preview)
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(PennyTheme.textSecondary)
                                     .lineLimit(1)
                             }
                             Spacer()
                             VStack(alignment: .trailing, spacing: 7) {
-                                Text(chat.time).font(.caption2).foregroundStyle(.secondary)
+                                Text(chat.time).font(.caption2).foregroundStyle(PennyTheme.textSecondary)
                                 Image(systemName: "chevron.right")
                                     .font(.caption2.weight(.bold))
-                                    .foregroundStyle(.tertiary)
+                                    .foregroundStyle(Color.white.opacity(0.48))
                             }
                         }
-                        .padding()
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 70)
                     }
                     .buttonStyle(.plain)
-                    if chat.id != chats.last?.id { Divider().padding(.leading, 70) }
+                    if chat.id != chats.last?.id {
+                        Divider().overlay(Color.white.opacity(0.1)).padding(.leading, 70)
+                    }
                 }
             }
-            .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius, style: .continuous))
+            .pennyGlassSurface(cornerRadius: 22)
         }
     }
 
     private var newChatButton: some View {
         NavigationLink(value: PennyChatThread.newChat) {
-            Label("Ask Penny", systemImage: "plus.circle.fill")
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity)
+            HStack {
+                Text("Start a conversation")
+                Spacer()
+                Image(systemName: "arrow.up.right")
+            }
+            .font(.headline)
+            .foregroundStyle(PennyTheme.obsidian)
+            .padding(.horizontal, 18)
+            .frame(maxWidth: .infinity, minHeight: 54)
+            .background(PennyTheme.emeraldBright, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
         }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
     private func chatIcon(_ chat: PennyChatThread) -> some View {
         if chat.symbol == PennyBrand.markAssetName {
-            PennyMark(size: 42)
+            PennyMark(size: 42, inverse: true)
         } else {
             Image(systemName: chat.symbol)
                 .font(.headline)
-                .foregroundStyle(PennyTheme.green)
+                .foregroundStyle(PennyTheme.emeraldBright)
                 .frame(width: 42, height: 42)
-                .background(PennyTheme.mint, in: RoundedRectangle(cornerRadius: 12))
+                .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
         }
     }
 }
@@ -320,10 +217,10 @@ struct PennyChatView: View {
                         }
                         if isSending {
                             HStack(alignment: .bottom, spacing: 8) {
-                                PennyMark(size: 28)
+                                PennyMark(size: 28, inverse: true)
                                 ProgressView()
                                     .padding(15)
-                                    .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
+                                    .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
                                 Spacer(minLength: 54)
                             }
                         }
@@ -344,7 +241,7 @@ struct PennyChatView: View {
             }
             composer
         }
-        .background(PennyTheme.canvas)
+        .background(PennyAtmosphere())
         .navigationTitle(thread.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
@@ -363,11 +260,12 @@ struct PennyChatView: View {
             }
         }
         .font(.caption)
-        .foregroundStyle(PennyTheme.darkGreen)
+        .foregroundStyle(PennyTheme.emeraldBright)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(PennyTheme.mint, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.white.opacity(0.12)) }
     }
 
     private var dataCoverageLabel: String {
@@ -413,7 +311,8 @@ struct PennyChatView: View {
                     }
                     .padding(12)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.white.opacity(0.1)) }
                 }
                 .buttonStyle(.plain)
             }
@@ -425,13 +324,13 @@ struct PennyChatView: View {
         VStack(alignment: message.role == .user ? .trailing : .leading, spacing: 7) {
             HStack(alignment: .bottom, spacing: 8) {
                 if message.role == .user { Spacer(minLength: 54) }
-                if message.role == .penny { PennyMark(size: 28) }
+                if message.role == .penny { PennyMark(size: 28, inverse: true) }
                 Text(formattedMessage(message.text))
                     .font(.body)
                     .foregroundStyle(message.role == .user ? Color.white : Color.primary)
                     .padding(13)
                     .background(
-                        message.role == .user ? PennyTheme.green : SMobiiliPalette.surface,
+                        message.role == .user ? PennyTheme.emerald : PennyTheme.glassOpaque,
                         in: RoundedRectangle(cornerRadius: 17, style: .continuous)
                     )
                 if message.role == .penny { Spacer(minLength: 54) }
@@ -491,9 +390,10 @@ struct PennyChatView: View {
                 .fontWeight(.semibold)
         }
         .font(.caption)
-        .foregroundStyle(PennyTheme.darkGreen)
+        .foregroundStyle(PennyTheme.emeraldBright)
         .padding(11)
-        .background(PennyTheme.mint, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.white.opacity(0.12)) }
     }
 
     private func formattedMessage(_ text: String) -> AttributedString {
@@ -507,13 +407,13 @@ struct PennyChatView: View {
                 .lineLimit(1...5)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 11)
-                .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 18))
+                .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 18))
             Button { send() } label: {
                 Image(systemName: "arrow.up")
                     .font(.headline.weight(.bold))
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
-                    .background(PennyTheme.green, in: Circle())
+                    .background(PennyTheme.emerald, in: Circle())
             }
             .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             .disabled(isSending)

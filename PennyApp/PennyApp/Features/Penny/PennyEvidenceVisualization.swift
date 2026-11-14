@@ -49,8 +49,8 @@ struct PennyEvidenceVisualization: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(SMobiiliPalette.surface, in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius))
-            .overlay(RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius).strokeBorder(Color.primary.opacity(0.08)))
+            .foregroundStyle(.white)
+            .pennyGlassSurface(cornerRadius: 20)
             .accessibilityElement(children: .contain)
         }
     }

@@ -54,7 +54,7 @@ struct PennyGoalPlanEditor: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(SMobiiliPalette.canvas)
+            .background(PennyAtmosphere())
             .navigationTitle(originalPlan == nil ? "Create goal" : "Edit goal")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
