@@ -33,9 +33,9 @@ struct SEtukorttiHomeView: View {
                 case .saver: EmptyView()
                 case .conceptInfo:
                     ContentUnavailableView(
-                        "Demo view",
+                        "Service unavailable",
                         systemImage: "sparkles",
-                        description: Text("This S-mobiili service is shown as a static Junction concept.")
+                        description: Text("Please try again later.")
                     )
                 }
             }

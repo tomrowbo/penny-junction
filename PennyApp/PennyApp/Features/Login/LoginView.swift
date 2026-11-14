@@ -32,10 +32,6 @@ struct LoginView: View {
                 Spacer()
 
                 VStack(spacing: 14) {
-                    Label(PennyBrand.conceptDisclosure, systemImage: "sparkles")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(PennyTheme.darkGreen)
-
                     Button {
                         isLoggingIn = true
                         Task { @MainActor in
@@ -54,9 +50,6 @@ struct LoginView: View {
                     .controlSize(.large)
                     .disabled(isLoggingIn)
 
-                    Text("No real banking credentials are requested or stored.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
                 }
                 .padding(24)
                 .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))

@@ -61,7 +61,7 @@ struct ConnectBankView: View {
                 }
 
                 Section {
-                    Text("The hackathon backend uses synthetic accounts in mock mode and the same API switches to Enable Banking's PSD2 sandbox when credentials are configured.")
+                    Text("Access is read-only, protected by your bank's authentication and can be withdrawn at any time.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

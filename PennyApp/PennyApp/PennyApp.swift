@@ -22,7 +22,7 @@ struct PennyApp: App {
                         case .wallet: WalletView()
                         case .receipt: ReceiptView()
                         case .saver: SaverView()
-                        case .conceptInfo: ContentUnavailableView("Demo view", systemImage: "sparkles")
+                        case .conceptInfo: ContentUnavailableView("Service unavailable", systemImage: "sparkles")
                         }
                     }
                 } else if store.isAuthenticated {
@@ -60,7 +60,9 @@ private struct MainTabView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            SMobiiliTabBar(selection: $store.selectedTab)
+            if !store.isTabBarHidden {
+                SMobiiliTabBar(selection: $store.selectedTab)
+            }
         }
     }
 }

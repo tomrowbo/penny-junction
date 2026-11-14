@@ -85,6 +85,8 @@ describe("AI context", () => {
     });
     const serialized = JSON.stringify(modelInput);
     expect(serialized).toContain("Calculated financial facts");
+    expect(serialized).toContain("plain text only");
+    expect(serialized).toContain("blank line");
     expect(serialized).not.toContain("alex@example.com");
     expect(serialized).not.toContain("FI2112345600000785");
     expect(serialized).not.toContain("secret-account-id");

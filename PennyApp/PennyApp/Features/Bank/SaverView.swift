@@ -63,9 +63,9 @@ struct SaverView: View {
         .background(SMobiiliPalette.surface.ignoresSafeArea(edges: .top))
         .navigationDestination(for: SMobiiliRoute.self) { _ in
             ContentUnavailableView(
-                "Demo view",
+                "Service unavailable",
                 systemImage: "target",
-                description: Text("This saver action is shown as a static Junction concept.")
+                description: Text("Please try again later.")
             )
         }
     }

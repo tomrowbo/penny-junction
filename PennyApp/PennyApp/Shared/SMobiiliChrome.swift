@@ -165,8 +165,12 @@ struct SMobiiliTabBar: View {
 
     @ViewBuilder
     private func tabIcon(_ tab: AppTab) -> some View {
-        Image(systemName: tab.symbol)
-            .font(.system(size: 19, weight: selection == tab ? .semibold : .regular))
+        if tab == .penny {
+            PennyMark(size: 22)
+        } else {
+            Image(systemName: tab.symbol)
+                .font(.system(size: 19, weight: selection == tab ? .semibold : .regular))
+        }
     }
 }
 

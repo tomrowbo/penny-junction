@@ -2,9 +2,9 @@ import SwiftUI
 
 enum PennyBrand {
     static let productName = "Penny"
+    static let markAssetName = "PennyMark"
     static let partnerDescriptor = "for S-Bank"
     static let tagline = "Your money, in plain language"
-    static let conceptDisclosure = "Junction concept using synthetic S-Bank data"
 }
 
 struct PennyMark: View {
@@ -12,13 +12,14 @@ struct PennyMark: View {
     var inverse = false
 
     var body: some View {
-        Image(systemName: "sparkles")
-            .font(.system(size: size * 0.62, weight: .bold))
-            .foregroundStyle(inverse ? .white : PennyTheme.green)
+        Image(PennyBrand.markAssetName)
+            .resizable()
+            .scaledToFit()
+            .padding(inverse ? size * 0.08 : 0)
             .frame(width: size, height: size)
             .background(
-                (inverse ? Color.white.opacity(0.14) : PennyTheme.mint),
-                in: RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+                inverse ? Color.white.opacity(0.92) : Color.clear,
+                in: Circle()
             )
             .accessibilityLabel(PennyBrand.productName)
     }

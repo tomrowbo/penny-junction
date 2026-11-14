@@ -1,9 +1,8 @@
 import SwiftUI
 
 enum PennyProfileContent {
-    static let customerName = "Demo customer"
+    static let customerName = "Tom"
     static let sectionTitles = ["Connected data", "Privacy and permissions", "About Penny"]
-    static let disclosure = PennyBrand.conceptDisclosure
     static let privacyStatements = [
         "Penny can read balances and transactions, but cannot move money.",
         "Financial calculations happen before minimised facts reach the language model.",
@@ -77,13 +76,10 @@ struct MeView: View {
     }
 
     private var aboutCard: some View {
-        profileSection(PennyProfileContent.sectionTitles[2], symbol: "sparkles") {
+        profileSection(PennyProfileContent.sectionTitles[2], symbol: PennyBrand.markAssetName) {
             Text(PennyBrand.tagline)
                 .font(.subheadline.weight(.semibold))
-            Text(PennyProfileContent.disclosure)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Text("Penny is a standalone Junction prototype designed for S-Bank. It is not an official production banking application.")
+            Text("Personal guidance built around your complete financial picture.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -95,9 +91,18 @@ struct MeView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         BrandCard {
-            Label(title, systemImage: symbol)
+            if symbol == PennyBrand.markAssetName {
+                HStack(spacing: 8) {
+                    PennyMark(size: 22)
+                    Text(title)
+                }
                 .font(.headline)
                 .foregroundStyle(PennyTheme.darkGreen)
+            } else {
+                Label(title, systemImage: symbol)
+                    .font(.headline)
+                    .foregroundStyle(PennyTheme.darkGreen)
+            }
             VStack(alignment: .leading, spacing: 12) {
                 content()
             }
@@ -111,10 +116,10 @@ struct MeView: View {
 
     private var officialDataLabel: String {
         switch store.sBankDataStatus {
-        case .official(let coverage): "Official synthetic data · \(coverage)"
-        case .loading: "Loading official synthetic data…"
-        case .unavailable: "Official dataset unavailable"
-        case .fallback: "Synthetic demo data"
+        case .official(let coverage): "Connected history · \(coverage)"
+        case .loading: "Updating financial history…"
+        case .unavailable: "Financial history is temporarily unavailable"
+        case .fallback: "\(store.transactions.count) recent transactions"
         }
     }
 }

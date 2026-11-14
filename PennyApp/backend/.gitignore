@@ -8,3 +8,4 @@ private*.key
 data/*.sqlite
 data/*.sqlite-*
 data/source/*.csv
+.vercel

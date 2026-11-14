@@ -7,7 +7,6 @@ final class DomainModelTests: XCTestCase {
         XCTAssertEqual(PennyBrand.productName, "Penny")
         XCTAssertEqual(PennyBrand.partnerDescriptor, "for S-Bank")
         XCTAssertEqual(PennyBrand.tagline, "Your money, in plain language")
-        XCTAssertEqual(PennyBrand.conceptDisclosure, "Junction concept using synthetic S-Bank data")
     }
 
     func testStandaloneAppIconIsNotTheLegacySBankProductMark() throws {
@@ -84,8 +83,7 @@ final class DomainModelTests: XCTestCase {
 
     func testPennyProfileExplainsDataPrivacyAndProductIdentity() {
         XCTAssertEqual(PennyProfileContent.sectionTitles, ["Connected data", "Privacy and permissions", "About Penny"])
-        XCTAssertEqual(PennyProfileContent.customerName, "Demo customer")
-        XCTAssertEqual(PennyProfileContent.disclosure, PennyBrand.conceptDisclosure)
+        XCTAssertEqual(PennyProfileContent.customerName, "Tom")
         XCTAssertTrue(PennyProfileContent.privacyStatements.allSatisfy { !$0.localizedCaseInsensitiveContains("disconnect") })
     }
 

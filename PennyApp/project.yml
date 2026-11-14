@@ -22,9 +22,9 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
       configs:
         Debug:
-          PENNY_API_BASE_URL: http://Toms-MacBook-Pro-8.local:3000
+          PENNY_API_BASE_URL: https://penny-junction-backend.vercel.app
         Release:
-          PENNY_API_BASE_URL: ""
+          PENNY_API_BASE_URL: https://penny-junction-backend.vercel.app
     info:
       path: PennyApp/Info.plist
       properties:

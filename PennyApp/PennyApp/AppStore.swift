@@ -16,7 +16,7 @@ enum AppTab: String, CaseIterable, Hashable {
 
     var symbol: String {
         switch self {
-        case .penny: "sparkles"
+        case .penny: PennyBrand.markAssetName
         case .accounts: "building.columns"
         case .me: "person"
         }
@@ -50,6 +50,7 @@ enum DemoLaunchState: String, Sendable {
 final class AppStore {
     var isAuthenticated = false
     var selectedTab: AppTab = .penny
+    var isTabBarHidden = false
     var cardPage = 0
     var cardScrollTarget: String?
     var presentedReferenceRoute: SMobiiliRoute?
@@ -76,6 +77,7 @@ final class AppStore {
         presentedReferenceRoute = nil
         previewTransactionID = nil
         previewChatID = nil
+        isTabBarHidden = false
 
         switch state {
         case .cardOverview:
@@ -126,6 +128,7 @@ final class AppStore {
 
     func login() {
         selectedTab = .penny
+        isTabBarHidden = false
         isAuthenticated = true
     }
 
@@ -133,6 +136,7 @@ final class AppStore {
         presentedReferenceRoute = nil
         previewTransactionID = nil
         previewChatID = nil
+        isTabBarHidden = false
         selectedTab = .penny
     }
 

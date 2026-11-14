@@ -603,7 +603,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PENNY_API_BASE_URL = "http://Toms-MacBook-Pro-8.local:3000";
+				PENNY_API_BASE_URL = "https://penny-junction-backend.vercel.app";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -623,7 +623,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PENNY_API_BASE_URL = "";
+				PENNY_API_BASE_URL = "https://penny-junction-backend.vercel.app";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tomrowbotham.junction.penny;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;

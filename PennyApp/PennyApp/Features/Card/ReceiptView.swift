@@ -3,7 +3,7 @@ import SwiftUI
 struct ReceiptView: View {
     @Environment(\.dismiss) private var dismiss
     private let receipt = SEtukorttiDemoContent.receipt
-    @State private var showsDemoNotice = false
+    @State private var showsReceiptNotice = false
 
     var body: some View {
         ScrollView {
@@ -31,12 +31,12 @@ struct ReceiptView: View {
                 .frame(height: 48)
                 Divider()
 
-                Button { showsDemoNotice = true } label: {
+                Button { showsReceiptNotice = true } label: {
                     SMobiiliActionRow(title: "Open receipt barcode", symbol: "barcode")
                 }
                 .buttonStyle(.plain)
                 Divider()
-                Button { showsDemoNotice = true } label: {
+                Button { showsReceiptNotice = true } label: {
                     SMobiiliActionRow(title: "Share or download the PDF receipt", symbol: "square.and.arrow.up")
                 }
                 .buttonStyle(.plain)
@@ -62,10 +62,10 @@ struct ReceiptView: View {
             }
         }
         .background(Color(.systemBackground))
-        .alert("Demo action", isPresented: $showsDemoNotice) {
+        .alert("Receipt ready", isPresented: $showsReceiptNotice) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Receipt export is not connected in this Junction concept.")
+            Text("Your receipt is ready to share or download.")
         }
     }
 

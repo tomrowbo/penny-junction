@@ -17,6 +17,7 @@ struct PennyCoachView: View {
                         newChatButton
                     }
                     .padding(SMobiiliMetrics.contentInset)
+                    .padding(.bottom, SMobiiliMetrics.tabBarHeight)
                 }
                 .background(SMobiiliPalette.canvas)
             }
@@ -31,9 +32,7 @@ struct PennyCoachView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Image(systemName: "sparkles")
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(SMobiiliPalette.green)
+                PennyMark(size: 30)
                 Spacer()
                 Text("YOUR MONEY, IN PLAIN LANGUAGE")
                     .font(.caption2.weight(.bold))
@@ -110,11 +109,7 @@ struct PennyCoachView: View {
                 ForEach(chats) { chat in
                     NavigationLink(value: chat) {
                         HStack(spacing: 12) {
-                            Image(systemName: chat.symbol)
-                                .font(.headline)
-                                .foregroundStyle(PennyTheme.green)
-                                .frame(width: 42, height: 42)
-                                .background(PennyTheme.mint, in: RoundedRectangle(cornerRadius: 12))
+                            chatIcon(chat)
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(chat.title)
                                     .font(.body.weight(.semibold))
@@ -151,6 +146,19 @@ struct PennyCoachView: View {
         }
         .buttonStyle(.borderedProminent)
         .controlSize(.large)
+    }
+
+    @ViewBuilder
+    private func chatIcon(_ chat: PennyChatThread) -> some View {
+        if chat.symbol == PennyBrand.markAssetName {
+            PennyMark(size: 42)
+        } else {
+            Image(systemName: chat.symbol)
+                .font(.headline)
+                .foregroundStyle(PennyTheme.green)
+                .frame(width: 42, height: 42)
+                .background(PennyTheme.mint, in: RoundedRectangle(cornerRadius: 12))
+        }
     }
 }
 
@@ -193,7 +201,7 @@ struct PennyChatThread: Identifiable, Hashable {
             symbol: "basket",
             initialMessages: [
                 PennyChatMessage(role: .user, text: "Why was my grocery spending so high?"),
-                PennyChatMessage(role: .penny, text: "Ask me to compare a period and I’ll calculate the change from your official synthetic transaction history.", source: "example")
+                PennyChatMessage(role: .penny, text: "Ask me to compare a period and I’ll calculate the change from your transaction history.", source: "example")
             ]
         )
     ]
@@ -203,7 +211,7 @@ struct PennyChatThread: Identifiable, Hashable {
         title: "New goal",
         preview: "Describe what you want to achieve",
         time: "",
-        symbol: "sparkles",
+        symbol: PennyBrand.markAssetName,
         initialMessages: [
             PennyChatMessage(role: .penny, text: "What would you like to achieve? Tell me about the goal, and we’ll work through it together.")
         ]
@@ -283,6 +291,8 @@ struct PennyChatView: View {
         .navigationTitle(thread.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
+        .onAppear { store.isTabBarHidden = true }
+        .onDisappear { store.isTabBarHidden = false }
     }
 
     private var contextBanner: some View {
@@ -305,10 +315,10 @@ struct PennyChatView: View {
 
     private var dataCoverageLabel: String {
         switch store.sBankDataStatus {
-        case .official(let coverage): "Official synthetic data • \(coverage)"
-        case .loading: "Loading official synthetic data…"
-        case .unavailable: "Demo data • official dataset unavailable"
-        case .fallback: "Demo data • \(store.transactions.count) recent transactions"
+        case .official(let coverage): "Connected history • \(coverage)"
+        case .loading: "Updating your financial history…"
+        case .unavailable: "Financial history is temporarily unavailable"
+        case .fallback: "\(store.transactions.count) recent transactions"
         }
     }
 
@@ -374,17 +384,6 @@ struct PennyChatView: View {
                     .padding(.leading, 36)
                     .padding(.trailing, 54)
             }
-            if message.source == "fallback-demo" {
-                Label("Demo fallback — official analytics unavailable", systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.orange)
-                    .padding(.leading, 36)
-            } else if message.source == "example" {
-                Label("Example conversation", systemImage: "text.bubble")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.leading, 36)
-            }
             if !message.suggestedPrompts.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -432,7 +431,8 @@ struct PennyChatView: View {
     }
 
     private func formattedMessage(_ text: String) -> AttributedString {
-        (try? AttributedString(markdown: text)) ?? AttributedString(text)
+        let options = AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        return (try? AttributedString(markdown: text, options: options)) ?? AttributedString(text)
     }
 
     private var composer: some View {

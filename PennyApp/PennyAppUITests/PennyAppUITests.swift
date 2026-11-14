@@ -26,6 +26,35 @@ final class PennyAppUITests: XCTestCase {
         XCTAssertTrue(app.buttons["Discuss with Penny"].waitForExistence(timeout: 5))
     }
 
+    func testCreateGoalClearsTheBottomNavigationBar() {
+        let app = launch(state: "penny")
+        let createGoal = app.buttons["Create new goal"]
+        let pennyTab = app.buttons["Penny"]
+
+        XCTAssertTrue(createGoal.waitForExistence(timeout: 3))
+        XCTAssertTrue(pennyTab.waitForExistence(timeout: 3))
+        app.swipeUp()
+
+        XCTAssertLessThanOrEqual(
+            createGoal.frame.maxY,
+            pennyTab.frame.minY,
+            "The primary goal action must remain fully above the bottom navigation bar."
+        )
+    }
+
+    func testGoalConversationHidesBottomNavigation() {
+        let app = launch(state: "penny")
+        let createGoal = app.buttons["Create new goal"]
+
+        XCTAssertTrue(createGoal.waitForExistence(timeout: 3))
+        app.swipeUp()
+        createGoal.tap()
+
+        XCTAssertTrue(app.navigationBars["New goal"].waitForExistence(timeout: 3))
+        XCTAssertFalse(app.buttons["Accounts"].exists)
+        XCTAssertFalse(app.buttons["Me"].exists)
+    }
+
     private func launch(state: String) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchEnvironment["PENNY_DEMO_STATE"] = state

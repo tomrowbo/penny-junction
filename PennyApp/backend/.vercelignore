@@ -1,0 +1,12 @@
+.env*
+!.env.example
+.next/
+.vercel/
+node_modules/
+private*.pem
+private*.key
+*.crt
+data/*.sqlite
+data/*.sqlite-*
+data/source/*.csv
+*.tsbuildinfo

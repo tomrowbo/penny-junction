@@ -31,7 +31,10 @@ struct TransactionDetailView: View {
                         }
 
                         BrandCard {
-                            Label("Included in Penny", systemImage: "sparkles")
+                            HStack(spacing: 8) {
+                                PennyMark(size: 22)
+                                Text("Included in Penny")
+                            }
                                 .font(.headline)
                                 .foregroundStyle(PennyTheme.darkGreen)
                             Text("Penny uses this transaction with your balances, regular commitments and activity across connected banks when answering your questions.")
