@@ -304,7 +304,7 @@ struct PennyChatThread: Identifiable, Hashable, Codable {
 
 struct PennyChatMessage: Identifiable, Hashable, Codable {
     enum Role: String, Hashable, Codable { case user, penny }
-    let id = UUID()
+    let id: UUID
     let role: Role
     let text: String
     let evidence: PennyEvidence?
@@ -312,7 +312,8 @@ struct PennyChatMessage: Identifiable, Hashable, Codable {
     let suggestedPrompts: [String]
     let source: String?
 
-    init(role: Role, text: String, evidence: PennyEvidence? = nil, visualizations: [PennyVisualization] = [], suggestedPrompts: [String] = [], source: String? = nil) {
+    init(id: UUID = UUID(), role: Role, text: String, evidence: PennyEvidence? = nil, visualizations: [PennyVisualization] = [], suggestedPrompts: [String] = [], source: String? = nil) {
+        self.id = id
         self.role = role
         self.text = text
         self.evidence = evidence
@@ -324,30 +325,46 @@ struct PennyChatMessage: Identifiable, Hashable, Codable {
 
 enum PennyReplyChunker {
     static func chunks(from text: String, maxChunks: Int = 3) -> [String] {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, maxChunks > 1 else { return trimmed.isEmpty ? [] : [trimmed] }
-
-        let paragraphs = trimmed
-            .components(separatedBy: "\n\n")
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-        if paragraphs.count > 1 {
-            return grouped(paragraphs, maxChunks: maxChunks, separator: "\n\n")
+        guard text.contains(where: { !$0.isWhitespace }), maxChunks > 1 else {
+            return text.isEmpty ? [] : [text]
         }
 
-        var sentences: [String] = []
-        trimmed.enumerateSubstrings(in: trimmed.startIndex..<trimmed.endIndex, options: .bySentences) { sentence, _, _, _ in
-            if let sentence = sentence?.trimmingCharacters(in: .whitespacesAndNewlines), !sentence.isEmpty {
-                sentences.append(sentence)
-            }
+        let paragraphBoundaries = boundaries(in: text, separatedBy: "\n\n")
+        if !paragraphBoundaries.isEmpty {
+            return slices(of: text, at: paragraphBoundaries, maxChunks: maxChunks)
         }
-        guard sentences.count > 1, trimmed.count > 180 else { return [trimmed] }
-        return grouped(sentences, maxChunks: maxChunks, separator: " ")
+
+        guard text.count > 180 else { return [text] }
+        var sentenceBoundaries: [String.Index] = []
+        text.enumerateSubstrings(in: text.startIndex..<text.endIndex, options: .bySentences) { _, range, _, _ in
+            if range.upperBound < text.endIndex { sentenceBoundaries.append(range.upperBound) }
+        }
+        return sentenceBoundaries.isEmpty ? [text] : slices(of: text, at: sentenceBoundaries, maxChunks: maxChunks)
     }
 
-    private static func grouped(_ parts: [String], maxChunks: Int, separator: String) -> [String] {
-        guard parts.count > maxChunks else { return parts }
-        return Array(parts.prefix(maxChunks - 1)) + [parts.dropFirst(maxChunks - 1).joined(separator: separator)]
+    private static func boundaries(in text: String, separatedBy separator: String) -> [String.Index] {
+        var result: [String.Index] = []
+        var cursor = text.startIndex
+        while let range = text.range(of: separator, range: cursor..<text.endIndex) {
+            let candidate = range.upperBound
+            if text[cursor..<candidate].contains(where: { !$0.isWhitespace }) {
+                result.append(candidate)
+            }
+            cursor = candidate
+        }
+        return result
+    }
+
+    private static func slices(of text: String, at boundaries: [String.Index], maxChunks: Int) -> [String] {
+        let selected = boundaries.prefix(maxChunks - 1)
+        var start = text.startIndex
+        var result: [String] = []
+        for end in selected where end > start {
+            result.append(String(text[start..<end]))
+            start = end
+        }
+        if start < text.endIndex { result.append(String(text[start..<text.endIndex])) }
+        return result
     }
 }
 

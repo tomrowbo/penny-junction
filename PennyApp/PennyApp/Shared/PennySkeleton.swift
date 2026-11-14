@@ -89,3 +89,32 @@ struct IncomingLoadingSkeleton: View {
         .accessibilityLabel("Loading upcoming money")
     }
 }
+
+struct PennyDataUnavailableCard: View {
+    let title: String
+    let message: String
+    let retry: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Image(systemName: "wifi.exclamationmark")
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(PennyTheme.forest)
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(PennyTheme.textPrimary)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(PennyTheme.textSecondary)
+            Button("Try again", action: retry)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, minHeight: 46)
+                .background(PennyTheme.forest, in: Capsule())
+                .buttonStyle(.plain)
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .pennyGlassSurface(cornerRadius: 24)
+    }
+}

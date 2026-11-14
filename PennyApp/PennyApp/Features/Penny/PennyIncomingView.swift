@@ -10,9 +10,16 @@ struct PennyIncomingView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
                         PennyRootHeader(title: "Incoming", subtitle: "Expected bills, subscriptions and income in one place.")
-                        if store.sBankDataStatus == .loading {
+                        switch store.sBankDataStatus {
+                        case .loading:
                             IncomingLoadingSkeleton()
-                        } else {
+                        case .unavailable:
+                            PennyDataUnavailableCard(
+                                title: "Upcoming money is unavailable",
+                                message: "Check your connection and try again.",
+                                retry: { Task { await store.loadOfficialSBankData() } }
+                            )
+                        case .official, .fallback:
                             UpcomingMoneyCard(
                                 summary: store.upcomingMoney,
                                 transactions: store.transactions,

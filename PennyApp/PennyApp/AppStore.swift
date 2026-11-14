@@ -234,14 +234,21 @@ final class AppStore {
 
     func saveConversation(thread: PennyChatThread, messages: [PennyChatMessage]) {
         guard !messages.isEmpty else { return }
-        let firstQuestion = messages.first(where: { $0.role == .user })?.text
-        let title = thread.context?.title ?? firstQuestion.map { conciseChatTitle($0) } ?? "Ask Penny"
+        let existing = chatHistory.first { $0.id == thread.id }
+        var mergedMessages = existing?.initialMessages ?? []
+        var knownMessageIDs = Set(mergedMessages.map(\.id))
+        for message in messages where knownMessageIDs.insert(message.id).inserted {
+            mergedMessages.append(message)
+        }
+        let context = thread.context ?? existing?.context
+        let firstQuestion = mergedMessages.first(where: { $0.role == .user })?.text
+        let title = context?.title ?? firstQuestion.map { conciseChatTitle($0) } ?? "Ask Penny"
         let saved = PennyChatThread(
             id: thread.id,
             title: title,
-            symbol: conversationSymbol(for: thread.context),
-            initialMessages: Array(messages.suffix(100)),
-            context: thread.context,
+            symbol: conversationSymbol(for: context),
+            initialMessages: Array(mergedMessages.suffix(100)),
+            context: context,
             initialDraft: "",
             updatedAt: .now
         )

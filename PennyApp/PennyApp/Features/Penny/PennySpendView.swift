@@ -11,9 +11,16 @@ struct PennySpendView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 24) {
                         PennyRootHeader(title: "Hi \(PennyProfileContent.customerName)", subtitle: "Here’s what your money can do today.")
-                        if store.sBankDataStatus == .loading {
+                        switch store.sBankDataStatus {
+                        case .loading:
                             SpendLoadingSkeleton()
-                        } else {
+                        case .unavailable:
+                            PennyDataUnavailableCard(
+                                title: "We couldn’t load your money",
+                                message: "Check your connection and try again. No demo balances are shown.",
+                                retry: { Task { await store.loadOfficialSBankData() } }
+                            )
+                        case .official, .fallback:
                             AvailableBalanceCard(amount: store.totalPositiveBalance)
                             accounts
                             recentTransactions
