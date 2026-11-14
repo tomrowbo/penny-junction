@@ -334,7 +334,6 @@ enum PennyReplyChunker {
             return slices(of: text, at: paragraphBoundaries, maxChunks: maxChunks)
         }
 
-        guard text.count > 180 else { return [text] }
         var sentenceBoundaries: [String.Index] = []
         text.enumerateSubstrings(in: text.startIndex..<text.endIndex, options: .bySentences) { _, range, _, _ in
             if range.upperBound < text.endIndex { sentenceBoundaries.append(range.upperBound) }
