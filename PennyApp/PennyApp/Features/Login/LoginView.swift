@@ -6,24 +6,19 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [PennyTheme.green, PennyTheme.darkGreen],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            PennyAtmosphere()
 
             VStack(spacing: 0) {
                 Spacer()
 
                 VStack(spacing: 18) {
-                    PennyMark(size: 82, inverse: true)
+                    PennyMark(size: 88, inverse: true)
                     Text(PennyBrand.productName)
-                        .font(.title.weight(.black))
+                        .font(.largeTitle.weight(.bold))
                         .foregroundStyle(.white)
                     Text(PennyBrand.partnerDescriptor)
                         .font(.headline.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.9))
+                        .foregroundStyle(PennyTheme.emeraldBright)
                     Text(PennyBrand.tagline)
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.82))
@@ -48,11 +43,12 @@ struct LoginView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .tint(PennyTheme.emerald)
                     .disabled(isLoggingIn)
 
                 }
                 .padding(24)
-                .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .pennyGlassSurface(cornerRadius: 28)
                 .padding()
             }
         }

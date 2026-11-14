@@ -33,6 +33,7 @@ struct PennyApp: App {
             }
             .environment(store)
             .tint(PennyTheme.green)
+            .preferredColorScheme(.dark)
             .task(id: store.isAuthenticated) {
                 if store.isAuthenticated {
                     await store.loadOfficialSBankData()

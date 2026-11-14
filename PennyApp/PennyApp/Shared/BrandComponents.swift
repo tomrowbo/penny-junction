@@ -47,9 +47,10 @@ struct BrandCard<Content: View>: View {
         VStack(alignment: .leading, spacing: 12) {
             content
         }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: SMobiiliMetrics.serviceRowRadius, style: .continuous))
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .foregroundStyle(PennyTheme.textPrimary)
+        .pennyGlassSurface(cornerRadius: 20)
     }
 }
 

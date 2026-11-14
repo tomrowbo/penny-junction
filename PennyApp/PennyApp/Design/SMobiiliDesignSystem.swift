@@ -1,14 +1,14 @@
 import SwiftUI
 
 enum SMobiiliPalette {
-    static let green = Color(red: 0.00, green: 0.52, blue: 0.25)
-    static let brightGreen = Color(red: 0.00, green: 0.72, blue: 0.27)
-    static let darkGreen = Color(red: 0.00, green: 0.34, blue: 0.18)
-    static let canvas = Color(red: 0.91, green: 0.97, blue: 0.92)
-    static let surface = Color(.systemBackground)
-    static let secondarySurface = Color(.secondarySystemBackground)
-    static let separator = Color(.separator)
-    static let secondaryLabel = Color(.secondaryLabel)
+    static let green = Color(red: 0.08, green: 0.82, blue: 0.43)
+    static let brightGreen = Color(red: 0.26, green: 0.96, blue: 0.58)
+    static let darkGreen = Color(red: 0.26, green: 0.96, blue: 0.58)
+    static let canvas = Color(red: 0.018, green: 0.027, blue: 0.025)
+    static let surface = Color(red: 0.045, green: 0.075, blue: 0.065)
+    static let secondarySurface = Color(red: 0.065, green: 0.095, blue: 0.085)
+    static let separator = Color.white.opacity(0.13)
+    static let secondaryLabel = Color.white.opacity(0.68)
 }
 
 enum SMobiiliMetrics {

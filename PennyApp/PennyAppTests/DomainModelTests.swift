@@ -32,6 +32,12 @@ final class DomainModelTests: XCTestCase {
         XCTAssertEqual(SMobiiliMetrics.tabBarHeight, 62)
     }
 
+    func testPennyVisualIdentityUsesObsidianWithoutPaleGreenSurfaces() {
+        XCTAssertEqual(PennyTheme.visualIdentity, "obsidian-emerald")
+        XCTAssertFalse(PennyTheme.usesPaleGreenSurfaces)
+        XCTAssertEqual(PennyTheme.spendHeroAssetName, "SpendAurora")
+    }
+
     func testEveryTopLevelTabHasReferenceLabelAndSymbol() {
         XCTAssertEqual(AppTab.allCases.map(\.title), ["Spend", "Plan", "Ask Penny", "Incoming"])
         XCTAssertEqual(AppTab.allCases.map(\.symbol), ["arrow.up.right", "scope", PennyBrand.markAssetName, "sparkle"])
