@@ -1,32 +1,30 @@
 import SwiftUI
 
-struct SafeToSpendCard: View {
-    let result: SafeToSpendResult
+struct AvailableBalanceCard: View {
+    let amount: Decimal
     @ScaledMetric(relativeTo: .largeTitle) private var amountSize = 48
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
-                Image(systemName: "checkmark.shield")
+                Image(systemName: "wallet.bifold")
                     .font(.largeTitle)
                     .foregroundStyle(PennyTheme.heroAccent)
                     .accessibilityHidden(true)
-                Text("Safe to spend")
+                Text("Available now")
                     .font(.headline)
                     .accessibilityAddTraits(.isHeader)
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(result.safeToday.euroCurrency)
+                Text(amount.euroCurrency)
                     .font(.system(size: amountSize, weight: .bold))
                     .monospacedDigit()
                     .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityLabel("Safe to spend today, \(result.safeToday.euroCurrency)")
-                Text("Today")
-                    .font(.subheadline)
-                    .foregroundStyle(PennyTheme.heroSecondary)
-                Text("\(result.safeUntilPayday.euroCurrency) \(result.usesFallbackPeriod ? "over the next 30 days" : "until payday")")
+                    .accessibilityLabel("Available now, \(amount.euroCurrency)")
+                Text("Across your connected accounts")
                     .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(PennyTheme.heroSecondary)
             }
         }
         .padding(20)

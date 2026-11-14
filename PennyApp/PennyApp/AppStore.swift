@@ -62,7 +62,7 @@ final class AppStore {
     var pendingPennyChatContext: PennyChatContext?
     private(set) var accounts: [BankAccount]
     private(set) var transactions: [BankTransaction]
-    private(set) var sBankDataStatus: SBankDataStatus = .fallback
+    private(set) var sBankDataStatus: SBankDataStatus
     private(set) var goalPlans: [PennyGoalPlan]
     private(set) var goalPlanError: String?
     private let goalPlanStore: any PennyGoalPlanStore
@@ -73,6 +73,7 @@ final class AppStore {
     ) {
         accounts = snapshot.accounts
         transactions = snapshot.transactions
+        sBankDataStatus = PennyAPIConfiguration.baseURL == nil ? .fallback : .loading
         let resolvedGoalPlanStore = goalPlanStore ?? UserDefaultsPennyGoalPlanStore()
         self.goalPlanStore = resolvedGoalPlanStore
         do {

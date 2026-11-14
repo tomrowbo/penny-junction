@@ -11,9 +11,13 @@ struct PennySpendView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 24) {
                         PennyRootHeader(title: "Hi \(PennyProfileContent.customerName)", subtitle: "Here’s what your money can do today.")
-                        SafeToSpendCard(result: store.safeToSpend)
-                        accounts
-                        recentTransactions
+                        if store.sBankDataStatus == .loading {
+                            SpendLoadingSkeleton()
+                        } else {
+                            AvailableBalanceCard(amount: store.totalPositiveBalance)
+                            accounts
+                            recentTransactions
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 14)

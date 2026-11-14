@@ -10,12 +10,16 @@ struct PennyIncomingView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
                         PennyRootHeader(title: "Incoming", subtitle: "Expected bills, subscriptions and income in one place.")
-                        UpcomingMoneyCard(
-                            summary: store.upcomingMoney,
-                            transactions: store.transactions,
-                            accounts: store.accounts,
-                            onDiscuss: { store.startPennyChat(about: .upcoming($0)) }
-                        )
+                        if store.sBankDataStatus == .loading {
+                            IncomingLoadingSkeleton()
+                        } else {
+                            UpcomingMoneyCard(
+                                summary: store.upcomingMoney,
+                                transactions: store.transactions,
+                                accounts: store.accounts,
+                                onDiscuss: { store.startPennyChat(about: .upcoming($0)) }
+                            )
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 14)
