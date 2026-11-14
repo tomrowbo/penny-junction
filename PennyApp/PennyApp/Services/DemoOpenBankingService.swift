@@ -16,6 +16,8 @@ struct DemoOpenBankingService: OpenBankingService {
 
     static func connection(for institution: Institution) -> BankConnection {
         let prefix = institution.rawValue.lowercased().replacingOccurrences(of: " ", with: "-")
+        let calendar = Calendar.current
+        let latestMortgageDate = calendar.date(byAdding: .day, value: -6, to: .now) ?? .now
         let account = BankAccount(
             id: "\(prefix)-current",
             institution: institution,
@@ -32,6 +34,17 @@ struct DemoOpenBankingService: OpenBankingService {
             balance: DemoData.decimal("-186450.00"),
             maskedNumber: "•• 2048"
         )
+        let mortgagePayments = (0..<3).map { monthsAgo in
+            BankTransaction(
+                id: "\(prefix)-mortgage-payment-\(monthsAgo)",
+                accountID: account.id,
+                institution: institution,
+                merchant: "Mortgage payment",
+                amount: DemoData.decimal("-1120.00"),
+                date: calendar.date(byAdding: .month, value: -monthsAgo, to: latestMortgageDate) ?? latestMortgageDate,
+                category: "Housing"
+            )
+        }
         let transactions = [
             BankTransaction(
                 id: "\(prefix)-fuel",
@@ -41,17 +54,8 @@ struct DemoOpenBankingService: OpenBankingService {
                 amount: DemoData.decimal("-74.30"),
                 date: Calendar.current.date(byAdding: .day, value: -2, to: .now) ?? .now,
                 category: "Transport"
-            ),
-            BankTransaction(
-                id: "\(prefix)-mortgage-payment",
-                accountID: account.id,
-                institution: institution,
-                merchant: "Mortgage payment",
-                amount: DemoData.decimal("-1120.00"),
-                date: Calendar.current.date(byAdding: .day, value: -6, to: .now) ?? .now,
-                category: "Housing"
             )
-        ]
+        ] + mortgagePayments
         return BankConnection(institution: institution, accounts: [account, mortgage], transactions: transactions)
     }
 }
