@@ -14,6 +14,8 @@ This remains a read-only planning feature. It does not create accounts, earmark 
 - Negative months remain visible below zero.
 - Goal breakdown rows show each unfinished goal's monthly contribution and together equal the displayed target.
 - Goal progress remains based on the locally entered `currentAmount` and `targetAmount`.
+- “Unfinished” means `currentAmount < targetAmount`; unfinished €0/month goals remain visible but add zero to the target.
+- Do not cap a positive or negative monthly net figure at the target.
 
 ## Plan page
 
@@ -31,7 +33,7 @@ If there are no goals, the target is zero and the existing create-goal empty sta
 
 Every chat request sends a bounded read-only list of all locally saved goals: ID, title, target amount, saved-so-far amount, target date, and monthly contribution. The backend validates at most 50 goals and computes the aggregate monthly target deterministically before exposing goal facts to the model.
 
-The selected goal context remains highlighted when a conversation begins from a goal. Goal data is explicitly described to the model as user-entered planning data, not verified bank balances. No account IDs are sent with goals.
+The backend field defaults to an empty list so older installed clients remain compatible. The selected goal context remains highlighted when a conversation begins from a goal. Goal data is explicitly described to the model as user-entered planning data, not verified bank balances. Goal titles are redacted and internal goal IDs stay out of model-visible JSON. No account IDs are sent with goals.
 
 ## Approaches considered
 
