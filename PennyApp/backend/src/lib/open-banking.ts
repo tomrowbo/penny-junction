@@ -52,14 +52,51 @@ function accountKind(details: Record<string, unknown>): "current" | "savings" | 
   return "current";
 }
 
-function transactionCategory(merchant: string, note: string): string {
-  const value = `${merchant} ${note}`.toLowerCase();
-  if (/prisma|market|grocery|lidl|k-market|supermarket/.test(value)) return "Groceries";
-  if (/mortgage|rent|housing/.test(value)) return "Housing";
-  if (/taxi|uber|neste|fuel|hsl|transport/.test(value)) return "Transport";
-  if (/restaurant|cafe|coffee|foodora|wolt/.test(value)) return "Dining out";
-  if (/salary|payroll/.test(value)) return "Income";
-  return "Other";
+function merchantCategoryCode(transaction: Record<string, unknown>): number | undefined {
+  const raw = text(transaction.merchant_category_code)
+    ?? text(nested(transaction, "creditor", "merchant_category_code"))
+    ?? text(nested(transaction, "card_acceptor", "merchant_category_code"));
+  const parsed = raw ? Number(raw.replace(/\D/g, "")) : Number.NaN;
+  return Number.isInteger(parsed) ? parsed : undefined;
+}
+
+function categoryFromMCC(mcc: number | undefined): string | undefined {
+  if (!mcc) return undefined;
+  if (mcc >= 5411 && mcc <= 5499) return "Groceries";
+  if (mcc >= 5812 && mcc <= 5814) return "Restaurants";
+  if ([4111, 4112, 4121, 4131, 4789, 5541, 5542, 5551, 7523].includes(mcc)) return "Transportation";
+  if ([4812, 4814, 4816, 4899, 4900].includes(mcc)) return "Utilities";
+  if ((mcc >= 3000 && mcc <= 3999) || [4411, 4511, 4722, 7011].includes(mcc)) return "Travel";
+  if (mcc === 5912 || (mcc >= 8011 && mcc <= 8099)) return "Health";
+  if ((mcc >= 5200 && mcc <= 5271) || [5712, 5722, 5732, 5734].includes(mcc)) return "Home & Tech";
+  if ([5733, 7832, 7841, 7922].includes(mcc) || (mcc >= 7991 && mcc <= 7999)) return "Entertainment";
+  if ([5311, 5399].includes(mcc) || (mcc >= 5611 && mcc <= 5699) || (mcc >= 5940 && mcc <= 5999)) return "Lifestyle";
+  return undefined;
+}
+
+function transactionCategory(transaction: Record<string, unknown>, merchant: string, note: string, amount: number): string {
+  const providerLabels = [
+    transaction.category,
+    transaction.transaction_category,
+    transaction.purpose_code,
+    nested(transaction, "bank_transaction_code", "description"),
+    nested(transaction, "proprietary_bank_transaction_code", "description"),
+  ].map((value) => text(value)).filter(Boolean).join(" ");
+  const value = `${providerLabels} ${merchant} ${note}`.toLocaleLowerCase("fi-FI");
+
+  if (/invest|investment|sijoit/.test(value)) return amount < 0 ? "Invest Deposit" : "Invest Withdraw";
+  if (/salary|payroll|wage|palkka/.test(value)) return "Salary";
+  if (/mortgage|rent|housing|asuntolaina|vuokra|vastike/.test(value)) return "Housing";
+  if (/electric|utility|utilities|energy|water bill|telecom|internet|sähk|energia|vesilasku|helen|fortum|vattenfall|elenia|caruna|elisa|telia|dna\b/.test(value)) return "Utilities";
+  if (/pharmacy|medical|health|doctor|dentist|apteek|lääkä|terveys|hammas|mehiläinen|terveystalo/.test(value)) return "Health";
+  if (/prisma|s-market|k-market|k-supermarket|k-citymarket|alepa|lidl|grocery|supermarket|ruokakauppa/.test(value)) return "Groceries";
+  if (/restaurant|restaurants|cafe|coffee|foodora|wolt|ravintola|kahvila|hesburger|mcdonald|pizza/.test(value)) return "Restaurants";
+  if (/taxi|taksi|uber|bolt|neste|shell|st1\b|abc\b|fuel|hsl\b|transport|parking|pysäkö|vr\b/.test(value)) return "Transportation";
+  if (/finnair|airline|flight|hotel|booking\.com|airbnb|travel|matkatoimisto/.test(value)) return "Travel";
+  if (/netflix|spotify|cinema|movie|streaming|steam|playstation|entertainment|elokuva/.test(value)) return "Entertainment";
+  if (/gigantti|verkkokauppa|power\b|ikea|hardware|appliance|electronics|kodintekniikka/.test(value)) return "Home & Tech";
+
+  return categoryFromMCC(merchantCategoryCode(transaction)) ?? "Lifestyle";
 }
 
 export function normalizeProviderConnection(
@@ -107,7 +144,7 @@ export function normalizeProviderConnection(
         merchant,
         amount,
         date: parsedDate.toISOString(),
-        category: transactionCategory(merchant, notes),
+        category: transactionCategory(transaction, merchant, notes, amount),
       };
     }).filter((transaction): transaction is NonNullable<typeof transaction> => transaction !== null)
   ).sort((a, b) => b.date.localeCompare(a.date));

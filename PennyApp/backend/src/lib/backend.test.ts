@@ -54,6 +54,32 @@ describe("open-banking normalization", () => {
     }]);
     expect(connection.transactions).toEqual([]);
   });
+
+  it("categorizes every imported Nordea payment using the S-Bank taxonomy", () => {
+    const connection = normalizeProviderConnection("Nordea", [{
+      uid: "nordea-account",
+      details: { name: "Current account" },
+      balances: { balances: [] },
+      transactions: { transactions: [
+        { entry_reference: "grocery", booking_date: "2026-11-10", transaction_amount: { amount: "42.10" }, credit_debit_indicator: "DBIT", creditor: { name: "Unknown shop" }, merchant_category_code: "5411" },
+        { entry_reference: "utility", booking_date: "2026-11-09", transaction_amount: { amount: "65.00" }, credit_debit_indicator: "DBIT", creditor: { name: "Helen Oy" }, remittance_information: ["Sähkölasku"] },
+        { entry_reference: "health", booking_date: "2026-11-08", transaction_amount: { amount: "19.90" }, credit_debit_indicator: "DBIT", creditor: { name: "Yliopiston Apteekki" } },
+        { entry_reference: "transport", booking_date: "2026-11-07", transaction_amount: { amount: "3.20" }, credit_debit_indicator: "DBIT", creditor: { name: "HSL" } },
+        { entry_reference: "salary", booking_date: "2026-11-06", transaction_amount: { amount: "3200" }, credit_debit_indicator: "CRDT", debtor: { name: "Acme Oy" }, remittance_information: ["Palkka marraskuu"] },
+        { entry_reference: "unknown", booking_date: "2026-11-05", transaction_amount: { amount: "12.00" }, credit_debit_indicator: "DBIT", creditor: { name: "Maksu 12345" } },
+      ] },
+    }]);
+
+    expect(Object.fromEntries(connection.transactions.map((transaction) => [transaction.id.split(":").at(-1), transaction.category]))).toEqual({
+      grocery: "Groceries",
+      utility: "Utilities",
+      health: "Health",
+      transport: "Transportation",
+      salary: "Salary",
+      unknown: "Lifestyle",
+    });
+    expect(connection.transactions.every((transaction) => transaction.category !== "Other")).toBe(true);
+  });
 });
 
 describe("AI context", () => {
