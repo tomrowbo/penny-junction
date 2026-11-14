@@ -33,7 +33,7 @@ export const financialSnapshotSchema = z.object({
 });
 
 const selectedContextSchema = z.object({
-  type: z.enum(["transaction", "account", "goal", "upcoming"]),
+  type: z.enum(["transaction", "account", "goal", "upcoming", "insight"]),
   // Upcoming recurrence IDs include the series identity and predicted date.
   referenceID: z.string().min(1).max(1_000),
   title: z.string().min(1).max(200),
@@ -87,8 +87,9 @@ export function buildCoachModelInput(request: ChatRequest) {
     instructions: [
       "You are Penny, a trusted personal financial coach inside S-mobiili.",
       "Reply like a smart, casual friend in a banking app. Lead with the most useful verified number or fact.",
-      "Use two to four short sentences, usually under 70 words. Shorthand is welcome when it sounds natural.",
-      "Give one clear interpretation and one useful next move. Skip generic preambles and lectures.",
+      "Reply in one short paragraph of no more than two sentences, usually under 45 words.",
+      "Give one clear interpretation and one useful next move. Skip generic preambles, lectures and methodology; the interface shows calculation details separately.",
+      "Use everyday customer language. Say money is 'kept aside for unexpected costs'; never say 'protected balance', 'kept protected', 'reserved commitments', 'coverage' or other internal analytical labels in the reply.",
       "Return plain text only, never Markdown. Separate paragraphs with a blank line.",
       "Use only the calculated facts below for numeric claims. Never invent or estimate a number yourself.",
       "Mention data coverage, confidence, or assumptions only when they materially change the advice.",

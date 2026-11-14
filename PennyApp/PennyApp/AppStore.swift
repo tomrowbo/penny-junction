@@ -57,6 +57,7 @@ final class AppStore {
     var previewTransactionID: String?
     var previewChatID: String?
     var pendingPennyChatContext: PennyChatContext?
+    var pendingPennyChatThread: PennyChatThread?
     private(set) var accounts: [BankAccount]
     private(set) var transactions: [BankTransaction]
     private(set) var sBankDataStatus: SBankDataStatus
@@ -305,6 +306,7 @@ final class AppStore {
         switch context.type {
         case .account: return "building.columns"
         case .upcoming: return "calendar"
+        case .insight: return "sparkles"
         case .transaction:
             let category = transaction(id: context.referenceID)?.category
             switch category {
@@ -327,7 +329,29 @@ final class AppStore {
     }
 
     func startPennyChat(about subject: PennyChatSubject?) {
+        pendingPennyChatThread = nil
         pendingPennyChatContext = subject.flatMap { context(for: $0) }
+        presentedReferenceRoute = nil
+        previewTransactionID = nil
+        previewChatID = nil
+        isTabBarHidden = false
+        selectedTab = .askPenny
+    }
+
+    func startPennyChat(for insight: DashboardSavingInsight) {
+        let context = insightChatContext(insight)
+        let messages = insightMessages(insight)
+        let thread = PennyChatThread(
+            id: UUID().uuidString,
+            title: "Save on \(insight.category)",
+            symbol: "sparkles",
+            initialMessages: messages,
+            context: context,
+            updatedAt: .now
+        )
+        saveConversation(thread: thread, messages: messages)
+        pendingPennyChatContext = nil
+        pendingPennyChatThread = thread
         presentedReferenceRoute = nil
         previewTransactionID = nil
         previewChatID = nil
@@ -375,6 +399,82 @@ final class AppStore {
             accountIDs: Array(accountIDs.filter { knownAccounts.contains($0) }.prefix(20)),
             transactionIDs: Array(transactionIDs.filter { knownTransactions.contains($0) }.prefix(50)),
             suggestedPrompts: prompts)
+    }
+
+    private func insightChatContext(_ insight: DashboardSavingInsight) -> PennyChatContext {
+        let knownTransactions = Set(transactions.map(\.id))
+        let transactionIDs = Array(insight.transactionIDs.filter(knownTransactions.contains).prefix(50))
+        let accountIDs = Array(Set(transactions
+            .filter { transactionIDs.contains($0.id) }
+            .map(\.accountID)).prefix(20))
+        return chatContext(
+            type: .insight,
+            referenceID: "dashboard-\(insight.category.lowercased().replacingOccurrences(of: " ", with: "-"))",
+            title: "Save on \(insight.category)",
+            subtitle: "\(insight.monthlyOpportunity.euroCurrency) monthly opportunity · Based on your recent average",
+            accountIDs: accountIDs,
+            transactionIDs: transactionIDs,
+            prompts: ["Show me where", "Try another idea"]
+        )
+    }
+
+    private func insightMessages(_ insight: DashboardSavingInsight) -> [PennyChatMessage] {
+        let category = insight.category.lowercased()
+        let evidence = "Last month, you spent \(insight.latestMonthlySpend.euroCurrency) on \(category) — \(insight.monthlyOpportunity.euroCurrency) above your recent monthly average."
+        let goalEnding = insight.goalTitle.map { " for your \($0) goal" } ?? ""
+        let action = "Keeping it near \(insight.baselineMonthlySpend.euroCurrency) could free up \(insight.monthlyOpportunity.euroCurrency) this month\(goalEnding)."
+        return [
+            PennyChatMessage(role: .penny, text: evidence, source: "local-dashboard-insight"),
+            PennyChatMessage(
+                role: .penny,
+                text: action,
+                visualizations: [insightVisualization(insight)],
+                suggestedPrompts: ["Show me where", "Try another idea", "Adjust my goal"],
+                source: "local-dashboard-insight"
+            )
+        ]
+    }
+
+    private func insightVisualization(_ insight: DashboardSavingInsight) -> PennyVisualization {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        let periodEnd = Calendar.current.date(byAdding: .day, value: -1, to: insight.latestMonthEnd) ?? insight.latestMonthEnd
+        let sourceIDs = insight.transactionIDs.isEmpty ? ["dashboard-insight"] : insight.transactionIDs
+        let sourceIDSet = Set(sourceIDs)
+        let sourceTransactions = transactions.filter { sourceIDSet.contains($0.id) }
+        let baselineReferences = sourceTransactions
+            .filter { $0.date < insight.latestMonthStart }
+            .map(\.id)
+        let latestReferences = sourceTransactions
+            .filter { $0.date >= insight.latestMonthStart }
+            .map(\.id)
+        return PennyVisualization(
+            id: "dashboard-insight-\(insight.category.lowercased().replacingOccurrences(of: " ", with: "-"))",
+            title: "\(insight.category) compared with usual",
+            caption: "Last complete month vs your previous 3-month average.",
+            period: PennyVisualizationPeriod(
+                from: formatter.string(from: insight.baselineStart),
+                to: formatter.string(from: periodEnd)
+            ),
+            institutions: insight.institutions,
+            unit: .eur,
+            accessibilitySummary: "\(insight.category) was \(insight.monthlyOpportunity.euroCurrency) above your recent monthly average.",
+            sourceIDs: sourceIDs,
+            presentation: .bar([
+                PennyVisualizationPoint(
+                    id: "usual",
+                    label: "Usual month",
+                    value: NSDecimalNumber(decimal: insight.baselineMonthlySpend).doubleValue,
+                    referenceIDs: baselineReferences
+                ),
+                PennyVisualizationPoint(
+                    id: "latest",
+                    label: "Last month",
+                    value: NSDecimalNumber(decimal: insight.latestMonthlySpend).doubleValue,
+                    referenceIDs: latestReferences
+                )
+            ])
+        )
     }
 
     private func chatDate(_ date: Date) -> String {

@@ -11,7 +11,7 @@ enum PennyChatSubject: Hashable, Codable, Sendable {
 /// A compact display snapshot. Financial calculations still belong to the finance engine.
 struct PennyChatContext: Hashable, Codable, Sendable {
     enum Kind: String, Hashable, Codable, Sendable {
-        case transaction, account, goal, upcoming
+        case transaction, account, goal, upcoming, insight
     }
 
     let type: Kind

@@ -126,6 +126,11 @@ struct PennyCoachView: View {
     }
 
     private func openPendingContext() {
+        if let thread = store.pendingPennyChatThread {
+            store.pendingPennyChatThread = nil
+            path = [thread]
+            return
+        }
         guard let context = store.pendingPennyChatContext else { return }
         store.pendingPennyChatContext = nil
         path = [.conversation(context: context)]
@@ -211,6 +216,7 @@ struct PennyChatContextCard: View {
         case .account: "building.columns"
         case .goal: "target"
         case .upcoming: "calendar"
+        case .insight: "sparkles"
         }
     }
 
