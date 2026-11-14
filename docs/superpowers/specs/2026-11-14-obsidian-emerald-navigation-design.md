@@ -6,7 +6,7 @@ Make Penny feel calmer, bolder and more premium by replacing the crowded all-in-
 
 ## Chosen approach
 
-The selected visual direction is **Obsidian Emerald**: an ink-black and deep-forest foundation, luminous emerald highlights, restrained aurora gradients, white typography and native translucent materials. This was chosen over Pearl Prism and Midnight Violet because it preserves Penny's green identity while reaching the smooth, high-contrast finish of Cleo-style competitors.
+The selected direction evolved into **Pearl Emerald** after visual review: a neutral light canvas, S-Bank's native SF typography, emerald actions, restrained glass and one high-contrast forest hero. It preserves Penny's green identity while borrowing the calm structure and finish of strong financial-coaching competitors.
 
 ## Information architecture
 
@@ -20,9 +20,9 @@ The selected visual direction is **Obsidian Emerald**: an ink-black and deep-for
 ## Visual system
 
 - Remove pale green from backgrounds, cards, banners and controls throughout the app.
-- Use a near-black base with deep emerald and restrained blue-black gradients. Emerald is the only interactive accent.
-- Root content floats on native SwiftUI material with thin light edges and soft, directional depth. Materials remain legible in increased contrast and reduce transparency settings.
-- Use large, bold SF Pro hierarchy for key financial values, compact system text elsewhere, and tabular numerals for money.
+- Use a neutral white/pearl base with no pale-green surface tint. Emerald is the only interactive accent.
+- Root content floats on native SwiftUI material with thin neutral edges and soft, directional depth. Materials remain legible in increased contrast and reduce transparency settings.
+- Use the native SF Pro hierarchy observed in S-Bank for key financial values and supporting copy, with tabular numerals for money. Do not substitute a competitor typeface.
 - Use one authored abstract background image behind the Spend hero, darkened with a gradient overlay so the value and explanation meet contrast requirements. Other surfaces use gradients and material rather than repeated imagery.
 - Keep the supplied Penny logo unchanged. Present it on a contrasting circular plate where necessary rather than recolouring the asset.
 - The bottom bar is a single floating glass capsule with four equal 44-point-or-larger destinations. Ask Penny is visually emphasized but remains a destination, not an action button.
@@ -43,4 +43,4 @@ The selected visual direction is **Obsidian Emerald**: an ink-black and deep-for
 
 ## Completion criteria
 
-Each feature is reachable in one tap from the new bar; the initial Spend screen contains only the primary snapshot above the fold; the supplied Penny mark is visible in Ask Penny navigation; no pale-green surface remains; and simulator captures demonstrate legibility in light/dark system appearances and a large Dynamic Type size.
+Each feature is reachable in one tap from the new bar; the initial Spend screen leads with the primary snapshot; the supplied Penny mark is visible in Ask Penny navigation; no pale-green surface remains; and simulator captures demonstrate the intentional light appearance and a large Dynamic Type size.

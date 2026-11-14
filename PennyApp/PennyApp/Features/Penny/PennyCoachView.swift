@@ -39,7 +39,7 @@ struct PennyCoachView: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .foregroundStyle(.white)
+        .foregroundStyle(PennyTheme.textPrimary)
         .pennyGlassSurface(cornerRadius: 24)
     }
 
@@ -47,7 +47,7 @@ struct PennyCoachView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Recent conversations")
                 .font(.title2.weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(PennyTheme.textPrimary)
             VStack(spacing: 0) {
                 ForEach(chats) { chat in
                     NavigationLink(value: chat) {
@@ -56,7 +56,7 @@ struct PennyCoachView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(chat.title)
                                     .font(.body.weight(.semibold))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(PennyTheme.textPrimary)
                                     .lineLimit(1)
                                 Text(chat.preview)
                                     .font(.caption)
@@ -68,7 +68,7 @@ struct PennyCoachView: View {
                                 Text(chat.time).font(.caption2).foregroundStyle(PennyTheme.textSecondary)
                                 Image(systemName: "chevron.right")
                                     .font(.caption2.weight(.bold))
-                                    .foregroundStyle(Color.white.opacity(0.48))
+                                    .foregroundStyle(PennyTheme.textSecondary.opacity(0.7))
                             }
                         }
                         .padding(.horizontal, 16)
@@ -76,7 +76,7 @@ struct PennyCoachView: View {
                     }
                     .buttonStyle(.plain)
                     if chat.id != chats.last?.id {
-                        Divider().overlay(Color.white.opacity(0.1)).padding(.leading, 70)
+                        Divider().overlay(Color.black.opacity(0.08)).padding(.leading, 70)
                     }
                 }
             }
@@ -109,7 +109,7 @@ struct PennyCoachView: View {
                 .font(.headline)
                 .foregroundStyle(PennyTheme.emeraldBright)
                 .frame(width: 42, height: 42)
-                .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
+                .background(Color.black.opacity(0.045), in: RoundedRectangle(cornerRadius: 12))
         }
     }
 }
@@ -265,7 +265,7 @@ struct PennyChatView: View {
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.white.opacity(0.12)) }
+        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.black.opacity(0.09)) }
     }
 
     private var dataCoverageLabel: String {
@@ -312,7 +312,7 @@ struct PennyChatView: View {
                     .padding(12)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.white.opacity(0.1)) }
+                    .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.black.opacity(0.08)) }
                 }
                 .buttonStyle(.plain)
             }
@@ -327,7 +327,7 @@ struct PennyChatView: View {
                 if message.role == .penny { PennyMark(size: 28, inverse: true) }
                 Text(formattedMessage(message.text))
                     .font(.body)
-                    .foregroundStyle(message.role == .user ? Color.white : Color.primary)
+                    .foregroundStyle(message.role == .user ? PennyTheme.textPrimary : Color.primary)
                     .padding(13)
                     .background(
                         message.role == .user ? PennyTheme.emerald : PennyTheme.glassOpaque,
@@ -393,7 +393,7 @@ struct PennyChatView: View {
         .foregroundStyle(PennyTheme.emeraldBright)
         .padding(11)
         .background(PennyTheme.glassOpaque, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.white.opacity(0.12)) }
+        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(Color.black.opacity(0.09)) }
     }
 
     private func formattedMessage(_ text: String) -> AttributedString {

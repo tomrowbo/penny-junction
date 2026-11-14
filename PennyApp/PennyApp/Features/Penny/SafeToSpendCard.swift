@@ -3,12 +3,13 @@ import SwiftUI
 struct SafeToSpendCard: View {
     let result: SafeToSpendResult
     @State private var showsCalculation = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Label("Safe to spend", systemImage: "checkmark.shield")
                 .font(.headline)
-                .foregroundStyle(PennyTheme.emeraldBright)
+                .foregroundStyle(PennyTheme.heroAccent)
                 .accessibilityAddTraits(.isHeader)
 
             VStack(alignment: .leading, spacing: 4) {
@@ -18,17 +19,17 @@ struct SafeToSpendCard: View {
                     .accessibilityLabel("Estimated safe to spend today, \(result.safeToday.euroCurrency)")
                 Text("For today")
                     .font(.subheadline)
-                    .foregroundStyle(SMobiiliPalette.secondaryLabel)
+                    .foregroundStyle(PennyTheme.heroSecondary)
                 Text("\(result.safeUntilPayday.euroCurrency) \(result.usesFallbackPeriod ? "over the next 30 days" : "until payday")")
                     .font(.subheadline.weight(.semibold))
             }
 
             Text(periodLabel)
                 .font(.caption)
-                .foregroundStyle(SMobiiliPalette.secondaryLabel)
+                .foregroundStyle(PennyTheme.heroSecondary)
             Text("Estimate · \(result.dataCompleteness.label) · \(result.confidence.rawValue.capitalized) confidence")
                 .font(.caption)
-                .foregroundStyle(SMobiiliPalette.secondaryLabel)
+                .foregroundStyle(PennyTheme.heroSecondary)
                 .fixedSize(horizontal: false, vertical: true)
 
             if result.shortfall > 0 {
@@ -37,7 +38,29 @@ struct SafeToSpendCard: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            DisclosureGroup(isExpanded: $showsCalculation) {
+            Button {
+                if reduceMotion {
+                    showsCalculation.toggle()
+                } else {
+                    withAnimation(.snappy(duration: 0.22)) {
+                        showsCalculation.toggle()
+                    }
+                }
+            } label: {
+                HStack {
+                    Text("How this is calculated")
+                    Spacer()
+                    Image(systemName: showsCalculation ? "chevron.down" : "chevron.right")
+                }
+                .font(.subheadline.weight(.semibold))
+                .frame(minHeight: SMobiiliMetrics.minimumTapTarget, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .accessibilityValue(showsCalculation ? "Expanded" : "Collapsed")
+
+            if showsCalculation {
                 VStack(alignment: .leading, spacing: 10) {
                     amountRow("Current-account balance", result.availableBalance)
                     amountRow("Reserved commitments", result.reservedCommitments)
@@ -52,31 +75,31 @@ struct SafeToSpendCard: View {
                     Text("\(result.sourceTransactionIDs.count) source transactions support the reserved commitments.")
                 }
                 .font(.caption)
-                .foregroundStyle(SMobiiliPalette.secondaryLabel)
+                .foregroundStyle(PennyTheme.heroSecondary)
                 .padding(.top, 8)
                 .accessibilityElement(children: .contain)
-            } label: {
-                Text("How this is calculated")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(minHeight: SMobiiliMetrics.minimumTapTarget, alignment: .leading)
             }
-            .tint(PennyTheme.green)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundStyle(.white)
         .background {
-            ZStack {
-                Image(PennyTheme.spendHeroAssetName)
-                    .resizable()
-                    .scaledToFill()
-                LinearGradient(
-                    colors: [Color.black.opacity(0.22), Color.black.opacity(0.72), PennyTheme.obsidian.opacity(0.94)],
-                    startPoint: .topTrailing,
-                    endPoint: .bottomLeading
-                )
+            GeometryReader { proxy in
+                ZStack {
+                    Image(PennyTheme.spendHeroAssetName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: proxy.size.width, height: proxy.size.height)
+                        .clipped()
+                    LinearGradient(
+                        colors: [Color.black.opacity(0.22), Color.black.opacity(0.72), PennyTheme.obsidian.opacity(0.94)],
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                    )
+                }
+                .frame(width: proxy.size.width, height: proxy.size.height)
+                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
             }
-            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         }
         .overlay {
             RoundedRectangle(cornerRadius: 28, style: .continuous)

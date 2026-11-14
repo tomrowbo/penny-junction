@@ -5,10 +5,9 @@ import Charts
 struct PennyEvidenceVisualization: View {
     let visualization: PennyVisualization
     var onOpenSource: ((String) -> Void)? = nil
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    private var accent: Color { colorScheme == .dark ? .mint : SMobiiliPalette.darkGreen }
+    private var accent: Color { PennyTheme.emerald }
 
     var body: some View {
         if visualization.isValid {
@@ -49,7 +48,7 @@ struct PennyEvidenceVisualization: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .foregroundStyle(.white)
+            .foregroundStyle(PennyTheme.textPrimary)
             .pennyGlassSurface(cornerRadius: 20)
             .accessibilityElement(children: .contain)
         }

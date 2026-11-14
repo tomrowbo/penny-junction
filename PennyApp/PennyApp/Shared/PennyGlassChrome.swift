@@ -3,13 +3,18 @@ import SwiftUI
 struct PennyGlassTabBar: View {
     @Binding var selection: AppTab
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: 2) {
             ForEach(AppTab.allCases, id: \.self) { tab in
                 Button {
-                    withAnimation(.snappy(duration: 0.28)) {
+                    if reduceMotion {
                         selection = tab
+                    } else {
+                        withAnimation(.snappy(duration: 0.28)) {
+                            selection = tab
+                        }
                     }
                 } label: {
                     VStack(spacing: 5) {
@@ -20,7 +25,7 @@ struct PennyGlassTabBar: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.72)
                     }
-                    .foregroundStyle(selection == tab ? Color.white : Color.white.opacity(0.66))
+                    .foregroundStyle(selection == tab ? PennyTheme.obsidian : PennyTheme.textSecondary)
                     .frame(maxWidth: .infinity, minHeight: 58)
                     .contentShape(Rectangle())
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
@@ -33,14 +38,14 @@ struct PennyGlassTabBar: View {
         .padding(5)
         .background {
             Capsule(style: .continuous)
-                .fill(reduceTransparency ? Color(red: 0.035, green: 0.075, blue: 0.065) : Color.black.opacity(0.34))
+                .fill(reduceTransparency ? Color.white : Color.white.opacity(0.74))
                 .background(.ultraThinMaterial, in: Capsule(style: .continuous))
                 .overlay {
                     Capsule(style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.16), lineWidth: 0.7)
+                        .strokeBorder(Color.black.opacity(0.10), lineWidth: 0.7)
                 }
         }
-        .shadow(color: .black.opacity(0.28), radius: 20, y: 10)
+        .shadow(color: PennyTheme.obsidian.opacity(0.14), radius: 20, y: 10)
         .padding(.horizontal, 12)
         .padding(.top, 6)
         .padding(.bottom, 4)
@@ -71,11 +76,11 @@ struct PennyRootHeader: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.largeTitle.weight(.bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(PennyTheme.textPrimary)
                 if let subtitle {
                     Text(subtitle)
                         .font(.subheadline)
-                        .foregroundStyle(Color.white.opacity(0.62))
+                        .foregroundStyle(PennyTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }

@@ -5,36 +5,38 @@ enum PennyTheme {
     static let usesPaleGreenSurfaces = false
     static let spendHeroAssetName = "SpendAurora"
 
-    static let obsidian = Color(red: 0.018, green: 0.027, blue: 0.025)
-    static let forest = Color(red: 0.025, green: 0.115, blue: 0.082)
-    static let emerald = Color(red: 0.08, green: 0.82, blue: 0.43)
-    static let emeraldBright = Color(red: 0.26, green: 0.96, blue: 0.58)
-    static let glassOpaque = Color(red: 0.045, green: 0.075, blue: 0.065)
-    static let glassEdge = Color.white.opacity(0.14)
-    static let textPrimary = Color.white
-    static let textSecondary = Color.white.opacity(0.68)
+    static let obsidian = Color(red: 0.025, green: 0.075, blue: 0.055)
+    static let forest = Color(red: 0.025, green: 0.22, blue: 0.14)
+    static let emerald = Color(red: 0.00, green: 0.58, blue: 0.31)
+    static let emeraldBright = Color(red: 0.00, green: 0.48, blue: 0.25)
+    static let heroAccent = Color(red: 0.24, green: 0.96, blue: 0.58)
+    static let heroSecondary = Color.white.opacity(0.68)
+    static let glassOpaque = Color.white
+    static let glassEdge = Color.black.opacity(0.10)
+    static let textPrimary = Color(red: 0.055, green: 0.075, blue: 0.065)
+    static let textSecondary = Color(red: 0.31, green: 0.34, blue: 0.32)
 
     static let green = emerald
     static let darkGreen = emeraldBright
     static let vividGreen = emeraldBright
-    static let mint = Color.white.opacity(0.075)
-    static let paleGreen = glassOpaque
-    static let canvas = obsidian
+    static let mint = Color.black.opacity(0.045)
+    static let paleGreen = Color.white
+    static let canvas = Color(red: 0.965, green: 0.965, blue: 0.95)
     static let warning = Color(red: 1.00, green: 0.70, blue: 0.25)
 }
 
 struct PennyAtmosphere: View {
     var body: some View {
         ZStack {
-            PennyTheme.obsidian
+            PennyTheme.canvas
             RadialGradient(
-                colors: [PennyTheme.emerald.opacity(0.17), .clear],
+                colors: [PennyTheme.emerald.opacity(0.10), .clear],
                 center: .topTrailing,
                 startRadius: 12,
                 endRadius: 420
             )
             LinearGradient(
-                colors: [PennyTheme.forest.opacity(0.72), PennyTheme.obsidian.opacity(0.96)],
+                colors: [Color.white.opacity(0.82), PennyTheme.canvas.opacity(0.96)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -53,7 +55,7 @@ private struct PennyGlassSurfaceModifier: ViewModifier {
             .background {
                 ZStack {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(PennyTheme.glassOpaque.opacity(reduceTransparency ? 1 : 0.58))
+                        .fill(PennyTheme.glassOpaque.opacity(reduceTransparency ? 1 : 0.68))
                     if !reduceTransparency {
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                             .fill(.ultraThinMaterial)
@@ -62,9 +64,9 @@ private struct PennyGlassSurfaceModifier: ViewModifier {
             }
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(Color.white.opacity(contrast == .increased ? 0.32 : 0.13), lineWidth: 0.75)
+                    .strokeBorder(Color.black.opacity(contrast == .increased ? 0.22 : 0.09), lineWidth: 0.75)
             }
-            .shadow(color: .black.opacity(0.25), radius: 18, y: 10)
+            .shadow(color: PennyTheme.obsidian.opacity(0.10), radius: 18, y: 10)
     }
 }
 

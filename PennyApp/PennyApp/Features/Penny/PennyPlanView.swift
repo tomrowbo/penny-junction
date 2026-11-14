@@ -23,7 +23,7 @@ struct PennyPlanView: View {
                                     .frame(minHeight: 44)
                             }
                         }
-                        .foregroundStyle(.white)
+                        .foregroundStyle(PennyTheme.textPrimary)
 
                         if let error = store.goalPlanError {
                             Label(error, systemImage: "exclamationmark.circle")
@@ -72,7 +72,7 @@ struct PennyPlanView: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .foregroundStyle(.white)
+        .foregroundStyle(PennyTheme.textPrimary)
         .pennyGlassSurface(cornerRadius: 24)
     }
 }

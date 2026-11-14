@@ -1,16 +1,16 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-11-14T10:10:00Z",
-  "title": "Design System: Penny — Obsidian Emerald",
+  "title": "Design System: Penny — Pearl Emerald",
   "extensions": {
     "colorMeta": {
-      "obsidian": { "role": "neutral", "displayName": "Obsidian Canvas", "canonical": "#050706" },
-      "deep-forest": { "role": "neutral", "displayName": "Deep Forest", "canonical": "#061D15" },
-      "emerald": { "role": "primary", "displayName": "Penny Emerald", "canonical": "#15D16E" },
-      "bright-emerald": { "role": "secondary", "displayName": "Bright Emerald", "canonical": "#42F592" },
-      "opaque-glass": { "role": "neutral", "displayName": "Opaque Glass Fallback", "canonical": "#0B1311" },
-      "text-primary": { "role": "neutral", "displayName": "Primary Text", "canonical": "#FFFFFF" },
-      "text-secondary": { "role": "neutral", "displayName": "Secondary Text", "canonical": "rgba(255,255,255,0.68)" }
+      "canvas": { "role": "neutral", "displayName": "Pearl Canvas", "canonical": "#F6F6F2" },
+      "deep-forest": { "role": "neutral", "displayName": "Hero Forest", "canonical": "#06130E" },
+      "emerald": { "role": "primary", "displayName": "S-Bank Emerald", "canonical": "#00944F" },
+      "hero-emerald": { "role": "secondary", "displayName": "Hero Emerald", "canonical": "#3DF594" },
+      "opaque-glass": { "role": "neutral", "displayName": "Opaque Glass Fallback", "canonical": "#FFFFFF" },
+      "text-primary": { "role": "neutral", "displayName": "Primary Text", "canonical": "#0E1311" },
+      "text-secondary": { "role": "neutral", "displayName": "Secondary Text", "canonical": "#505752" }
     },
     "motion": [
       { "name": "destination-change", "value": "snappy 280ms", "purpose": "Selected tab emphasis and content transition" },
@@ -23,13 +23,13 @@
   },
   "components": [
     { "name": "Glass Tab Bar", "kind": "nav", "description": "Floating four-destination capsule with an opaque Reduce Transparency fallback." },
-    { "name": "Glass Surface", "kind": "card", "description": "Functional grouping surface with a thin white edge and soft directional depth." },
+    { "name": "Glass Surface", "kind": "card", "description": "Neutral white functional grouping surface with a thin edge and soft directional depth." },
     { "name": "Spend Thesis", "kind": "hero", "description": "Image-backed safe-to-spend statement with a dark contrast overlay and evidence disclosure." },
     { "name": "Penny Conversation", "kind": "custom", "description": "Conversation-first surface with grounded evidence visualizations and native controls." }
   ],
   "narrative": {
-    "northStar": "Money moving through calm darkness",
-    "overview": "Penny uses a permanent obsidian canvas, restrained deep-forest atmosphere, luminous emerald state and purposeful native glass. Each destination owns one job; financial truth and evidence remain more important than decoration.",
+    "northStar": "S-Bank clarity with calm financial-coaching focus",
+    "overview": "Penny uses an intentional light canvas, S-Bank's native SF typography, emerald state and purposeful native glass, with dark forest artwork reserved for the Spend hero. Each destination owns one job; financial truth and evidence remain more important than decoration.",
     "keyCharacteristics": [
       "Four task-led destinations replace the dashboard collage.",
       "Emerald is the only active colour.",

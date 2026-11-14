@@ -15,13 +15,13 @@ struct LoginView: View {
                     PennyMark(size: 88, inverse: true)
                     Text(PennyBrand.productName)
                         .font(.largeTitle.weight(.bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(PennyTheme.textPrimary)
                     Text(PennyBrand.partnerDescriptor)
                         .font(.headline.weight(.semibold))
                         .foregroundStyle(PennyTheme.emeraldBright)
                     Text(PennyBrand.tagline)
                         .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.82))
+                        .foregroundStyle(PennyTheme.textSecondary)
                 }
 
                 Spacer()

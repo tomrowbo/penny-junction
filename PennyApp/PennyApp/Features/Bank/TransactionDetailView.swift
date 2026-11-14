@@ -61,6 +61,6 @@ struct TransactionDetailView: View {
                 ContentUnavailableView("Transaction unavailable", systemImage: "exclamationmark.triangle")
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(PennyTheme.textPrimary)
     }
 }

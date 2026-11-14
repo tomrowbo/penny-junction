@@ -37,9 +37,9 @@ struct PennySpendView: View {
                 .font(.headline)
                 .foregroundStyle(PennyTheme.textSecondary)
             Text(store.totalPositiveBalance.euroCurrency)
-                .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                .font(.system(.largeTitle, weight: .bold))
                 .monospacedDigit()
-                .foregroundStyle(.white)
+                .foregroundStyle(PennyTheme.textPrimary)
             Text(store.hasConnectedExternalBank ? "Connected view across your banks" : "S-Bank accounts only")
                 .font(.subheadline)
                 .foregroundStyle(PennyTheme.textSecondary)
@@ -77,18 +77,18 @@ struct PennySpendView: View {
                     .padding(.horizontal, 16)
                     .frame(minHeight: 66)
                     if account.id != store.accounts.last?.id {
-                        Divider().overlay(Color.white.opacity(0.1)).padding(.leading, 64)
+                        Divider().overlay(Color.black.opacity(0.08)).padding(.leading, 64)
                     }
                 }
             }
             .pennyGlassSurface(cornerRadius: 22)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(PennyTheme.textPrimary)
     }
 
     private var recentTransactions: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Recent spending").font(.title2.weight(.bold)).foregroundStyle(.white)
+            Text("Recent spending").font(.title2.weight(.bold)).foregroundStyle(PennyTheme.textPrimary)
             VStack(spacing: 0) {
                 ForEach(Array(store.transactions.prefix(5))) { transaction in
                     NavigationLink(value: transaction.id) {
@@ -97,7 +97,7 @@ struct PennySpendView: View {
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(PennyTheme.emeraldBright)
                                 .frame(width: 38, height: 38)
-                                .background(Color.white.opacity(0.07), in: Circle())
+                                .background(Color.black.opacity(0.045), in: Circle())
                             VStack(alignment: .leading, spacing: 3) {
                                 Text(transaction.merchant).font(.subheadline.weight(.semibold))
                                 Text(transaction.category).font(.caption).foregroundStyle(PennyTheme.textSecondary)
@@ -107,13 +107,13 @@ struct PennySpendView: View {
                                 .font(.subheadline.weight(.semibold))
                                 .monospacedDigit()
                         }
-                        .foregroundStyle(.white)
+                        .foregroundStyle(PennyTheme.textPrimary)
                         .padding(.horizontal, 16)
                         .frame(minHeight: 64)
                     }
                     .buttonStyle(.plain)
                     if transaction.id != store.transactions.prefix(5).last?.id {
-                        Divider().overlay(Color.white.opacity(0.1)).padding(.leading, 64)
+                        Divider().overlay(Color.black.opacity(0.08)).padding(.leading, 64)
                     }
                 }
             }

@@ -30,7 +30,7 @@ struct MeView: View {
                 .background(PennyAtmosphere())
             }
             .toolbar(.hidden, for: .navigationBar)
-            .background(PennyTheme.obsidian.ignoresSafeArea())
+            .background(PennyTheme.canvas.ignoresSafeArea())
             .confirmationDialog(
                 "Reset goals?",
                 isPresented: $showsResetGoalsConfirmation,

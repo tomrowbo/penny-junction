@@ -1,15 +1,14 @@
 ---
-name: "Penny — Obsidian Emerald"
-description: "A calm, high-contrast native financial coach shaped by deep atmosphere, luminous emerald and purposeful glass."
+name: "Penny — Pearl Emerald"
+description: "A bright native S-Bank financial coach with emerald focus, purposeful glass and one cinematic hero."
 colors:
-  obsidian: "#050706"
-  deep-forest: "#061D15"
-  emerald: "#15D16E"
-  bright-emerald: "#42F592"
-  opaque-glass: "#0B1311"
-  glass-edge: "rgba(255,255,255,0.14)"
-  text-primary: "#FFFFFF"
-  text-secondary: "rgba(255,255,255,0.68)"
+  canvas: "#F6F6F2"
+  surface: "rgba(255,255,255,0.68)"
+  forest: "#06130E"
+  emerald: "#00944F"
+  hero-emerald: "#3DF594"
+  text-primary: "#0E1311"
+  text-secondary: "#505752"
 typography:
   financial-display: "SF Pro Display Bold, Dynamic Type, tabular numerals"
   section-title: "SF Pro Display Bold, Dynamic Type"
@@ -27,26 +26,25 @@ spacing:
   compact: "8pt"
 ---
 
-# Design System: Penny — Obsidian Emerald
+# Design System: Penny — Pearl Emerald
 
 ## North star
 
-Penny should feel like money moving through a calm, dark environment: clear white facts over deep obsidian, with emerald appearing only where the product is active, progressing or selected. The first screen is a financial instrument rather than a dashboard collage. A person should understand what they can spend, where to go next and why the number is trustworthy within seconds.
+Penny is a bright S-Bank experience with the calm, focused structure of the strongest financial-coaching products. The canvas stays light, information is black and direct, and emerald marks action, progress and selection. The first screen should explain what is safe to spend and why within seconds.
 
 ## Structure
 
-The product has four equal top-level destinations: Spend, Plan, Ask Penny and Incoming. Spend is the default financial snapshot; Plan owns persistent goals; Ask Penny owns conversation; Incoming owns predicted bills and income. Profile is a top-right root action. Native push navigation and focused sheets remain intact.
+The four equal destinations are Spend, Plan, Ask Penny and Incoming. Spend is the default snapshot; Plan owns persistent goals; Ask Penny owns conversation; Incoming owns predicted bills and income. Profile is the top-right root action. Native push navigation and focused sheets remain intact.
 
-The bottom bar is one floating capsule. Ask Penny uses the supplied portrait mark on a white plate; all other icons are SF Symbols. Selection is expressed through white emphasis and emerald state, never a second palette.
+The bottom bar is one floating translucent capsule. Ask Penny uses the supplied portrait mark on a white plate; the other icons are SF Symbols.
 
 ## Colour and material
 
-- Obsidian is the permanent product canvas in both system appearances.
-- Deep forest gradients create atmosphere without reducing text contrast.
+- The product is intentionally light mode, including when the system appearance differs.
+- Canvas and glass are neutral white/pearl, never pale green.
 - Emerald is the only action, selection and progress colour.
-- Glass is functional: it separates navigation, grouped financial data and focused controls from the atmosphere behind them.
-- Reduce Transparency replaces material with `opaque-glass`. Increased Contrast strengthens the white edge.
-- Pale green, white card walls and pastel mint fills are not part of this system.
+- A dark forest image is reserved for the Spend hero, with white text and a bright emerald accent.
+- Reduce Transparency replaces material with solid white. Increased Contrast strengthens the dark edge.
 
 ## Imagery
 
@@ -54,32 +52,28 @@ The bottom bar is one floating capsule. Ask Penny uses the supplied portrait mar
 
 ## Typography
 
-Use native Dynamic Type roles and SF Pro throughout. Financial values use bold display hierarchy and tabular numerals. Supporting copy stays compact and white at 68% or higher opacity. There are no all-caps kickers, gradient text or decorative monospaced labels.
+Use S-Bank's observed in-app typography: native SF Pro Dynamic Type roles throughout. Financial values use bold display hierarchy and tabular numerals. Do not substitute a competitor font, rounded system design or unlicensed proprietary face.
 
 ## Surfaces
 
-Glass panels use 20–28pt continuous corners, a sub-point white edge and soft downward depth. Avoid nested glass panels: use separators and spacing inside a grouped surface. A background image is allowed only for the primary Spend thesis. Lists remain lists; sheets remain native forms adapted to the dark system.
-
-## Motion
-
-The single authored moment is top-level navigation: selected-state emphasis and a short content crossfade/slide using a snappy native curve. Reduce Motion uses a crossfade. No independent card entrances, ambient loops or decorative parallax.
+Glass panels use 20–28pt continuous corners, a sub-point neutral edge and soft downward depth. Avoid nested glass panels: use separators and spacing inside grouped surfaces. Lists remain lists; sheets remain native forms.
 
 ## Accessibility
 
-All targets are at least 44pt. The four navigation labels remain visible through `xxxLarge` Dynamic Type and expose selected traits. Money uses stable numerals. Charts always retain accessible tables. Glass never carries the only copy of a state, and opaque fallbacks preserve contrast.
+All targets are at least 44pt. The four navigation labels remain visible through `xxxLarge` Dynamic Type and expose selected traits. Money uses stable numerals. Charts retain accessible tables. Opaque fallbacks preserve contrast.
 
 ## Do
 
 - Lead each destination with its one primary task.
-- Use generous black space and short copy.
+- Use generous neutral space and short copy.
 - Use emerald for interaction, progress and selection only.
 - Keep evidence and assumptions one deliberate disclosure away.
-- Keep native navigation gestures and controls.
+- Keep native SF typography, navigation gestures and controls.
 
 ## Do not
 
-- Reintroduce pale green, mint card fills or white dashboard cards.
-- Put every section in its own floating rounded rectangle.
+- Reintroduce pale-green or mint surfaces.
+- Turn every section into a card.
 - Stack glass inside glass.
 - Invent financial values for visual effect.
 - Recolour, redraw or replace the supplied Penny portrait.

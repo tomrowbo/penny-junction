@@ -71,7 +71,7 @@ struct PennyGoalPlanCard: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .foregroundStyle(.white)
+        .foregroundStyle(PennyTheme.textPrimary)
         .pennyGlassSurface(cornerRadius: 24)
         .accessibilityElement(children: .contain)
     }

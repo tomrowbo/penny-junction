@@ -62,7 +62,7 @@ struct UpcomingMoneyCard: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .foregroundStyle(.white)
+        .foregroundStyle(PennyTheme.textPrimary)
         .pennyGlassSurface(cornerRadius: 24)
         .sheet(isPresented: $showsDetails) {
             details

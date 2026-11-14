@@ -157,7 +157,7 @@ private struct BankConsentView: View {
             .disabled(isConnecting)
         }
         .padding(24)
-        .foregroundStyle(.white)
+        .foregroundStyle(PennyTheme.textPrimary)
         .background(PennyAtmosphere())
     }
 }
