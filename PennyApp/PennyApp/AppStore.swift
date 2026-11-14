@@ -65,17 +65,24 @@ final class AppStore {
     private(set) var sBankDataStatus: SBankDataStatus
     private(set) var goalPlans: [PennyGoalPlan]
     private(set) var goalPlanError: String?
+    private(set) var chatHistory: [PennyChatThread]
     private let goalPlanStore: any PennyGoalPlanStore
+    private let conversationStore: any PennyConversationStore
 
     init(
         snapshot: DemoSnapshot = DemoData.initial,
-        goalPlanStore: (any PennyGoalPlanStore)? = nil
+        goalPlanStore: (any PennyGoalPlanStore)? = nil,
+        conversationStore: (any PennyConversationStore)? = nil
     ) {
         accounts = snapshot.accounts
         transactions = snapshot.transactions
         sBankDataStatus = PennyAPIConfiguration.baseURL == nil ? .fallback : .loading
         let resolvedGoalPlanStore = goalPlanStore ?? UserDefaultsPennyGoalPlanStore()
         self.goalPlanStore = resolvedGoalPlanStore
+        let resolvedConversationStore = conversationStore ?? UserDefaultsPennyConversationStore()
+        self.conversationStore = resolvedConversationStore
+        chatHistory = (try? resolvedConversationStore.load())?
+            .sorted { $0.updatedAt > $1.updatedAt } ?? []
         do {
             let saved = try resolvedGoalPlanStore.load()
             if saved.isEmpty {
@@ -223,6 +230,57 @@ final class AppStore {
 
     func discussWithPenny() {
         startPennyChat(about: nil)
+    }
+
+    func saveConversation(thread: PennyChatThread, messages: [PennyChatMessage]) {
+        guard !messages.isEmpty else { return }
+        let firstQuestion = messages.first(where: { $0.role == .user })?.text
+        let title = thread.context?.title ?? firstQuestion.map { conciseChatTitle($0) } ?? "Ask Penny"
+        let saved = PennyChatThread(
+            id: thread.id,
+            title: title,
+            symbol: conversationSymbol(for: thread.context),
+            initialMessages: Array(messages.suffix(100)),
+            context: thread.context,
+            initialDraft: "",
+            updatedAt: .now
+        )
+        chatHistory.removeAll { $0.id == saved.id }
+        chatHistory.insert(saved, at: 0)
+        chatHistory = Array(chatHistory.prefix(30))
+        try? conversationStore.save(chatHistory)
+    }
+
+    private func conciseChatTitle(_ text: String) -> String {
+        let clean = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard clean.count > 44 else { return clean }
+        return String(clean.prefix(43)).trimmingCharacters(in: .whitespacesAndNewlines) + "…"
+    }
+
+    private func conversationSymbol(for context: PennyChatContext?) -> String {
+        guard let context else { return PennyBrand.markAssetName }
+        switch context.type {
+        case .account: return "building.columns"
+        case .upcoming: return "calendar"
+        case .transaction:
+            let category = transaction(id: context.referenceID)?.category
+            switch category {
+            case "Groceries": return "basket"
+            case "Transport": return "tram"
+            case "Housing": return "house"
+            case "Income": return "arrow.down"
+            default: return "creditcard"
+            }
+        case .goal:
+            let title = context.title.lowercased()
+            if ["travel", "holiday", "vacation", "trip"].contains(where: title.contains) { return "airplane" }
+            if ["home", "house", "deposit"].contains(where: title.contains) { return "house.fill" }
+            if ["car", "vehicle"].contains(where: title.contains) { return "car.fill" }
+            if ["emergency", "buffer", "rainy"].contains(where: title.contains) { return "shield.fill" }
+            if ["study", "education", "university"].contains(where: title.contains) { return "graduationcap.fill" }
+            if ["wedding", "marriage"].contains(where: title.contains) { return "heart.fill" }
+            return "flag.checkered"
+        }
     }
 
     func startPennyChat(about subject: PennyChatSubject?) {

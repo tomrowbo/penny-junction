@@ -69,13 +69,13 @@ struct PennyGoalStarter: Identifiable, CaseIterable, Hashable, Sendable {
     ]
 }
 
-struct PennyBasketEvidence: Decodable, Hashable, Sendable {
+struct PennyBasketEvidence: Codable, Hashable, Sendable {
     let id: String
     let label: String
     let amount: Decimal
 }
 
-struct PennyEvidence: Decodable, Hashable, Sendable {
+struct PennyEvidence: Codable, Hashable, Sendable {
     let coverage: String
     let institutions: [String]
     let transactionCount: Int

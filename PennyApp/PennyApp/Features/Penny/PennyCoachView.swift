@@ -4,7 +4,6 @@ struct PennyCoachView: View {
     @Environment(AppStore.self) private var store
     @State private var path: [PennyChatThread] = []
     @State private var draft = ""
-    private let chats = PennyChatThread.samples
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -59,8 +58,19 @@ struct PennyCoachView: View {
             Text("Recent conversations")
                 .font(.title2.weight(.bold))
                 .foregroundStyle(PennyTheme.textPrimary)
-            VStack(spacing: 0) {
-                ForEach(chats) { chat in
+            if store.chatHistory.isEmpty {
+                HStack(spacing: 12) {
+                    PennyMark(size: 34, inverse: true)
+                    Text("Your chats with Penny will appear here.")
+                        .font(.subheadline)
+                        .foregroundStyle(PennyTheme.textSecondary)
+                }
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .pennyGlassSurface(cornerRadius: 20)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(store.chatHistory) { chat in
                     NavigationLink(value: chat) {
                         HStack(spacing: 12) {
                             chatIcon(chat)
@@ -76,7 +86,7 @@ struct PennyCoachView: View {
                             }
                             Spacer()
                             VStack(alignment: .trailing, spacing: 7) {
-                                Text(chat.time).font(.caption2).foregroundStyle(PennyTheme.textSecondary)
+                                Text(relativeTime(chat.updatedAt)).font(.caption2).foregroundStyle(PennyTheme.textSecondary)
                                 Image(systemName: "chevron.right")
                                     .font(.caption2.weight(.bold))
                                     .foregroundStyle(PennyTheme.textSecondary.opacity(0.7))
@@ -86,12 +96,13 @@ struct PennyCoachView: View {
                         .frame(minHeight: 70)
                     }
                     .buttonStyle(.plain)
-                    if chat.id != chats.last?.id {
+                    if chat.id != store.chatHistory.last?.id {
                         Divider().overlay(Color.black.opacity(0.08)).padding(.leading, 70)
                     }
                 }
+                }
+                .pennyGlassSurface(cornerRadius: 22)
             }
-            .pennyGlassSurface(cornerRadius: 22)
         }
     }
 
@@ -106,6 +117,10 @@ struct PennyCoachView: View {
         guard let context = store.pendingPennyChatContext else { return }
         store.pendingPennyChatContext = nil
         path = [.conversation(context: context)]
+    }
+
+    private func relativeTime(_ date: Date) -> String {
+        date.formatted(.relative(presentation: .named, unitsStyle: .abbreviated))
     }
 
     @ViewBuilder
@@ -227,18 +242,21 @@ struct DiscussWithPennyAction: View {
     }
 }
 
-struct PennyChatThread: Identifiable, Hashable {
+struct PennyChatThread: Identifiable, Hashable, Codable {
     let id: String
     let title: String
-    let preview: String
-    let time: String
     let symbol: String
     let initialMessages: [PennyChatMessage]
     var context: PennyChatContext? = nil
     var initialDraft: String = ""
+    var updatedAt: Date = .now
+
+    var preview: String {
+        initialMessages.last?.text ?? initialDraft
+    }
 
     static func conversation(context: PennyChatContext? = nil, initialDraft: String = "") -> PennyChatThread {
-        PennyChatThread(id: UUID().uuidString, title: "Ask Penny", preview: "", time: "",
+        PennyChatThread(id: UUID().uuidString, title: "Ask Penny",
                         symbol: PennyBrand.markAssetName, initialMessages: [],
                         context: context, initialDraft: initialDraft)
     }
@@ -247,50 +265,45 @@ struct PennyChatThread: Identifiable, Hashable {
         PennyChatThread(
             id: "car",
             title: "Buy a new car",
-            preview: "Based on your current spending and commitments…",
-            time: "Today",
             symbol: "car",
             initialMessages: [
                 PennyChatMessage(role: .user, text: "I would like to buy a new car, but I’m not sure I can afford it. What do you think?"),
                 PennyChatMessage(role: .penny, text: "I can help with that. I can see your S-Bank spending, but before estimating affordability you should connect the bank holding your mortgage so I include every regular commitment.", source: "example")
-            ]
+            ],
+            updatedAt: .now
         ),
         PennyChatThread(
             id: "weekly",
             title: "Stay within my weekly budget",
-            preview: "Ask Penny to calculate a safe weekly amount.",
-            time: "Yesterday",
             symbol: "calendar",
             initialMessages: [
                 PennyChatMessage(role: .user, text: "What is safe to spend this week?"),
                 PennyChatMessage(role: .penny, text: "Ask me for a fresh calculation and I’ll use your current connected data, essential costs and irregular-cost reserve.", source: "example")
-            ]
+            ],
+            updatedAt: .now.addingTimeInterval(-86_400)
         ),
         PennyChatThread(
             id: "groceries",
             title: "Understand my grocery spending",
-            preview: "Explore how grocery spending has changed.",
-            time: "Mon",
             symbol: "basket",
             initialMessages: [
                 PennyChatMessage(role: .user, text: "Why was my grocery spending so high?"),
                 PennyChatMessage(role: .penny, text: "Ask me to compare a period and I’ll calculate the change from your transaction history.", source: "example")
-            ]
+            ],
+            updatedAt: .now.addingTimeInterval(-172_800)
         )
     ]
 
     static let newChat = PennyChatThread(
         id: "new",
         title: "Ask Penny",
-        preview: "",
-        time: "",
         symbol: PennyBrand.markAssetName,
         initialMessages: []
     )
 }
 
-struct PennyChatMessage: Identifiable, Hashable {
-    enum Role: Hashable { case user, penny }
+struct PennyChatMessage: Identifiable, Hashable, Codable {
+    enum Role: String, Hashable, Codable { case user, penny }
     let id = UUID()
     let role: Role
     let text: String
@@ -478,6 +491,7 @@ struct PennyChatView: View {
         let text = String(source.trimmingCharacters(in: .whitespacesAndNewlines).prefix(4_000))
         guard !text.isEmpty else { return }
         messages.append(PennyChatMessage(role: .user, text: text))
+        store.saveConversation(thread: thread, messages: messages)
         draft = ""
         errorMessage = nil
         isSending = true
@@ -497,6 +511,7 @@ struct PennyChatView: View {
                     context: thread.context
                 )
                 messages.append(PennyChatMessage(role: .penny, text: reply.message, evidence: reply.evidence, visualizations: reply.visualizations, suggestedPrompts: reply.suggestedPrompts, source: reply.source))
+                store.saveConversation(thread: thread, messages: messages)
             } catch {
                 errorMessage = error.localizedDescription
             }
